@@ -75,7 +75,7 @@ def call_get_cache(synapse_request):
         problem_dict = synapse_request.problem.dict()
         json_problem = json.dumps(problem_dict)
         hash = gen_hash(json_problem)
-        print(hash)
+        print(f"call get cache hash = {hash}")
         config = load_config()
         get_cache_url = config['get_cache_url']
         print(f"get_cache_url = {get_cache_url}")
