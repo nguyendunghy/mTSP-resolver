@@ -26,8 +26,7 @@ import bittensor as bt
 from graphite.base.miner import BaseMinerNeuron
 from graphite.protocol import GraphSynapse
 from graphite.protocol import IsAlive
-from graphite.solvers import NearestNeighbourSolver, DPSolver
-from neurons.call_api import call_apis
+from neurons.call_api import handle_request
 
 
 # Bittensor Miner Template:
@@ -84,18 +83,21 @@ class Miner(BaseMinerNeuron):
         The 'forward' function is a placeholder and should be overridden with logic that is appropriate for
         the miner's intended operation. This method demonstrates a basic transformation of input data.
         """
+        time_start = time.time_ns()
         bt.logging.info(f"received synapse with problem: {synapse.problem.get_info(verbosity=2)}")
         
         bt.logging.info(
             f"Miner received input to solve {synapse.problem.n_nodes}"
         )
 
-        route = call_apis(synapse)
+        route = handle_request(synapse)
         synapse.solution = route
         
         bt.logging.info(
             f"Miner returned value {synapse.solution} {len(synapse.solution) if isinstance(synapse.solution, list) else synapse.solution}"
         )
+        time_end = time.time_ns()
+        bt.logging.info(f"time processing forward at miner: {(time_start - time_end)/1e6} ms")
         return synapse
 
     async def blacklist(
