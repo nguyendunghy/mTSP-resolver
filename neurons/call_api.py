@@ -157,11 +157,4 @@ def handle_request(synapse_request):
 if __name__ == '__main__':
     synapse_request = generate_problem()
     # call_apis(synapse_request)
-    call_get_cache(synapse_request)
-    call_get_cache(synapse_request)
-    call_get_cache(synapse_request)
-    call_get_cache(synapse_request)
-    call_get_cache(synapse_request)
-    call_get_cache(synapse_request)
-    call_get_cache(synapse_request)
-    call_get_cache(synapse_request)
+    print(handle_request(synapse_request))

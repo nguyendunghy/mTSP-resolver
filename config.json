@@ -5,6 +5,6 @@
     "http://103.252.0.169:4303/resolve",
     "http://103.252.0.169:4304/resolve"
   ],
-  "set_cache_url": "",
-  "get_cache_url": ""
+  "set_cache_url": "http://103.252.0.169:4305/set-cache",
+  "get_cache_url": "http://103.252.0.169:4305/get-cache"
 }
