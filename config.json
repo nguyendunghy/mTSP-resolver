@@ -1,8 +1,8 @@
 {
   "api_urls": [
-    "http://127.0.0.1:8080/resolve",
-    "http://127.0.0.1:8081/resolve",
-    "http://127.0.0.1:8082/resolve",
-    "http://127.0.0.1:8083/resolve"
+    "http://103.252.0.169:4301/resolve",
+    "http://103.252.0.169:4302/resolve",
+    "http://103.252.0.169:4303/resolve",
+    "http://103.252.0.169:4304/resolve"
   ]
 }
