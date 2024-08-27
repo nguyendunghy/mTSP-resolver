@@ -33,7 +33,7 @@ class HPNSolver(BaseSolver):
     implement solve method and necessary transformations
     '''
     def __init__(self, problem_types:List[GraphProblem]=[GraphProblem(n_nodes=2)],
-                 weights_fp:str = '/Users/dungnguyen/IdeaProjects/bittensor/Graphite-Subnet/graphite/models/model_weights/hpn_base_model.pkl'):
+                 weights_fp:str = 'graphite/models/model_weights/hpn_base_model.pkl'):
         super().__init__(problem_types=problem_types)
         self.device = torch.device('cuda') if torch.cuda.is_available() else torch.device('cpu') # assign device to run the model on
         self.critic = HPN(n_feature=2, n_hidden=128) # instantiate model to handle metric 2-d geographic TSP problems
