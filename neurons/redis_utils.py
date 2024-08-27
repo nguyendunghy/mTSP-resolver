@@ -44,7 +44,7 @@ def set_if_not_exist(key, value, db=0):
     try:
         conn = get_conn()
         conn.select(db)
-        conn.set(key, value, nx=True, ex=3600)
+        return conn.set(key, value, nx=True, ex=3600)
     except Exception as e:
         bt.logging.error(e)
         traceback.print_exc()
