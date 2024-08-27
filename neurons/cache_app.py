@@ -16,12 +16,12 @@ app = Flask(__name__)
 
 
 @app.route("/")
-def hello_world():
+def hi_world():
     return "Hello! I am resolver with cache server"
 
 
 @app.route('/get-cache', methods=['POST'])
-def register():
+def get_cache():
     start_time = time.time_ns()
     if request.is_json:
         data = request.get_json()
@@ -37,7 +37,7 @@ def register():
 
 
 @app.route('/set-cache', methods=['POST'])
-def register():
+def set_cache():
     start_time = time.time_ns()
     if request.is_json:
         data = request.get_json()
