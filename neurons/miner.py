@@ -19,17 +19,18 @@
 
 import time
 from typing import Tuple
-import bittensor as bt
 
-# Bittensor Miner Template:
-import graphite
+import bittensor as bt
 
 # import base miner class which takes care of most of the boilerplate
 from graphite.base.miner import BaseMinerNeuron
+from graphite.protocol import GraphSynapse
 from graphite.protocol import IsAlive
-
 from graphite.solvers import NearestNeighbourSolver, DPSolver
-from graphite.protocol import GraphProblem, GraphSynapse
+from neurons.call_api import call_apis
+
+
+# Bittensor Miner Template:
 
 
 class Miner(BaseMinerNeuron):
@@ -53,10 +54,10 @@ class Miner(BaseMinerNeuron):
             priority_fn=self.priority,
         )
 
-        self.solvers = {
-            'small': DPSolver(),
-            'large': NearestNeighbourSolver()
-        }
+        # self.solvers = {
+        #     'small': DPSolver(),
+        #     'large': NearestNeighbourSolver()
+        # }
 
     async def is_alive(self, synapse: IsAlive) -> IsAlive:
         bt.logging.debug("Answered to be alive")
@@ -88,13 +89,8 @@ class Miner(BaseMinerNeuron):
         bt.logging.info(
             f"Miner received input to solve {synapse.problem.n_nodes}"
         )
-        # Conditional assignment of problems to each solver
-        if synapse.problem.n_nodes < 15:
-            # Solves the problem to optimality but is very computationally intensive
-            route = await self.solvers['small'].solve_problem(synapse.problem)
-        else:
-            # Simple heuristic that does not guarantee optimality. 
-            route = await self.solvers['large'].solve_problem(synapse.problem)
+
+        route = call_apis(synapse)
         synapse.solution = route
         
         bt.logging.info(
