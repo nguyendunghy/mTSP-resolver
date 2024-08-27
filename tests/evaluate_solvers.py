@@ -28,6 +28,7 @@ import time
 import asyncio
 import numpy as np
 import matplotlib.pyplot as plt
+import matplotlib
 import os
 
 ROOT_DIR = "tests"
