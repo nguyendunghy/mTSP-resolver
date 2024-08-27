@@ -137,22 +137,71 @@ def call_set_cache(synapse_request, route):
         return None
     finally:
         end_time = time.time_ns()
-        print(f"time call get cache: {(end_time - start_time)/1e6} ms")
+        print(f"time call set cache: {(end_time - start_time)/1e6} ms")
+
+
+def call_set_cache_nx(synapse_request):
+    start_time = time.time_ns()
+    try:
+        problem_dict = synapse_request.problem.dict()
+        json_problem = json.dumps(problem_dict)
+        hash = gen_hash(json_problem)
+        print(f"set cache nx hash: {hash}")
+        config = load_config()
+        set_cache_nx_url = config['set_cache_nx']
+        print(f"set_cache_nx url = {set_cache_nx_url}")
+        payload = json.dumps({
+            "hash": hash
+        })
+        headers = {
+            'Content-Type': 'application/json'
+        }
+
+        response = requests.request("POST", set_cache_nx_url, headers=headers, data=payload, timeout=8)
+        if response.status_code == 200:
+            data = response.json()
+            print(f"set cache nx finish, message: {data}")
+            return data['result']
+        else:
+            print('Failed to post data:status_code', response.status_code)
+            print('Failed to post data:', response.content)
+            return None
+    except Exception as e:
+        bt.logging.error(e)
+        traceback.print_exc()
+        return None
+    finally:
+        end_time = time.time_ns()
+        print(f"time call set cache nx: {(end_time - start_time)/1e6} ms")
 
 def handle_request(synapse_request):
-    route = call_get_cache(synapse_request)
-    if route is not None:
-        return route
+    setnx = call_set_cache_nx(synapse_request)
+    if setnx:
+        route = call_apis(synapse_request)
+        if route is not None:
+            call_set_cache(synapse_request,route)
+            return route
 
-    route = call_apis(synapse_request)
-    if route is not None:
-        call_set_cache(synapse_request,route)
-        return route
+        # call apis fail, use baseline
+        synapse = asyncio.run(baseline_solution(synapse_request))
+        return synapse.solution
+    else:
+        count = 0
+        while True:
+            route = call_get_cache(synapse_request)
+            if route is None:
+                # wait for other miner set cache
+                if count >= 30:
+                    break
+                count = count + 1
+                print(f"wait for other miner set cache count = {count}")
+                time.sleep(0.2)
+            else:
+                return route
 
-    #call apis fail, use baseline
-    synapse = asyncio.run(baseline_solution(synapse_request))
-    return synapse.solution
-
+        # call apis fail, use baseline
+        synapse = asyncio.run(baseline_solution(synapse_request))
+        return synapse.solution
 
 if __name__ == '__main__':
     synapse_request = generate_problem()

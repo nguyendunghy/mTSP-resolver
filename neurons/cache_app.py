@@ -2,7 +2,7 @@ import time
 from argparse import ArgumentParser
 import json
 from flask import Flask, request, jsonify
-from neurons.redis_utils import get,set
+from neurons.redis_utils import get,set,set_if_not_exist
 
 def parse():
     parser = ArgumentParser()
@@ -27,7 +27,7 @@ def get_cache():
         data = request.get_json()
         hash = data['hash']
         value = get(str(hash))
-        if value is None:
+        if value is None or len(value) < 1:
             route = None
         else:
             saved_data = json.loads(value)
@@ -56,6 +56,22 @@ def set_cache():
     else:
         return jsonify({"error": "Request must be JSON"}), 400
 
+
+
+@app.route('/set-cache-nx', methods=['POST'])
+def set_nx():
+    start_time = time.time_ns()
+    if request.is_json:
+        data = request.get_json()
+
+        key = str(data['hash'])
+
+        print(f"set if not exist  key = {key}")
+        result = set_if_not_exist(key, '')
+        print(f"time loading {int(time.time_ns() - start_time):,} nanosecond")
+        return jsonify({"message": "Set cache success", "result": result}), 200
+    else:
+        return jsonify({"error": "Request must be JSON"}), 400
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', debug=False, port=args.port)

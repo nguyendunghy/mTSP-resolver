@@ -6,5 +6,6 @@
     "http://103.252.0.169:4304/resolve"
   ],
   "set_cache_url": "http://103.252.0.169:4305/set-cache",
-  "get_cache_url": "http://103.252.0.169:4305/get-cache"
+  "get_cache_url": "http://103.252.0.169:4305/get-cache",
+  "set_cache_nx": "http://103.252.0.169:4305/set-cache-nx"
 }
