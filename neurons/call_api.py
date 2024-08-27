@@ -1,4 +1,5 @@
 import asyncio
+import json
 import time
 
 import aiohttp
@@ -6,13 +7,16 @@ import aiohttp
 from neurons.compare_solutions import generate_problem
 
 # List of POST APIs
-api_urls = [
-    "http://127.0.0.1:8080/resolve",
-    "http://127.0.0.1:8081/resolve",
-    "http://127.0.0.1:8082/resolve",
-    "http://127.0.0.1:8083/resolve"
-]
-
+# api_urls = [
+#     "http://127.0.0.1:8080/resolve",
+#     "http://127.0.0.1:8081/resolve",
+#     "http://127.0.0.1:8082/resolve",
+#     "http://127.0.0.1:8083/resolve"
+# ]
+def load_config(config_file='config.json'):
+    with open(config_file, 'r') as f:
+        config = json.load(f)
+    return config
 
 async def post_api(session, url, data):
     async with session.post(url, json=data) as response:
@@ -20,6 +24,10 @@ async def post_api(session, url, data):
         return result
 
 async def main(payload):
+    config = load_config()
+    api_urls = config['api_urls']
+    print(f"api_url = {api_urls}")
+
     async with aiohttp.ClientSession() as session:
         tasks = [post_api(session, url, payload) for url in api_urls]
         responses = await asyncio.gather(*tasks)
