@@ -27,8 +27,11 @@ def get_cache():
         data = request.get_json()
         hash = data['hash']
         value = get(str(hash))
-        saved_data = json.loads(value)
-        route = saved_data['route']
+        if value is None:
+            route = None
+        else:
+            saved_data = json.loads(value)
+            route = saved_data['route']
         print(f"get cache key = {hash}, value = {route}")
         print(f"time loading {int(time.time_ns() - start_time):,} nanosecond")
         return jsonify({"message": "Get cache success", "result":  route}), 200
