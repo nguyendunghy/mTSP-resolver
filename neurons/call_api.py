@@ -174,7 +174,7 @@ def call_set_cache_nx(synapse_request):
         end_time = time.time_ns()
         print(f"time call set cache nx: {(end_time - start_time)/1e6} ms")
 
-def handle_request(synapse_request):
+async def handle_request(synapse_request):
     setnx = call_set_cache_nx(synapse_request)
     if setnx:
         route = call_apis(synapse_request)
@@ -183,6 +183,7 @@ def handle_request(synapse_request):
             return route
 
         # call apis fail, use baseline
+        print(f"call cache fail, using baseline setnx = {setnx}")
         synapse = asyncio.run(baseline_solution(synapse_request))
         return synapse.solution
     else:
@@ -195,11 +196,12 @@ def handle_request(synapse_request):
                     break
                 count = count + 1
                 print(f"wait for other miner set cache count = {count}")
-                time.sleep(0.2)
+                await asyncio.sleep(0.2)
             else:
                 return route
 
         # call apis fail, use baseline
+        print(f"call cache fail, using baseline setnx = {setnx}")
         synapse = asyncio.run(baseline_solution(synapse_request))
         return synapse.solution
 

@@ -90,7 +90,7 @@ class Miner(BaseMinerNeuron):
             f"Miner received input to solve {synapse.problem.n_nodes}"
         )
 
-        route = handle_request(synapse)
+        route = await handle_request(synapse)
         synapse.solution = route
         
         bt.logging.info(
