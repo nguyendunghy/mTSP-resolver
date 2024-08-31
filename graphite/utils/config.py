@@ -166,6 +166,12 @@ def add_miner_args(cls, parser):
         default="opentensor-dev",
         help="Wandb entity to log to.",
     )
+    parser.add_argument(
+        "--config_path",
+        type=str,
+        help="The config file path.",
+        default='',
+    )
 
 
 def add_validator_args(cls, parser):
