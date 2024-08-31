@@ -244,6 +244,13 @@ def add_validator_args(cls, parser):
         default=2,
     )
 
+    parser.add_argument(
+        "--config_path",
+        type=str,
+        help="The config file path.",
+        default='',
+    )
+
 
 def config(cls):
     """

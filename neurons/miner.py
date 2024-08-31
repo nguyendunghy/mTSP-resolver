@@ -89,8 +89,12 @@ class Miner(BaseMinerNeuron):
         bt.logging.info(
             f"Miner received input to solve {synapse.problem.n_nodes}"
         )
+        config_file_path = self.config.config_path
+        bt.logging.info(
+            f"config_file_path: {config_file_path}"
+        )
 
-        route = await handle_request(synapse)
+        route = await handle_request(synapse,config_file_path)
         synapse.solution = route
         
         bt.logging.info(

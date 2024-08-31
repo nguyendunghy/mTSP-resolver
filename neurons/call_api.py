@@ -29,8 +29,7 @@ async def post_api(session, url, data):
         result = await response.json()
         return result
 
-async def main(payload):
-    config = load_config()
+async def do_call(payload,config):
     api_urls = config['api_urls']
     print(f"api_url = {api_urls}")
 
@@ -48,7 +47,7 @@ async def main(payload):
         min_result = min_score_dict['result']
         return min_result
 
-def call_apis(synapse_request):
+def call_apis(synapse_request,config):
     try:
         start_time = time.time_ns()
         json_data = synapse_request.problem.dict()
@@ -56,7 +55,7 @@ def call_apis(synapse_request):
             'problem':json_data
         }
         print(f"synapse_request problem = {json_data}")
-        min_result = asyncio.run(main(payload))
+        min_result = asyncio.run(do_call(payload,config))
 
         print(f"min_result = {min_result}")
 
@@ -69,16 +68,16 @@ def call_apis(synapse_request):
         end_time = time.time_ns()
         print(f"time processing call api: {(end_time - start_time)/1e6} ms")
 
-def call_get_cache(synapse_request):
+def call_get_cache(synapse_request,config):
     start_time = time.time_ns()
     try:
         problem_dict = synapse_request.problem.dict()
         json_problem = json.dumps(problem_dict)
         hash = gen_hash(json_problem)
         print(f"call get cache hash = {hash}")
-        config = load_config()
         get_cache_url = config['get_cache_url']
-        print(f"get_cache_url = {get_cache_url}")
+        timeout = config['get_cache_timeout']
+        print(f"get_cache_url = {get_cache_url}, timeout = {timeout}")
         payload = json.dumps({
             "hash": hash
         })
@@ -86,7 +85,7 @@ def call_get_cache(synapse_request):
             'Content-Type': 'application/json'
         }
 
-        response = requests.request("POST", get_cache_url, headers=headers, data=payload, timeout=8)
+        response = requests.request("POST", get_cache_url, headers=headers, data=payload, timeout=timeout)
         if response.status_code == 200:
             data = response.json()
             result = data['result']
@@ -104,16 +103,16 @@ def call_get_cache(synapse_request):
         print(f"time call get cache: {(end_time - start_time)/1e6} ms")
 
 
-def call_set_cache(synapse_request, route):
+def call_set_cache(synapse_request, route,config):
     start_time = time.time_ns()
     try:
         problem_dict = synapse_request.problem.dict()
         json_problem = json.dumps(problem_dict)
         hash = gen_hash(json_problem)
         print(f"set cache hash: {hash}")
-        config = load_config()
         set_cache_url = config['set_cache_url']
-        print(f"set_cache_url = {set_cache_url}")
+        timeout = config['set_cache_timeout']
+        print(f"set_cache_url = {set_cache_url}, timeout = {timeout}")
         payload = json.dumps({
             "hash": hash,
             "route":route
@@ -122,7 +121,7 @@ def call_set_cache(synapse_request, route):
             'Content-Type': 'application/json'
         }
 
-        response = requests.request("POST", set_cache_url, headers=headers, data=payload, timeout=8)
+        response = requests.request("POST", set_cache_url, headers=headers, data=payload, timeout=timeout)
         if response.status_code == 200:
             data = response.json()
             print(f"set cache finish, message: {data}")
@@ -149,7 +148,8 @@ def call_set_cache_nx(synapse_request):
         print(f"set cache nx hash: {hash}")
         config = load_config()
         set_cache_nx_url = config['set_cache_nx']
-        print(f"set_cache_nx url = {set_cache_nx_url}")
+        timeout = config['set_cache_nx_timeout']
+        print(f"set_cache_nx url = {set_cache_nx_url}, timeout = {timeout}")
         payload = json.dumps({
             "hash": hash
         })
@@ -157,7 +157,7 @@ def call_set_cache_nx(synapse_request):
             'Content-Type': 'application/json'
         }
 
-        response = requests.request("POST", set_cache_nx_url, headers=headers, data=payload, timeout=8)
+        response = requests.request("POST", set_cache_nx_url, headers=headers, data=payload, timeout=timeout)
         if response.status_code == 200:
             data = response.json()
             print(f"set cache nx finish, message: {data}")
@@ -174,12 +174,13 @@ def call_set_cache_nx(synapse_request):
         end_time = time.time_ns()
         print(f"time call set cache nx: {(end_time - start_time)/1e6} ms")
 
-async def handle_request(synapse_request):
+async def handle_request(synapse_request, config_file_path='config.json'):
+    config = load_config(config_file=config_file_path)
     setnx = call_set_cache_nx(synapse_request)
     if setnx:
-        route = call_apis(synapse_request)
+        route = call_apis(synapse_request,config)
         if route is not None:
-            call_set_cache(synapse_request,route)
+            call_set_cache(synapse_request,route,config)
             return route
 
         # call apis fail, use baseline
@@ -189,7 +190,7 @@ async def handle_request(synapse_request):
     else:
         count = 0
         while True:
-            route = call_get_cache(synapse_request)
+            route = call_get_cache(synapse_request,config)
             if route is None:
                 # wait for other miner set cache
                 if count >= 30:
