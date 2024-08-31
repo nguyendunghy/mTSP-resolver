@@ -5,10 +5,10 @@
     "http://185.209.179.141:4303/resolve",
     "http://185.209.179.141:4304/resolve"
   ],
-  "set_cache_url": "http://185.209.179.141:4305/set-cache",
+  "set_cache_url": "http://185.209.179.141:4306/set-cache",
   "set_cache_timeout": 10,
-  "get_cache_url": "http://185.209.179.141:4305/get-cache",
+  "get_cache_url": "http://185.209.179.141:4306/get-cache",
   "get_cache_timeout": 10,
-  "set_cache_nx": "http://185.209.179.141:4305/set-cache-nx",
+  "set_cache_nx": "http://185.209.179.141:4306/set-cache-nx",
   "set_cache_nx_timeout": 10
 }
