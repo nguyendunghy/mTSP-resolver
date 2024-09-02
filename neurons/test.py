@@ -12,6 +12,5 @@ if __name__ == '__main__':
     print("NNS_VALI :", data[:, 2].mean())
     print("HPN:", data[:, 3].mean())
     print("MIN:", data[:, 4].mean())
-
-
-
+    print("NEW:", data[:, 5].mean())
+    print("MIN 1:", data[:, 6].mean())

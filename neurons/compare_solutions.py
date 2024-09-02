@@ -9,7 +9,7 @@ from pydantic import ValidationError
 from graphite.dataset.dataset_generator import MetricTSPGenerator, GeneralTSPGenerator
 from graphite.protocol import GraphSynapse, GraphProblem
 from neurons.call_method import beam_solver_solution, baseline_solution, nns_vali_solver_solution, hpn_solver_solution, \
-    scoring_solution
+    scoring_solution, new_solver_solution
 
 
 def generate_problem():
@@ -49,10 +49,14 @@ def compare():
     t4 = time.time()
     hpn_synapse = asyncio.run(hpn_solver_solution(synapse_request))
     t5 = time.time()
+    new_synapse = asyncio.run(new_solver_solution(synapse_request))
+    t6 = time.time()
+
     d1 = t2 - t1
     d2 = t3 - t2
     d3 = t4 - t3
     d4 = t5 - t4
+    d5 = t6 - t5
 
     if d1 > 10 :
         print(f"d1")
@@ -66,6 +70,9 @@ def compare():
     if d4 > 10 :
         print(f"d4")
         exit(1)
+    if d5 > 10 :
+        print(f"d5")
+        exit(1)
 
 
 
@@ -74,6 +81,11 @@ def compare():
 
     min_score = min(scores)
     scores.append(min_score)
+
+    scores.append(scoring_solution(new_synapse))
+
+    min_score1 = min(scores)
+    scores.append(min_score1)
 
     return scores
 

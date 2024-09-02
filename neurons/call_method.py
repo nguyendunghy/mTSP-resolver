@@ -2,6 +2,7 @@ import copy
 
 from graphite.solvers import DPSolver, NearestNeighbourSolver, BeamSearchSolver, HPNSolver
 from graphite.solvers.greedy_solver_vali import NearestNeighbourSolverVali
+from graphite.solvers.new_solver import NewSearchSolver
 from graphite.validator.reward import ScoreResponse
 
 solvers = {
@@ -11,7 +12,7 @@ solvers = {
 beam_solver = BeamSearchSolver()
 nearest_neighbour_solver_vali = NearestNeighbourSolverVali()
 hpn_solver = HPNSolver()
-
+new_solver=NewSearchSolver()
 
 async def baseline_solution(synapse):
     new_synapse = copy.deepcopy(synapse)
@@ -49,3 +50,11 @@ def scoring_solution(synapse_req):
     score_response_obj = ScoreResponse(synapse_req)
     miner_scores = score_response_obj.get_score(synapse_req)
     return miner_scores
+
+
+async def new_solver_solution(synapse):
+    new_synapse = copy.deepcopy(synapse)
+    route =  await  new_solver.solve_problem(new_synapse.problem)
+    print(f"route of new = {route}. Len is {len(route)}")
+    new_synapse.solution = route
+    return new_synapse
