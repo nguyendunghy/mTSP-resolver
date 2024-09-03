@@ -9,3 +9,4 @@ wandb==0.17.4
 python-dotenv==1.0.1
 redis
 flask
+simanneal
