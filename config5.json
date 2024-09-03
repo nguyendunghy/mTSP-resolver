@@ -1,0 +1,16 @@
+{
+  "api_urls": [
+    "http://185.26.9.25:4301/resolve",
+    "http://185.26.9.25:4302/resolve",
+    "http://185.26.9.25:4303/resolve",
+    "http://185.26.9.25:4304/resolve",
+    "http://185.26.9.25:4300/resolve",
+    "http://185.26.9.25:4299/resolve"
+  ],
+  "set_cache_url": "http://185.26.9.25:4305/set-cache",
+  "set_cache_timeout": 10,
+  "get_cache_url": "http://185.26.9.25:4305/get-cache",
+  "get_cache_timeout": 10,
+  "set_cache_nx": "http://185.26.9.25:4305/set-cache-nx",
+  "set_cache_nx_timeout": 10
+}
