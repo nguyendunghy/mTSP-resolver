@@ -17,14 +17,43 @@
 # OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 # DEALINGS IN THE SOFTWARE.
 
-from typing import List
-from graphite.solvers.base_solver import BaseSolver
-from graphite.protocol import GraphProblem
-from graphite.utils.graph_utils import timeout
 import asyncio
+import math
+import random
 import time
+from typing import List
+
+from graphite.protocol import GraphProblem
+from graphite.solvers.base_solver import BaseSolver
 
 
+def simulated_annealing(path, distance_matrix, initial_temp=1000, cooling_rate=0.995, time_limit=4.9):
+    start_time = time.time()
+    current_path = path
+    current_distance = calculate_total_distance(current_path, distance_matrix)
+    best_path = list(current_path)
+    best_distance = current_distance
+    temperature = initial_temp
+
+    while time.time() - start_time < time_limit and temperature > 1:
+        # Randomly swap two cities to create a new path
+        i, j = random.sample(range(1, len(current_path) - 1), 2)
+        new_path = list(current_path)
+        new_path[i], new_path[j] = new_path[j], new_path[i]
+        
+        new_distance = calculate_total_distance(new_path, distance_matrix)
+        delta_distance = new_distance - current_distance
+
+        if delta_distance < 0 or math.exp(-delta_distance / temperature) > random.random():
+            current_path = new_path
+            current_distance = new_distance
+            if current_distance < best_distance:
+                best_path = list(current_path)
+                best_distance = current_distance
+
+        temperature *= cooling_rate
+
+    return best_path
 
 def nearest_neighbor(distance_matrix):
     num_cities = len(distance_matrix)
@@ -67,20 +96,16 @@ def two_opt(path, distance_matrix):
 
 def tsp_with_time_limit(distance_matrix, time_limit=5.0):
     start_time = time.time()
-    # Step 1: Get the initial path using Nearest Neighbor
     best_path = nearest_neighbor(distance_matrix)
     
-    # Step 2: Improve the path using 2-opt until time runs out
-    while time.time() - start_time < time_limit:
-        new_path = two_opt(best_path, distance_matrix)
-        if calculate_total_distance(new_path, distance_matrix) < calculate_total_distance(best_path, distance_matrix):
-            best_path = new_path
-        else:
-            break  # Stop if no improvement
-    
+    # Step 2: Improve the path using 2-opt
+    best_path = two_opt(best_path, distance_matrix)
+    remaining_time = time_limit - (time.time() - start_time)
+    best_path = simulated_annealing(best_path, distance_matrix, time_limit=remaining_time)
+
     return best_path
 
-class NewSearchSolver(BaseSolver):
+class SimulatedAnnealingSolver(BaseSolver):
     def __init__(self, problem_types:List[GraphProblem]=[GraphProblem(n_nodes=2), GraphProblem(n_nodes=2, directed=True, problem_type='General TSP')]):
         super().__init__(problem_types=problem_types)
 
@@ -101,7 +126,7 @@ if __name__=='__main__':
     # runs the solver on a test MetricTSP
     n_nodes = 100
     test_problem = GraphProblem(n_nodes=n_nodes)
-    solver = NewSearchSolver(problem_types=[test_problem.problem_type])
+    solver = SimulatedAnnealingSolver(problem_types=[test_problem.problem_type])
     start_time = time.time()
     route = asyncio.run(solver.solve_problem(test_problem))
     print(f"{solver.__class__.__name__} Solution: {route}")

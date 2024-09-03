@@ -1,8 +1,10 @@
 import copy
 
 from graphite.solvers import DPSolver, NearestNeighbourSolver, BeamSearchSolver, HPNSolver
+from graphite.solvers.TSPAnnealer import TSPAnnealer
 from graphite.solvers.greedy_solver_vali import NearestNeighbourSolverVali
 from graphite.solvers.new_solver import NewSearchSolver
+from graphite.solvers.simulated_annealing_solver import SimulatedAnnealingSolver
 from graphite.validator.reward import ScoreResponse
 
 solvers = {
@@ -13,6 +15,7 @@ beam_solver = BeamSearchSolver()
 nearest_neighbour_solver_vali = NearestNeighbourSolverVali()
 hpn_solver = HPNSolver()
 new_solver=NewSearchSolver()
+sa_solver = SimulatedAnnealingSolver()
 
 async def baseline_solution(synapse):
     new_synapse = copy.deepcopy(synapse)
@@ -55,6 +58,23 @@ def scoring_solution(synapse_req):
 async def new_solver_solution(synapse):
     new_synapse = copy.deepcopy(synapse)
     route =  await  new_solver.solve_problem(new_synapse.problem)
-    print(f"route of new = {route}. Len is {len(route)}")
     new_synapse.solution = route
+    return new_synapse
+
+async def simulated_annealing_solver(synapse):
+    new_synapse = copy.deepcopy(synapse)
+    route =  await sa_solver.solve_problem(new_synapse.problem)
+    new_synapse.solution = route
+    return new_synapse
+
+async def tsp_annealer_solver(synapse):
+    new_synapse = copy.deepcopy(synapse)
+    coords = new_synapse.problem.edges
+    init_state = list(range(1,new_synapse.problem.n_nodes))
+    init_state.insert(0, 0)  # start from 0
+    tsp_annealer = TSPAnnealer(init_state, coords)
+    tsp_annealer.steps = 200000
+    best_state, best_fitness = tsp_annealer.anneal()
+    best_state.append(best_state[0])
+    new_synapse.solution =  best_state
     return new_synapse

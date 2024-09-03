@@ -4,7 +4,7 @@ import tqdm
 from neurons.compare_solutions import compare
 
 if __name__ == '__main__':
-    data = [compare() for i in tqdm.tqdm(range(2000))]
+    data = [compare() for i in tqdm.tqdm(range(500))]
     data = np.array(data)
 
     print("BEAM:", data[:, 0].mean())
@@ -14,3 +14,7 @@ if __name__ == '__main__':
     print("MIN:", data[:, 4].mean())
     print("NEW:", data[:, 5].mean())
     print("MIN 1:", data[:, 6].mean())
+    # print("tsp_annealer :", data[:, 7].mean())
+    # print("MIN 2:", data[:, 8].mean())
+    print("simulated_annealing :", data[:, 7].mean())
+    print("MIN 3:", data[:, 8].mean())

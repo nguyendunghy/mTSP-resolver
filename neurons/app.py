@@ -5,7 +5,9 @@ from argparse import ArgumentParser
 from flask import Flask, request, jsonify
 
 from graphite.protocol import GraphProblem, GraphSynapse
-from neurons.call_method import beam_solver_solution, baseline_solution, nns_vali_solver_solution, hpn_solver_solution,scoring_solution
+from neurons.call_method import (beam_solver_solution, baseline_solution, nns_vali_solver_solution,
+                                 hpn_solver_solution, scoring_solution, tsp_annealer_solver, new_solver_solution,
+                                 simulated_annealing_solver)
 
 
 def parse():
@@ -28,6 +30,12 @@ def run_resolver(method, synapse_request):
         return asyncio.run(nns_vali_solver_solution(synapse_request))
     elif method == 'HPN':
         return asyncio.run(hpn_solver_solution(synapse_request))
+    elif method == 'LEAF_SA':
+        return asyncio.run(tsp_annealer_solver(synapse_request))
+    elif method == 'JACKIE_SA':
+        return asyncio.run(simulated_annealing_solver(synapse_request))
+    elif method == 'NEW':
+        return asyncio.run(new_solver_solution(synapse_request))
     else:
         print(f"method not in accept list")
         resolver = None

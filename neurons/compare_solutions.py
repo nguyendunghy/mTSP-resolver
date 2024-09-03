@@ -9,7 +9,7 @@ from pydantic import ValidationError
 from graphite.dataset.dataset_generator import MetricTSPGenerator, GeneralTSPGenerator
 from graphite.protocol import GraphSynapse, GraphProblem
 from neurons.call_method import beam_solver_solution, baseline_solution, nns_vali_solver_solution, hpn_solver_solution, \
-    scoring_solution, new_solver_solution
+    scoring_solution, new_solver_solution, tsp_annealer_solver,simulated_annealing_solver
 
 
 def generate_problem():
@@ -51,12 +51,19 @@ def compare():
     t5 = time.time()
     new_synapse = asyncio.run(new_solver_solution(synapse_request))
     t6 = time.time()
+    # tsp_annealer_synapse = asyncio.run(tsp_annealer_solver(synapse_request))
+    t7 = time.time()
+    simulated_annealing_synapse = asyncio.run(simulated_annealing_solver(synapse_request))
+    t8 = time.time()
 
     d1 = t2 - t1
     d2 = t3 - t2
     d3 = t4 - t3
     d4 = t5 - t4
     d5 = t6 - t5
+    d6 = t7 - t6
+    d7 = t8 - t7
+    print(f"d6 = {d6}, d7 ={d7}")
 
     if d1 > 10 :
         print(f"d1")
@@ -73,8 +80,12 @@ def compare():
     if d5 > 10 :
         print(f"d5")
         exit(1)
-
-
+    if d6 > 20 :
+        print(f"d6")
+        exit(1)
+    if d7 > 20 :
+        print(f"d7")
+        exit(1)
 
     list_synapse = [beam_synapse, baseline_synapse,nns_vali_synapse,hpn_synapse]
     scores = [scoring_solution(synapse) for synapse in list_synapse]
@@ -86,6 +97,12 @@ def compare():
 
     min_score1 = min(scores)
     scores.append(min_score1)
+
+
+    scores.append(scoring_solution(simulated_annealing_synapse))
+
+    min_score3 = min(scores)
+    scores.append(min_score3)
 
     return scores
 

@@ -139,14 +139,13 @@ def call_set_cache(synapse_request, route,config):
         print(f"time call set cache: {(end_time - start_time)/1e6} ms")
 
 
-def call_set_cache_nx(synapse_request):
+def call_set_cache_nx(synapse_request,config):
     start_time = time.time_ns()
     try:
         problem_dict = synapse_request.problem.dict()
         json_problem = json.dumps(problem_dict)
         hash = gen_hash(json_problem)
         print(f"set cache nx hash: {hash}")
-        config = load_config()
         set_cache_nx_url = config['set_cache_nx']
         timeout = config['set_cache_nx_timeout']
         print(f"set_cache_nx url = {set_cache_nx_url}, timeout = {timeout}")
@@ -176,7 +175,7 @@ def call_set_cache_nx(synapse_request):
 
 async def handle_request(synapse_request, config_file_path='config.json'):
     config = load_config(config_file=config_file_path)
-    setnx = call_set_cache_nx(synapse_request)
+    setnx = call_set_cache_nx(synapse_request,config)
     if setnx:
         route = call_apis(synapse_request,config)
         if route is not None:
