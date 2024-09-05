@@ -80,6 +80,7 @@ def get_cache_redis(key):
 
 
 def wait_get_cache_redis(hash, graph_problem, config):
+    start_time = time.time_ns()
     count = 0
     max_count = config['num_count']
     time_sleep = config['time_sleep']
@@ -95,6 +96,7 @@ def wait_get_cache_redis(hash, graph_problem, config):
             time.sleep(time_sleep)
         else:
             set_cache_mem(hash,route)
+            print(f"time wait_get_cache_redis {int(time.time_ns() - start_time):,} nanosecond")
             return route
 
     # call apis fail, use or-solver
