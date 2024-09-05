@@ -85,6 +85,7 @@ async def wait_get_cache_redis(hash, graph_problem, config):
     time_sleep = config['time_sleep']
     while True:
         route = get_cache_redis(key=hash)
+        print(f"route from redis {route}")
         if route is None:
             # wait for other miner set cache
             if count >= max_count:
