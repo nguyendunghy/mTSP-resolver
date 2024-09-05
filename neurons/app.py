@@ -22,7 +22,8 @@ def parse():
 args = parse()
 app = Flask(__name__)
 
-SOLVER_CACHE = TTLCache(maxsize=1800, ttl=900)
+# SOLVER_CACHE = TTLCache(maxsize=1800, ttl=900)
+SOLVER_CACHE = {}
 
 def run_resolver(method, synapse_request):
     if method == 'BEAM':
