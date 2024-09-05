@@ -155,7 +155,7 @@ async def server(data: dict):
     config = load_config(config_file=config_file_path)
 
     # call memory cache
-    mem_value = get_cache_mem(hash)
+    mem_value = await get_cache_mem(hash)
     if mem_value is not None and len(mem_value) > 1:
         print(f'hit mem cache hash = {hash}')
         print(f"time loading {int(time.time_ns() - start_time):,} nanosecond")
