@@ -58,7 +58,7 @@ def set_cache_mem(key, value):
     SOLVER_CACHE[key] = value
 
 
-def get_cache_mem(key):
+async def get_cache_mem(key):
     return SOLVER_CACHE.get(key, None)  # Returns None if the key has expired or does not exist
 
 
