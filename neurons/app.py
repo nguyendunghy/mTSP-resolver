@@ -126,7 +126,7 @@ def register():
 
 
 @app.route('/server', methods=['POST'])
-def server():
+async def server():
     start_time = time.time_ns()
     if request.is_json:
         data = request.get_json()
@@ -160,7 +160,7 @@ def server():
                 print(f"time loading {int(time.time_ns() - start_time):,} nanosecond")
                 return jsonify({"message": "Success", "result": synapse.solution}), 200
         else:
-            route = asyncio.run(wait_get_cache_redis(hash, synapse_request, config))
+            route = await wait_get_cache_redis(hash, synapse_request, config)
             print(f"time loading {int(time.time_ns() - start_time):,} nanosecond")
             return jsonify({"message": "Success", "result": route}), 200
     else:
