@@ -20,8 +20,13 @@ def parse():
 
 
 args = parse()
-app = Flask(__name__)
 
+
+import fastapi
+from fastapi import status
+from fastapi.responses import JSONResponse
+
+app = fastapi.FastAPI()
 # SOLVER_CACHE = TTLCache(maxsize=1800, ttl=900)
 SOLVER_CACHE = {}
 
@@ -124,9 +129,15 @@ def register():
         score = scoring_solution(synapse)
         print(f"score = {score}")
         print(f"time loading {int(time.time_ns() - start_time):,} nanosecond")
-        return jsonify({"message": "SUCCESS", "result":  synapse.solution, "score": score}), 200
+        # return jsonify({"message": "SUCCESS", "result":  synapse.solution, "score": score}), 200
+        return {
+            "message": "SUCCESS",
+            "result": synapse.solution,
+            "score": score
+        }
     else:
-        return jsonify({"error": "Request must be JSON"}), 400
+        # return jsonify({"error": "Request must be JSON"}), 400
+        return JSONResponse(status_code=status.HTTP_400_BAD_REQUEST, content={"error": "Request must be JSON"})
 
 
 @app.route('/server', methods=['POST'])
@@ -147,8 +158,11 @@ async def server():
         if mem_value is not None and len(mem_value) > 1:
             print(f'hit mem cache hash = {hash}')
             print(f"time loading {int(time.time_ns() - start_time):,} nanosecond")
-            return jsonify({"message": "Success", "result": mem_value}), 200
-
+            # return jsonify({"message": "Success", "result": mem_value}), 200
+            return {
+                "message": "Success",
+                "result": mem_value
+            }
         setnx = set_if_not_exist(hash, '')
         if setnx:
             route = call_apis(synapse_request, config)
@@ -156,20 +170,30 @@ async def server():
                 set_cache_mem(hash, route)
                 set_cache_redis(hash, route)
                 print(f"time loading {int(time.time_ns() - start_time):,} nanosecond")
-                return jsonify({"message": "Success", "result": route}), 200
+                # return jsonify({"message": "Success", "result": route}), 200
+                return {
+                    "message": "Success",
+                    "result": route 
+                }
             else:
                 # call apis fail, use baseline
                 print(f"call cache fail, using or-solver setnx = {setnx}")
                 synapse = await or_solver_solution(synapse_request)
                 print(f"time loading {int(time.time_ns() - start_time):,} nanosecond")
-                return jsonify({"message": "Success", "result": synapse.solution}), 200
+                # return jsonify({"message": "Success", "result": synapse.solution}), 200
+                return {
+                    "message": "Success",
+                    "result": synapse.solution
+                }
         else:
             route = await wait_get_cache_redis(hash, synapse_request, config)
             print(f"time loading {int(time.time_ns() - start_time):,} nanosecond")
-            return jsonify({"message": "Success", "result": route}), 200
+            # return jsonify({"message": "Success", "result": route}), 200
+            return JSONResponse(status_code=status.HTTP_200_OK, content={"message": "Success", "result": route})
     else:
-        return jsonify({"error": "Request must be JSON"}), 400
-
-
+        # return jsonify({"error": "Request must be JSON"}), 400
+        return JSONResponse(status_code=status.HTTP_400_BAD_REQUEST, content={"error": "Request must be JSON"})
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', debug=False, port=args.port)
+    # app.run(host='0.0.0.0', debug=False, port=args.port)
+    import uvicorn
+    uvicorn.run(app, host="0.0.0.0", port=args.port)
