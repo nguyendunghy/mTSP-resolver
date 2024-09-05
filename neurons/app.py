@@ -99,7 +99,7 @@ async def wait_get_cache_redis(hash, graph_problem, config):
                 break
             count = count + 1
             print(f"wait for other miner set cache count = {count}")
-            await asyncio.sleep(time_sleep)
+            await asyncio.sleep(0.1)
             # time.sleep(time_sleep)
         else:
             set_cache_mem(hash,route)
