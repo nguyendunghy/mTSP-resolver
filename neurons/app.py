@@ -2,7 +2,6 @@ import asyncio
 import time
 from argparse import ArgumentParser
 from cachetools import TTLCache
-from flask import Flask, request, jsonify
 
 from neurons.call_api import load_config, call_apis, call_set_cache, call_set_cache_nx
 from neurons.redis_utils import get,set,set_if_not_exist
@@ -99,8 +98,7 @@ async def wait_get_cache_redis(hash, graph_problem, config):
                 break
             count = count + 1
             print(f"wait for other miner set cache count = {count}")
-            await asyncio.sleep(0.1)
-            # time.sleep(time_sleep)
+            await asyncio.sleep(time_sleep)
         else:
             set_cache_mem(hash,route)
             print(f"time wait_get_cache_redis {int(time.time_ns() - start_time):,} nanosecond")
@@ -109,7 +107,7 @@ async def wait_get_cache_redis(hash, graph_problem, config):
     # call apis fail, use or-solver
     print(f"call cache redis fail, using or-resolver")
     synapse_request = GraphSynapse(problem=graph_problem)
-    synapse = asyncio.run(or_solver_solution(synapse_request))
+    synapse = await or_solver_solution(synapse_request)
     return synapse.solution
 
 @app.get("/")
@@ -121,9 +119,7 @@ def hello_world():
 def register(data: dict):
     start_time = time.time_ns()
     if "problem" not in data:
-        # return jsonify({"error": "Request must contain 'problem'"}), 400
         return JSONResponse(status_code=status.HTTP_400_BAD_REQUEST, content={"error": "Request must contain 'problem'"})
-    # data = request.get_json()
     problem = data['problem']
     graph_problem = GraphProblem.parse_obj(problem)
     synapse = run_resolver(args.method, GraphSynapse(problem=graph_problem))
@@ -131,7 +127,6 @@ def register(data: dict):
     score = scoring_solution(synapse)
     print(f"score = {score}")
     print(f"time loading {int(time.time_ns() - start_time):,} nanosecond")
-    # return jsonify({"message": "SUCCESS", "result":  synapse.solution, "score": score}), 200
     return {
         "message": "SUCCESS",
         "result": synapse.solution,
@@ -143,9 +138,7 @@ def register(data: dict):
 async def server(data: dict):
     start_time = time.time_ns()
     if "problem" not in data:
-        # return jsonify({"error": "Request must contain 'problem'"}), 400
         return JSONResponse(status_code=status.HTTP_400_BAD_REQUEST, content={"error": "Request must contain 'problem'"})
-    # data = request.get_json()
     problem = data['problem']
     graph_problem = GraphProblem.parse_obj(problem)
     hash = data['hash']
@@ -159,7 +152,6 @@ async def server(data: dict):
     if mem_value is not None and len(mem_value) > 1:
         print(f'hit mem cache hash = {hash}')
         print(f"time loading {int(time.time_ns() - start_time):,} nanosecond")
-        # return jsonify({"message": "Success", "result": mem_value}), 200
         return {
             "message": "Success",
             "result": mem_value
@@ -171,7 +163,6 @@ async def server(data: dict):
             set_cache_mem(hash, route)
             set_cache_redis(hash, route)
             print(f"time loading {int(time.time_ns() - start_time):,} nanosecond")
-            # return jsonify({"message": "Success", "result": route}), 200
             return {
                 "message": "Success",
                 "result": route 
@@ -181,7 +172,6 @@ async def server(data: dict):
             print(f"call cache fail, using or-solver setnx = {setnx}")
             synapse = await or_solver_solution(synapse_request)
             print(f"time loading {int(time.time_ns() - start_time):,} nanosecond")
-            # return jsonify({"message": "Success", "result": synapse.solution}), 200
             return {
                 "message": "Success",
                 "result": synapse.solution
@@ -189,9 +179,8 @@ async def server(data: dict):
     else:
         route = await wait_get_cache_redis(hash, synapse_request, config)
         print(f"time loading {int(time.time_ns() - start_time):,} nanosecond")
-        # return jsonify({"message": "Success", "result": route}), 200
         return JSONResponse(status_code=status.HTTP_200_OK, content={"message": "Success", "result": route})
+
 if __name__ == '__main__':
-    # app.run(host='0.0.0.0', debug=False, port=args.port)
     import uvicorn
     uvicorn.run(app, host="0.0.0.0", port=args.port)
