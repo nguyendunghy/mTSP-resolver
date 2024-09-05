@@ -94,6 +94,7 @@ async def wait_get_cache_redis(hash, graph_problem, config):
             print(f"wait for other miner set cache count = {count}")
             await asyncio.sleep(time_sleep)
         else:
+            set_cache_mem(hash,route)
             return route
 
     # call apis fail, use or-solver
