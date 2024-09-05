@@ -166,7 +166,7 @@ async def server(data: dict):
         }
     setnx = set_if_not_exist(hash, '')
     if setnx:
-        route = call_apis(synapse_request, config)
+        route = await call_apis(synapse_request, config)
         if route is not None:
             set_cache_mem(hash, route)
             set_cache_redis(hash, route)
