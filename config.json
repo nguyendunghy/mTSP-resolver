@@ -9,9 +9,11 @@
     "http://185.209.179.141:4298/resolve"
   ],
   "set_cache_url": "http://185.209.179.141:4305/set-cache",
-  "set_cache_timeout": 10,
+  "set_cache_timeout": 15,
   "get_cache_url": "http://185.209.179.141:4305/get-cache",
-  "get_cache_timeout": 10,
+  "get_cache_timeout": 15,
   "set_cache_nx": "http://185.209.179.141:4305/set-cache-nx",
-  "set_cache_nx_timeout": 10
+  "set_cache_nx_timeout": 15,
+  "time_sleep": 0.5,
+  "num_count": 30
 }

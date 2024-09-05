@@ -1,0 +1,19 @@
+{
+  "api_urls": [
+    "http://185.26.8.47:4301/resolve",
+    "http://185.26.8.47:4302/resolve",
+    "http://185.26.8.47:4303/resolve",
+    "http://185.26.8.47:4304/resolve",
+    "http://185.26.8.47:4300/resolve",
+    "http://185.26.8.47:4299/resolve",
+    "http://185.26.8.47:4298/resolve"
+  ],
+  "set_cache_url": "http://185.26.8.47:4305/set-cache",
+  "set_cache_timeout": 15,
+  "get_cache_url": "http://185.26.8.47:4305/get-cache",
+  "get_cache_timeout": 15,
+  "set_cache_nx": "http://185.26.8.47:4305/set-cache-nx",
+  "set_cache_nx_timeout": 15,
+  "time_sleep": 0.5,
+  "num_count": 30
+}

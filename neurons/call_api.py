@@ -188,15 +188,17 @@ async def handle_request(synapse_request, config_file_path='config.json'):
         return synapse.solution
     else:
         count = 0
+        max_count = config['num_count']
+        time_sleep = config['time_sleep']
         while True:
             route = call_get_cache(synapse_request,config)
             if route is None:
                 # wait for other miner set cache
-                if count >= 30:
+                if count >= max_count:
                     break
                 count = count + 1
                 print(f"wait for other miner set cache count = {count}")
-                await asyncio.sleep(0.2)
+                await asyncio.sleep(time_sleep)
             else:
                 return route
 
