@@ -79,7 +79,7 @@ def get_cache_redis(key):
         return None
 
 
-async def wait_get_cache_redis(hash, graph_problem, config):
+def wait_get_cache_redis(hash, graph_problem, config):
     count = 0
     max_count = config['num_count']
     time_sleep = config['time_sleep']
@@ -92,7 +92,7 @@ async def wait_get_cache_redis(hash, graph_problem, config):
                 break
             count = count + 1
             print(f"wait for other miner set cache count = {count}")
-            await asyncio.sleep(time_sleep)
+            time.sleep(time_sleep)
         else:
             set_cache_mem(hash,route)
             return route
@@ -100,7 +100,7 @@ async def wait_get_cache_redis(hash, graph_problem, config):
     # call apis fail, use or-solver
     print(f"call cache redis fail, using or-resolver")
     synapse_request = GraphSynapse(problem=graph_problem)
-    synapse = await or_solver_solution(synapse_request)
+    synapse = asyncio.run(or_solver_solution(synapse_request))
     return synapse.solution
 
 @app.route("/")
@@ -126,7 +126,7 @@ def register():
 
 
 @app.route('/server', methods=['POST'])
-async def server():
+def server():
     start_time = time.time_ns()
     if request.is_json:
         data = request.get_json()
@@ -160,7 +160,7 @@ async def server():
                 print(f"time loading {int(time.time_ns() - start_time):,} nanosecond")
                 return jsonify({"message": "Success", "result": synapse.solution}), 200
         else:
-            route = await wait_get_cache_redis(hash, synapse_request, config)
+            route = wait_get_cache_redis(hash, synapse_request, config)
             print(f"time loading {int(time.time_ns() - start_time):,} nanosecond")
             return jsonify({"message": "Success", "result": route}), 200
     else:
