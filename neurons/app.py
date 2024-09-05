@@ -118,81 +118,79 @@ def hello_world():
 
 
 @app.post('/resolve')
-def register():
+def register(data: dict):
     start_time = time.time_ns()
-    if request.is_json:
-        data = request.get_json()
-        problem = data['problem']
-        graph_problem = GraphProblem.parse_obj(problem)
-        synapse = run_resolver(args.method, GraphSynapse(problem=graph_problem))
-        print(f"synapse = {synapse}")
-        score = scoring_solution(synapse)
-        print(f"score = {score}")
-        print(f"time loading {int(time.time_ns() - start_time):,} nanosecond")
-        # return jsonify({"message": "SUCCESS", "result":  synapse.solution, "score": score}), 200
-        return {
-            "message": "SUCCESS",
-            "result": synapse.solution,
-            "score": score
-        }
-    else:
-        # return jsonify({"error": "Request must be JSON"}), 400
-        return JSONResponse(status_code=status.HTTP_400_BAD_REQUEST, content={"error": "Request must be JSON"})
+    if "problem" not in data:
+        # return jsonify({"error": "Request must contain 'problem'"}), 400
+        return JSONResponse(status_code=status.HTTP_400_BAD_REQUEST, content={"error": "Request must contain 'problem'"})
+    # data = request.get_json()
+    problem = data['problem']
+    graph_problem = GraphProblem.parse_obj(problem)
+    synapse = run_resolver(args.method, GraphSynapse(problem=graph_problem))
+    print(f"synapse = {synapse}")
+    score = scoring_solution(synapse)
+    print(f"score = {score}")
+    print(f"time loading {int(time.time_ns() - start_time):,} nanosecond")
+    # return jsonify({"message": "SUCCESS", "result":  synapse.solution, "score": score}), 200
+    return {
+        "message": "SUCCESS",
+        "result": synapse.solution,
+        "score": score
+    }
 
 
 @app.post('/server')
-async def server():
+async def server(data: dict):
     start_time = time.time_ns()
-    if request.is_json:
-        data = request.get_json()
-        problem = data['problem']
-        graph_problem = GraphProblem.parse_obj(problem)
-        hash = data['hash']
-        config_file_path = data['config_file_path']
-        print(f'run server hash = {hash}, config_file_path = {config_file_path}')
-        synapse_request = GraphSynapse(problem=graph_problem)
-        config = load_config(config_file=config_file_path)
+    if "problem" not in data:
+        # return jsonify({"error": "Request must contain 'problem'"}), 400
+        return JSONResponse(status_code=status.HTTP_400_BAD_REQUEST, content={"error": "Request must contain 'problem'"})
+    # data = request.get_json()
+    problem = data['problem']
+    graph_problem = GraphProblem.parse_obj(problem)
+    hash = data['hash']
+    config_file_path = data['config_file_path']
+    print(f'run server hash = {hash}, config_file_path = {config_file_path}')
+    synapse_request = GraphSynapse(problem=graph_problem)
+    config = load_config(config_file=config_file_path)
 
-        # call memory cache
-        mem_value = get_cache_mem(hash)
-        if mem_value is not None and len(mem_value) > 1:
-            print(f'hit mem cache hash = {hash}')
-            print(f"time loading {int(time.time_ns() - start_time):,} nanosecond")
-            # return jsonify({"message": "Success", "result": mem_value}), 200
-            return {
-                "message": "Success",
-                "result": mem_value
-            }
-        setnx = set_if_not_exist(hash, '')
-        if setnx:
-            route = call_apis(synapse_request, config)
-            if route is not None:
-                set_cache_mem(hash, route)
-                set_cache_redis(hash, route)
-                print(f"time loading {int(time.time_ns() - start_time):,} nanosecond")
-                # return jsonify({"message": "Success", "result": route}), 200
-                return {
-                    "message": "Success",
-                    "result": route 
-                }
-            else:
-                # call apis fail, use baseline
-                print(f"call cache fail, using or-solver setnx = {setnx}")
-                synapse = await or_solver_solution(synapse_request)
-                print(f"time loading {int(time.time_ns() - start_time):,} nanosecond")
-                # return jsonify({"message": "Success", "result": synapse.solution}), 200
-                return {
-                    "message": "Success",
-                    "result": synapse.solution
-                }
-        else:
-            route = await wait_get_cache_redis(hash, synapse_request, config)
+    # call memory cache
+    mem_value = get_cache_mem(hash)
+    if mem_value is not None and len(mem_value) > 1:
+        print(f'hit mem cache hash = {hash}')
+        print(f"time loading {int(time.time_ns() - start_time):,} nanosecond")
+        # return jsonify({"message": "Success", "result": mem_value}), 200
+        return {
+            "message": "Success",
+            "result": mem_value
+        }
+    setnx = set_if_not_exist(hash, '')
+    if setnx:
+        route = call_apis(synapse_request, config)
+        if route is not None:
+            set_cache_mem(hash, route)
+            set_cache_redis(hash, route)
             print(f"time loading {int(time.time_ns() - start_time):,} nanosecond")
             # return jsonify({"message": "Success", "result": route}), 200
-            return JSONResponse(status_code=status.HTTP_200_OK, content={"message": "Success", "result": route})
+            return {
+                "message": "Success",
+                "result": route 
+            }
+        else:
+            # call apis fail, use baseline
+            print(f"call cache fail, using or-solver setnx = {setnx}")
+            synapse = await or_solver_solution(synapse_request)
+            print(f"time loading {int(time.time_ns() - start_time):,} nanosecond")
+            # return jsonify({"message": "Success", "result": synapse.solution}), 200
+            return {
+                "message": "Success",
+                "result": synapse.solution
+            }
     else:
-        # return jsonify({"error": "Request must be JSON"}), 400
-        return JSONResponse(status_code=status.HTTP_400_BAD_REQUEST, content={"error": "Request must be JSON"})
+        route = await wait_get_cache_redis(hash, synapse_request, config)
+        print(f"time loading {int(time.time_ns() - start_time):,} nanosecond")
+        # return jsonify({"message": "Success", "result": route}), 200
+        return JSONResponse(status_code=status.HTTP_200_OK, content={"message": "Success", "result": route})
 if __name__ == '__main__':
     # app.run(host='0.0.0.0', debug=False, port=args.port)
     import uvicorn
