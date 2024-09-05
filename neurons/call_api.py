@@ -47,7 +47,7 @@ async def do_call(payload,config):
         min_result = min_score_dict['result']
         return min_result
 
-def call_apis(synapse_request,config):
+async def call_apis(synapse_request,config):
     try:
         start_time = time.time_ns()
         json_data = synapse_request.problem.dict()
@@ -55,7 +55,7 @@ def call_apis(synapse_request,config):
             'problem':json_data
         }
         print(f"synapse_request problem = {json_data}")
-        min_result = asyncio.run(do_call(payload,config))
+        min_result = await do_call(payload,config)
 
         print(f"min_result = {min_result}")
 
