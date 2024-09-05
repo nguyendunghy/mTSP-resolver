@@ -112,12 +112,12 @@ async def wait_get_cache_redis(hash, graph_problem, config):
     synapse = asyncio.run(or_solver_solution(synapse_request))
     return synapse.solution
 
-@app.route("/")
+@app.get("/")
 def hello_world():
     return "Hello! I am resolver service"
 
 
-@app.route('/resolve', methods=['POST'])
+@app.post('/resolve')
 def register():
     start_time = time.time_ns()
     if request.is_json:
@@ -140,7 +140,7 @@ def register():
         return JSONResponse(status_code=status.HTTP_400_BAD_REQUEST, content={"error": "Request must be JSON"})
 
 
-@app.route('/server', methods=['POST'])
+@app.post('/server')
 async def server():
     start_time = time.time_ns()
     if request.is_json:
