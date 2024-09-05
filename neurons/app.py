@@ -26,8 +26,8 @@ from fastapi import status
 from fastapi.responses import JSONResponse
 
 app = fastapi.FastAPI()
-# SOLVER_CACHE = TTLCache(maxsize=1800, ttl=900)
-SOLVER_CACHE = {}
+SOLVER_CACHE = TTLCache(maxsize=1800, ttl=900)
+# SOLVER_CACHE = {}
 
 def run_resolver(method, synapse_request):
     if method == 'BEAM':
