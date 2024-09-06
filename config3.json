@@ -9,7 +9,7 @@
     "http://185.209.179.141:4298/resolve"
   ],
   "server_api": "http://185.26.9.25:4201/server",
-  "server_timeout": 20,
+  "server_timeout": 25,
   "set_cache_url": "http://185.209.179.141:4308/set-cache",
   "set_cache_timeout": 15,
   "get_cache_url": "http://185.209.179.141:4308/get-cache",
