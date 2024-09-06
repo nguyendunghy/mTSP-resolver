@@ -89,6 +89,7 @@ def get_cache_redis(key):
 
 
 async def wait_get_cache_redis(hash, synapse_request, config):
+    print(f"start wait_get_cache_redis ")
     start_time = time.time_ns()
     count = 0
     max_count = config['num_count']
@@ -159,8 +160,10 @@ async def server(data: dict):
             "message": "Success",
             "result": mem_value
         }
+    print(f'DONT hit mem cache hash = {hash}')
     setnx = set_if_not_exist(hash, '')
     if setnx:
+        print(f'start call api resolver hash = {hash}, setnx = {setnx}')
         route = await call_apis(synapse_request, config)
         if route is not None:
             set_cache_mem(hash, route)
