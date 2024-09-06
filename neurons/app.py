@@ -9,7 +9,7 @@ from graphite.protocol import GraphProblem, GraphSynapse
 from neurons.call_api import load_config, call_apis
 from neurons.call_method import (beam_solver_solution, baseline_solution, nns_vali_solver_solution,
                                  hpn_solver_solution, scoring_solution, tsp_annealer_solver, new_solver_solution,
-                                 simulated_annealing_solver, or_solver_solution)
+                                 simulated_annealing_solver, or_solver_solution, lkh_solver_solution)
 from neurons.redis_utils import get, set, set_if_not_exist
 
 
@@ -48,6 +48,8 @@ def run_resolver(method, synapse_request):
         return asyncio.run(new_solver_solution(synapse_request))
     elif method == 'OR':
         return asyncio.run(or_solver_solution(synapse_request))
+    elif method == 'LKH':
+        return asyncio.run(lkh_solver_solution(synapse_request))
     else:
         print(f"method not in accept list")
         resolver = None

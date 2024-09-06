@@ -7,6 +7,7 @@ from graphite.solvers.new_solver import NewSearchSolver
 from graphite.solvers.or_solver import ORToolsSolver
 from graphite.solvers.simulated_annealing_solver import SimulatedAnnealingSolver
 from graphite.validator.reward import ScoreResponse
+from graphite.solvers.lkh_solver import LKHSolver
 
 solvers = {
     'small': DPSolver(),
@@ -18,7 +19,7 @@ hpn_solver = HPNSolver()
 new_solver = NewSearchSolver()
 sa_solver = SimulatedAnnealingSolver()
 or_solver = ORToolsSolver()
-
+lkh_solver = LKHSolver()
 
 async def baseline_solution(synapse):
     new_synapse = copy.deepcopy(synapse)
@@ -82,6 +83,12 @@ async def or_solver_solution(synapse):
     new_synapse.solution = route
     return new_synapse
 
+
+async def lkh_solver_solution(synapse):
+    new_synapse = copy.deepcopy(synapse)
+    route =  await  lkh_solver.solve_problem(new_synapse.problem)
+    new_synapse.solution = route
+    return new_synapse
 
 async def tsp_annealer_solver(synapse):
     new_synapse = copy.deepcopy(synapse)
