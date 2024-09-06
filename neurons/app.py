@@ -110,7 +110,7 @@ async def wait_get_cache_redis(hash, synapse_request, config):
             return route
 
     # call apis fail, use or-solver
-    print(f"call cache redis fail, using or-resolver")
+    print(f"call cache redis fail, using lkh_solver_solution")
     synapse = await lkh_solver_solution(synapse_request)
     return synapse.solution
 
@@ -175,7 +175,7 @@ async def server(data: dict):
             }
         else:
             # call apis fail, use baseline
-            print(f"call cache fail, using or-solver setnx = {setnx}")
+            print(f"call cache fail, using lkh_solver_solution setnx = {setnx}")
             synapse = await lkh_solver_solution(synapse_request)
             print(f"time loading {int(time.time_ns() - start_time):,} nanosecond")
             return {
