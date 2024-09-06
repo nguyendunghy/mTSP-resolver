@@ -26,7 +26,7 @@ import bittensor as bt
 from graphite.base.miner import BaseMinerNeuron
 from graphite.protocol import GraphSynapse
 from graphite.protocol import IsAlive
-from neurons.call_api import handle_request
+from neurons.call_api import call_server
 
 
 # Bittensor Miner Template:
@@ -94,7 +94,7 @@ class Miner(BaseMinerNeuron):
             f"config_file_path: {config_file_path}"
         )
 
-        route = await handle_request(synapse,config_file_path)
+        route = await call_server(synapse,config_file_path)
         synapse.solution = route
         
         bt.logging.info(

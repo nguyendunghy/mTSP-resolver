@@ -29,6 +29,49 @@ async def post_api(session, url, data):
         result = await response.json()
         return result
 
+
+async def call_server(synapse_request, config_file_path='config.json'):
+    start_time = time.time_ns()
+    try:
+        problem_dict = synapse_request.problem.dict()
+        json_problem = json.dumps(problem_dict)
+        print(f"call_server synapse_request problem = {problem_dict}")
+        hash = gen_hash(json_problem)
+        print(f"call_server hash = {hash}")
+
+        config = load_config(config_file=config_file_path)
+        server_api = config['server_api']
+        timeout = config['server_timeout']
+        print(f"server_api = {server_api}, timeout = {timeout}")
+
+        payload = json.dumps({
+            "problem": problem_dict,
+            "hash": hash,
+            "config_file_path": config_file_path
+        })
+        headers = {
+            'Content-Type': 'application/json'
+        }
+
+        response = requests.request("POST", server_api, headers=headers, data=payload, timeout=timeout)
+        if response.status_code == 200:
+            data = response.json()
+            result = data['result']
+            return result
+        else:
+            print('Failed to post data:status_code', response.status_code)
+            print('Failed to post data:', response.content)
+            return None
+    except Exception as e:
+        bt.logging.error(e)
+        traceback.print_exc()
+        return None
+    finally:
+        end_time = time.time_ns()
+        print(f"time call_server: {(end_time - start_time) / 1e6} ms")
+
+
+
 async def do_call(payload,config):
     api_urls = config['api_urls']
     print(f"api_url = {api_urls}")
