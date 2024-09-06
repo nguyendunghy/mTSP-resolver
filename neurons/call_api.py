@@ -35,7 +35,7 @@ async def call_server(synapse_request, config_file_path='config.json'):
     try:
         problem_dict = synapse_request.problem.dict()
         json_problem = json.dumps(problem_dict)
-        print(f"call_server synapse_request problem = {problem_dict}")
+        # print(f"call_server synapse_request problem = {problem_dict}")
         hash = gen_hash(json_problem)
         print(f"call_server hash = {hash}")
 
