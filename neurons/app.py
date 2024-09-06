@@ -88,7 +88,7 @@ def get_cache_redis(key):
         return None
 
 
-async def wait_get_cache_redis(hash, graph_problem, config):
+async def wait_get_cache_redis(hash, synapse_request, config):
     start_time = time.time_ns()
     count = 0
     max_count = config['num_count']
@@ -110,7 +110,6 @@ async def wait_get_cache_redis(hash, graph_problem, config):
 
     # call apis fail, use or-solver
     print(f"call cache redis fail, using or-resolver")
-    synapse_request = GraphSynapse(problem=graph_problem)
     synapse = await or_solver_solution(synapse_request)
     return synapse.solution
 
