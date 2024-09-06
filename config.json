@@ -6,9 +6,10 @@
     "http://185.209.179.141:4304/resolve",
     "http://185.209.179.141:4300/resolve",
     "http://185.209.179.141:4299/resolve",
-    "http://185.209.179.141:4298/resolve"
+    "http://185.209.179.141:4298/resolve",
+    "http://185.209.179.141:4297/resolve"
   ],
-  "server_api": "http://185.26.9.25:4201/server",
+  "server_api": "http://185.209.179.141:4200/server",
   "server_timeout": 20,
   "set_cache_url": "http://185.209.179.141:4305/set-cache",
   "set_cache_timeout": 15,
