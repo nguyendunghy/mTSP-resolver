@@ -19,14 +19,16 @@
 
 # Defines class for create a dataset based on the synthetic distribution
 from abc import ABC, abstractmethod
-from typing import List
+from typing import List, Union, Dict
 from graphite.solvers import NearestNeighbourSolver
-from graphite.protocol import GraphV1Problem
+from graphite.protocol import GraphV2Problem
 import os
 import random
 import json
 from collections import Counter
 import asyncio
+import numpy as np
+from graphite.data.distance import geom_edges, man_2d_edges, euc_2d_edges
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
@@ -41,7 +43,7 @@ def print_value_count(strings):
 class DatasetGenerator(ABC):
     @classmethod
     @abstractmethod
-    def generate_n_samples(cls, n:int, problem_model:GraphV1Problem, **kwargs)->List[GraphV1Problem]:
+    def generate_n_samples(cls, n:int, problem_model:GraphV2Problem, loaded_datasets, **kwargs)->List[GraphV2Problem]:
         '''
         Returns a list of dictionaries containing the parameters required to initialize each problem
         This can be used in-situ to generate a dataset without saving it
@@ -49,9 +51,9 @@ class DatasetGenerator(ABC):
         ...
 
     @classmethod
-    def generate_and_save_dataset(cls, n_samples: int, file_name: str=None, save_dir: str=None):
+    def generate_and_save_dataset(cls, n_samples: int, file_name: str=None, save_dir: str=None, loaded_datasets: Dict={}):
         '''
-        generates n sample GraphV1Problems and saves it as a json file
+        generates n sample GraphV2Problems and saves it as a json file
         '''
         if save_dir is None:
             save_dir = cls.save_dir
@@ -67,18 +69,15 @@ class DatasetGenerator(ABC):
             os.makedirs(save_dir)
 
         # Generate samples
-        problems, sizes = cls.generate_n_samples(n_samples)
+        problems = cls.generate_n_samples(n_samples, loaded_datasets)
         
         # serialize and save json string with meta data of the dataset
-        output_json = cls.serialize_dataset(problems, sizes)
+        output_json = cls.serialize_dataset(problems)
         with open(os.path.join(save_dir, file_name), 'w') as f:
             f.write(output_json)
         
-        # print("Generated and saved dataset with:")
-        # print_value_count(sizes)
-
         # also return the generated samples
-        return problems, sizes
+        return problems
 
     @classmethod
     def __weighted_sampling(cls, weights:List):
@@ -109,13 +108,12 @@ class DatasetGenerator(ABC):
         return selected_integer, selected_category
     
     @classmethod
-    def serialize_dataset(cls, problems: List[GraphV1Problem], sizes:List[str]):
-        # the data should be json serializable given the coerced data types defined in the GraphV1Problem
+    def serialize_dataset(cls, problems: List[GraphV2Problem]):
+        # the data should be json serializable given the coerced data types defined in the GraphV2Problem
         meta_data = {
             'problem_type': 'Metric TSP',
             'n_samples': len(problems),
             'problems': [problem.model_dump_json() for problem in problems],
-            'problem_sizes': sizes
         }
         # return the json string
         return json.dumps(meta_data)
@@ -129,59 +127,64 @@ class DatasetGenerator(ABC):
         
         # rebuild the problems
         dataset = raw_data.copy()
-        dataset['problems'] = [GraphV1Problem(**json.loads(data)) for data in dataset['problems']]
+        dataset['problems'] = [GraphV2Problem(**json.loads(data)) for data in dataset['problems']]
         return dataset
+    
 
 class MetricTSPGenerator(DatasetGenerator):
     save_dir = os.path.join(BASE_DIR,'metric_tsp')
     file_name = os.path.join('dataset.json')
     problem_weights = [0.1, 0.4, 0.4, 0.1] # probability of choosing a small, medium, large, or very large problem
     
-    @classmethod
-    def generate_n_samples(cls, n: int):
-        # generate 15 cities as a default with random coordinates
-        problems = []
-        sizes = []
-        for _ in range(n):
-            # sample n_nodes
-            n_nodes, category= cls._DatasetGenerator__weighted_sampling(cls.problem_weights)
-            sizes.append(category)
-            problems.append(GraphV1Problem(n_nodes=n_nodes))
-        return problems, sizes
+    def recreate_edges(problem: GraphV2Problem, loaded_datasets):
+        node_coords_np = loaded_datasets[problem.dataset_ref]
+        node_coords = np.array([node_coords_np[i][1:] for i in problem.selected_ids])
+        if problem.cost_function == "Geom":
+            problem.edges = geom_edges(node_coords).tolist()
+        elif problem.cost_function == "Euclidean2D":
+            problem.edges = euc_2d_edges(node_coords).tolist()
+        elif problem.cost_function == "Manhatten2D":
+            problem.edges = man_2d_edges(node_coords).tolist()
+        else:
+            return "Only Geom, Euclidean2D, and Manhatten2D supported for now."
 
-class GeneralTSPGenerator(DatasetGenerator):
-    save_dir = os.path.join(BASE_DIR,'general_tsp')
-    file_name = os.path.join('dataset.json')
-    problem_weights = [0.1, 0.4, 0.4, 0.1] # probability of choosing a small, medium, large, or very large problem
-    
     @classmethod
-    def generate_n_samples(cls, n: int):
+    def generate_n_samples(cls, n: int, loaded_datasets):
         # generate 15 cities as a default with random coordinates
         problems = []
-        sizes = []
         for _ in range(n):
-            # sample n_nodes
-            n_nodes, category= cls._DatasetGenerator__weighted_sampling(cls.problem_weights)
-            sizes.append(category)
-            problems.append(GraphV1Problem(n_nodes=n_nodes, directed=True))
-        return problems, sizes
+            n_nodes = random.randint(2000, 5000)
+            # randomly select n_nodes indexes from the selected graph
+            prob_select = random.randint(0, len(list(loaded_datasets.keys()))-1)
+            dataset_ref = list(loaded_datasets.keys())[prob_select]
+            selected_node_idxs = random.sample(range(len(loaded_datasets[dataset_ref])), n_nodes)
+            test_problem = GraphV2Problem(problem_type="Metric TSP", n_nodes=n_nodes, selected_ids=selected_node_idxs, cost_function="Geom", dataset_ref=dataset_ref)
+            cls.recreate_edges(test_problem, loaded_datasets)
+            problems.append(test_problem)
+        return problems
+
 
 if __name__=="__main__":
     print('________________________')
-    print('Testing MetricTSPGenerator')
-    MetricTSPGenerator.generate_and_save_dataset(100)
+    print('Testing MetricTSPGenerator V2')
+    loaded_datasets = {}
+    try:
+        with np.load('dataset/Asia_MSB.npz') as f:
+            loaded_datasets["Asia_MSB"] = np.array(f['data'])
+    except:
+        pass
+    try:
+        with np.load('dataset/World_TSP.npz') as f:
+            loaded_datasets["World_TSP"] = np.array(f['data'])
+    except:
+        pass
+    MetricTSPGenerator.generate_and_save_dataset(n_samples=1, loaded_datasets=loaded_datasets)
     dataset = MetricTSPGenerator.load_dataset()
     sample_problem = dataset['problems'][0]
     solver = NearestNeighbourSolver()
+    # print(sample_problem)
     print(type(sample_problem))
     print('Sample metric tsp path: ', end='')
     print(asyncio.run(solver.solve_problem(sample_problem)))
 
-    print('\n\n\n________________________')
-    print('Testing GeneralTSPGenerator')
-    GeneralTSPGenerator.generate_and_save_dataset(100)
-    dataset = MetricTSPGenerator.load_dataset()
-    sample_problem = dataset['problems'][0]
-    print(type(sample_problem))
-    print('Sample general tsp path: ', end='')
-    print(asyncio.run(solver.solve_problem(sample_problem)))
+

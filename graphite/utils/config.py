@@ -83,7 +83,7 @@ def add_args(cls, parser):
         "--neuron.epoch_length",
         type=int,
         help="The default epoch length (how often we set weights, measured in 12 second blocks).",
-        default=100,
+        default=300,
     )
 
     parser.add_argument(
@@ -256,7 +256,6 @@ def add_validator_args(cls, parser):
         help="The config file path.",
         default='',
     )
-
 
 def config(cls):
     """
