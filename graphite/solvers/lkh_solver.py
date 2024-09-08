@@ -1,13 +1,14 @@
 import subprocess
 from typing import List
 from graphite.solvers.base_solver import BaseSolver
-from graphite.protocol import GraphProblem
+from graphite.protocol import GraphV1Problem,GraphV2Problem
 import asyncio
 import time
 import os
+from typing import Union
 
 class LKHSolver(BaseSolver):
-    def __init__(self, problem_types: List[GraphProblem] = [GraphProblem(n_nodes=2), GraphProblem(n_nodes=2, directed=True, problem_type='General TSP')]):
+    def __init__(self, problem_types: List[Union[GraphV1Problem, GraphV2Problem]] = [GraphV1Problem(n_nodes=2), GraphV1Problem(n_nodes=2, directed=True, problem_type='General TSP')]):
         super().__init__(problem_types=problem_types)
         self.lkh_path = 'LKH/LKH'  # Update with the actual path to LKH
 
@@ -86,12 +87,12 @@ class LKHSolver(BaseSolver):
         os.remove(tour_filename)
         return tour
 
-    def problem_transformations(self, problem: GraphProblem):
+    def problem_transformations(self, problem: Union[GraphV1Problem, GraphV2Problem]):
         return problem.edges
 
 if __name__ == '__main__':
     n_nodes = 100  # Adjust as needed
-    test_problem = GraphProblem(n_nodes=n_nodes)
+    test_problem = GraphV1Problem(n_nodes=n_nodes)
     solver = LKHSolver(problem_types=[test_problem.problem_type])
     start_time = time.time()
     route = asyncio.run(solver.solve_problem(test_problem))

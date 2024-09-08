@@ -19,10 +19,11 @@
 
 from typing import List
 from graphite.solvers.base_solver import BaseSolver
-from graphite.protocol import GraphProblem
+from graphite.protocol import GraphV1Problem, GraphV2Problem
 from graphite.utils.graph_utils import timeout
 import asyncio
 import time
+from typing import Union
 
 
 
@@ -81,7 +82,7 @@ def tsp_with_time_limit(distance_matrix, time_limit=5.0):
     return best_path
 
 class NewSearchSolver(BaseSolver):
-    def __init__(self, problem_types:List[GraphProblem]=[GraphProblem(n_nodes=2), GraphProblem(n_nodes=2, directed=True, problem_type='General TSP')]):
+    def __init__(self, problem_types:List[Union[GraphV1Problem, GraphV2Problem]]=[GraphV1Problem(n_nodes=2), GraphV1Problem(n_nodes=2, directed=True, problem_type='General TSP')]):
         super().__init__(problem_types=problem_types)
 
     async def solve(self, formatted_problem, future_id:int, beam_width:int=3)->List[int]:
@@ -94,13 +95,13 @@ class NewSearchSolver(BaseSolver):
         best_path=tsp_with_time_limit(distance_matrix)
         return best_path
 
-    def problem_transformations(self, problem: GraphProblem):
+    def problem_transformations(self, problem: Union[GraphV1Problem, GraphV2Problem]):
         return problem.edges
     
 if __name__=='__main__':
     # runs the solver on a test MetricTSP
     n_nodes = 100
-    test_problem = GraphProblem(n_nodes=n_nodes)
+    test_problem = GraphV1Problem(n_nodes=n_nodes)
     solver = NewSearchSolver(problem_types=[test_problem.problem_type])
     start_time = time.time()
     route = asyncio.run(solver.solve_problem(test_problem))

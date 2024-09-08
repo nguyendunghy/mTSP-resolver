@@ -7,7 +7,7 @@ import bittensor as bt
 from pydantic import ValidationError
 
 from graphite.dataset.dataset_generator import MetricTSPGenerator, GeneralTSPGenerator
-from graphite.protocol import GraphSynapse, GraphProblem
+from graphite.protocol import GraphV1Synapse,GraphV2Synapse, GraphV1Problem, GraphV2Problem
 from neurons.call_method import beam_solver_solution, baseline_solution, nns_vali_solver_solution, hpn_solver_solution, \
     scoring_solution, new_solver_solution, tsp_annealer_solver,simulated_annealing_solver
 
@@ -29,7 +29,7 @@ def generate_problem():
         bt.logging.debug(e)
 
     try:
-        graphsynapse_req = GraphSynapse(problem=test_problem_obj)
+        graphsynapse_req = GraphV1Synapse(problem=test_problem_obj)
         return graphsynapse_req
     except ValidationError as e:
         bt.logging.debug(f"GraphSynapse Validation Error: {e.json()}")
@@ -113,8 +113,8 @@ if __name__ == '__main__':
     # print(f"synapse_request = {synapse_request}")
     json_data = json.dumps(synapse_request.problem.dict())
     print(f"synapse_request problem = {json_data}")
-    graph_problem_instance = GraphProblem.parse_raw(json_data)
-    print(f"GraphProblem instance: {isinstance(graph_problem_instance, GraphProblem)}")
+    graph_problem_instance = GraphV1Problem.parse_raw(json_data)
+    print(f"GraphProblem instance: {isinstance(graph_problem_instance, GraphV1Problem)}")
 
     # synapse = asyncio.run(beam_solver_solution(synapse_request))
     # print(f"route = {synapse.solution}  length = {len(synapse.solution)}")
