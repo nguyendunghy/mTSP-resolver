@@ -143,7 +143,7 @@ def register(data: dict):
     print(f"synapse = {synapse}")
     score = scoring_solution(synapse)
     print(f"score = {score}")
-    print(f"type of solution: {synapse.solution}")
+    print(f"type of solution: {synapse.solution}, {type(synapse.solution)}")
     print(f"time loading {int(time.time_ns() - start_time):,} nanosecond")
     return {
         "message": "SUCCESS",
