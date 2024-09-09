@@ -142,7 +142,7 @@ def register(data: dict):
     synapse = run_resolver(args.method, graph_synapse)
     print(f"synapse = {synapse}")
     score = scoring_solution(synapse)
-    print(f"score = {score}")
+    print(f"score = {score}, {type(score)}")
     print(f"type of solution: {synapse.solution}, {type(synapse.solution)}, {type(synapse.solution[0])}")
     print(f"time loading {int(time.time_ns() - start_time):,} nanosecond")
     return {
