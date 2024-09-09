@@ -7,7 +7,7 @@ from graphite.solvers.libs.concorde.tsp import TSPSolver
 import numpy as np
 
 class CONSolver(BaseSolver):
-    def __init__(self, problem_types: List[GraphV2Problem] = [GraphV2Problem(n_nodes=2),GraphV2Problem(n_nodes=2, directed=True, problem_type='General TSP')]):
+    def __init__(self, problem_types: List[GraphV2Problem] = [GraphV2Problem(n_nodes=2), GraphV2Problem(n_nodes=2, directed=True, problem_type='General TSP')]):
         super().__init__(problem_types=problem_types)
 
     def problem_transformations(self, problem: GraphV2Problem):

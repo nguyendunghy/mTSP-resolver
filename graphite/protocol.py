@@ -132,7 +132,7 @@ class GraphV2Problem(BaseModel):
     objective_function: str = Field('min', description="Objective Function")
     visit_all: bool = Field(True, description="Visit All Nodes")
     to_origin: bool = Field(True, description="Return to Origin")
-    n_nodes: conint(ge=20, le=5000) = Field(20, description="Number of Nodes (must be between 2000 and 5000)")
+    n_nodes: conint(ge=1, le=5000) = Field(20, description="Number of Nodes (must be between 2000 and 5000)")
     selected_ids: List[int] = Field(default_factory=list, description="List of selected node positional indexes")
     cost_function: Literal['Geom', 'Euclidean2D', 'Manhatten2D', 'Euclidean3D', 'Manhatten3D'] = Field('Geom', description="Cost function")
     dataset_ref: Literal['Asia_MSB', 'World_TSP'] = Field('Asia_MSB', description="Dataset reference file")
