@@ -135,11 +135,11 @@ if __name__ == '__main__':
     t1 = time.time_ns()
     edges = recreate_edges(synapse_request.problem)
     synapse_request.problem.edges = edges
-    result = baseline_solution(edges)
+    synapse = baseline_solution(synapse_request)
     t2 = time.time_ns()
     print(f'time processing: {(t2-t1)/1e6} ms')
-
-    print(f'score = {result}')
+    score = scoring_solution(synapse)
+    print(f'score = {score}')
 
     # synapse_request = generate_problem()
     # # print(f"synapse_request = {synapse_request}")
