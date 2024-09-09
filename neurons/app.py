@@ -148,7 +148,7 @@ def register(data: dict):
     return {
         "message": "SUCCESS",
         "result": synapse.solution,
-        "score": score
+        "score": float(score)
     }
 
 
