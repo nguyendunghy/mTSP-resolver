@@ -129,13 +129,13 @@ def recreate_edges(problem: GraphV2Problem):
         return "Only Geom, Euclidean2D, and Manhatten2D supported for now."
 
 if __name__ == '__main__':
-    synapse_request = generate_problem_from_dataset(min_node=2000, max_node=2001)
+    synapse_request = generate_problem_from_dataset(min_node=2000, max_node=5000)
     # synapse_request = generate_problem()
     print(f'Number of node: {synapse_request.problem.n_nodes}')
     t1 = time.time_ns()
     edges = recreate_edges(synapse_request.problem)
-    from python_tsp.heuristics import solve_tsp_lin_kernighan
-    result = solve_tsp_lin_kernighan(edges)
+    synapse_request.problem.edges = edges
+    result = baseline_solution(edges)
     t2 = time.time_ns()
     print(f'time processing: {(t2-t1)/1e6} ms')
 
