@@ -112,6 +112,8 @@ async def con_solver_solution(synapse):
 
 
 async def lin_kernighan_solution(synapse):
+    new_synapse = copy.deepcopy(synapse)
     from python_tsp.heuristics import solve_tsp_lin_kernighan
-    result = solve_tsp_lin_kernighan(synapse.problem.edges)
-    return result
+    result = solve_tsp_lin_kernighan(new_synapse.problem.edges)
+    new_synapse.solution = result
+    return new_synapse
