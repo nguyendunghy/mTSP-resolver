@@ -128,8 +128,15 @@ def register(data: dict):
     if "problem" not in data:
         return JSONResponse(status_code=status.HTTP_400_BAD_REQUEST, content={"error": "Request must contain 'problem'"})
     problem = data['problem']
-    graph_problem = GraphV1Problem.parse_obj(problem)
-    synapse = run_resolver(args.method, GraphV1Synapse(problem=graph_problem))
+    dataset_ref = problem.get('dataset_ref')
+    if dataset_ref is None:
+        graph_problem = GraphV1Problem.parse_obj(problem)
+        graph_synapse = GraphV1Synapse(problem=graph_problem)
+    else:
+        graph_problem = GraphV2Problem.parse_obj(problem)
+        graph_synapse = GraphV2Synapse(problem=graph_problem)
+
+    synapse = run_resolver(args.method, graph_synapse)
     print(f"synapse = {synapse}")
     score = scoring_solution(synapse)
     print(f"score = {score}")
@@ -147,8 +154,8 @@ async def server(data: dict):
     if "problem" not in data:
         return JSONResponse(status_code=status.HTTP_400_BAD_REQUEST, content={"error": "Request must contain 'problem'"})
     problem = data['problem']
-    data_ref = problem.get('dataset_ref')
-    if data_ref is None:
+    dataset_ref = problem.get('dataset_ref')
+    if dataset_ref is None:
         print(f'GraphV1Problem data')
         graph_problem = GraphV1Problem.parse_obj(problem)
     else:
@@ -158,7 +165,7 @@ async def server(data: dict):
     hash = data['hash']
     config_file_path = data['config_file_path']
     print(f'run server hash = {hash}, config_file_path = {config_file_path}')
-    if data_ref is None:
+    if dataset_ref is None:
         synapse_request = GraphV1Synapse(problem=graph_problem)
     else:
         synapse_request = GraphV2Synapse(problem=graph_problem)
@@ -190,7 +197,7 @@ async def server(data: dict):
         else:
             # call apis fail, use baseline
             print(f"call cache fail, using lkh_solver_solution setnx = {setnx}")
-            if data_ref is None:
+            if dataset_ref is None:
                 synapse = await lkh_solver_solution(synapse_request)
             else:
                 synapse = await baseline_solution(synapse_request)

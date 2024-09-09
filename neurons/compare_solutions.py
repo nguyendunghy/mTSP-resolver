@@ -153,6 +153,8 @@ if __name__ == '__main__':
     })
     data = json.loads(payload)
     problem = data['problem']
+    data_ref = problem.get('dataset_ref')
+    print(f'data_ref: {data_ref}')
     graph_problem = GraphV2Problem.parse_obj(problem)
     graphsynapse_req = GraphV2Synapse(problem=graph_problem)
 
