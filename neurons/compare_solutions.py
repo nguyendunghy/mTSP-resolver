@@ -12,7 +12,8 @@ from graphite.data.distance import geom_edges, euc_2d_edges, man_2d_edges
 from graphite.dataset.dataset_generator import MetricTSPGenerator, GeneralTSPGenerator
 from graphite.protocol import GraphV1Synapse,GraphV2Synapse, GraphV1Problem, GraphV2Problem
 from neurons.call_method import beam_solver_solution, baseline_solution, nns_vali_solver_solution, hpn_solver_solution, \
-    scoring_solution, new_solver_solution, tsp_annealer_solver, simulated_annealing_solver, or_solver_solution
+    scoring_solution, new_solver_solution, tsp_annealer_solver, simulated_annealing_solver, or_solver_solution, \
+    lkh_solver_solution
 
 loaded_datasets = {
     ASIA_MSB_DETAILS['ref_id']: load_dataset(ASIA_MSB_DETAILS['ref_id']),
@@ -129,7 +130,7 @@ if __name__ == '__main__':
     # synapse_request = generate_problem()
     print(f'Number of node: {synapse_request.problem.n_nodes}')
     t1 = time.time_ns()
-    synapse = asyncio.run(or_solver_solution(synapse_request))
+    synapse = asyncio.run(lkh_solver_solution(synapse_request))
     t2 = time.time_ns()
     print(f'time processing: {(t2-t1)/1e6} ms')
     score = scoring_solution(synapse)
