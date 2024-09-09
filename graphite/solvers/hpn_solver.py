@@ -19,7 +19,7 @@
 
 from typing import List, Union
 from graphite.solvers.base_solver import BaseSolver
-from graphite.protocol import GraphV1Problem
+from graphite.protocol import GraphV1Problem,GraphV2Problem
 from graphite.models.hybrid_pointer_network import HPN
 from graphite.utils.graph_utils import normalize_coordinates, timeout
 from scipy.spatial import distance

@@ -5,7 +5,7 @@ from argparse import ArgumentParser
 
 from cachetools import TTLCache
 
-from graphite.protocol import GraphProblem, GraphSynapse
+from graphite.protocol import GraphV1Problem, GraphV1Synapse
 from neurons.call_api import load_config, call_apis
 from neurons.call_method import (beam_solver_solution, baseline_solution, nns_vali_solver_solution,
                                  hpn_solver_solution, scoring_solution, tsp_annealer_solver, new_solver_solution,
@@ -125,8 +125,8 @@ def register(data: dict):
     if "problem" not in data:
         return JSONResponse(status_code=status.HTTP_400_BAD_REQUEST, content={"error": "Request must contain 'problem'"})
     problem = data['problem']
-    graph_problem = GraphProblem.parse_obj(problem)
-    synapse = run_resolver(args.method, GraphSynapse(problem=graph_problem))
+    graph_problem = GraphV1Problem.parse_obj(problem)
+    synapse = run_resolver(args.method, GraphV1Synapse(problem=graph_problem))
     print(f"synapse = {synapse}")
     score = scoring_solution(synapse)
     print(f"score = {score}")
@@ -144,11 +144,11 @@ async def server(data: dict):
     if "problem" not in data:
         return JSONResponse(status_code=status.HTTP_400_BAD_REQUEST, content={"error": "Request must contain 'problem'"})
     problem = data['problem']
-    graph_problem = GraphProblem.parse_obj(problem)
+    graph_problem = GraphV1Problem.parse_obj(problem)
     hash = data['hash']
     config_file_path = data['config_file_path']
     print(f'run server hash = {hash}, config_file_path = {config_file_path}')
-    synapse_request = GraphSynapse(problem=graph_problem)
+    synapse_request = GraphV1Synapse(problem=graph_problem)
     config = load_config(config_file=config_file_path)
 
     # call memory cache
