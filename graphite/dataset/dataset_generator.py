@@ -93,9 +93,9 @@ class DatasetGenerator(ABC):
         """
         categories = ['small', 'medium', 'large', 'very large']
         ranges = {
-            'small': (10, 14),
-            'medium': (15, 25),
-            'large': (26, 99),
+            'small': (100, 250),
+            'medium': (100, 250),
+            'large': (100, 250),
             'very large': (100, 250)
         }
 

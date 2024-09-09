@@ -21,7 +21,7 @@ loaded_datasets = {
 }
 
 def generate_problem():
-    prob_select = random.randint(1, 2)
+    prob_select = random.randint(1, 1)
 
     try:
         if prob_select == 1:
@@ -126,8 +126,8 @@ def recreate_edges(problem: GraphV2Problem):
         return "Only Geom, Euclidean2D, and Manhatten2D supported for now."
 
 if __name__ == '__main__':
-    synapse_request = generate_problem_from_dataset(min_node=100, max_node=200)
-    # synapse_request = generate_problem()
+    # synapse_request = generate_problem_from_dataset(min_node=100, max_node=200)
+    synapse_request = generate_problem()
     print(f'Number of node: {synapse_request.problem.n_nodes}')
     t1 = time.time_ns()
     synapse = asyncio.run(lin_kernighan_solution(synapse_request))
