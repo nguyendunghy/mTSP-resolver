@@ -2,7 +2,6 @@ import copy
 
 from graphite.solvers import DPSolver, NearestNeighbourSolver, BeamSearchSolver, HPNSolver
 from graphite.solvers.TSPAnnealer import TSPAnnealer
-from graphite.solvers.con_solver import CONSolver
 from graphite.solvers.greedy_solver_vali import NearestNeighbourSolverVali
 from graphite.solvers.new_solver import NewSearchSolver
 from graphite.solvers.or_solver import ORToolsSolver
@@ -21,7 +20,6 @@ new_solver = NewSearchSolver()
 sa_solver = SimulatedAnnealingSolver()
 or_solver = ORToolsSolver()
 lkh_solver = LKHSolver()
-con_solver = CONSolver()
 
 async def baseline_solution(synapse):
     new_synapse = copy.deepcopy(synapse)
@@ -103,13 +101,6 @@ async def tsp_annealer_solver(synapse):
     best_state.append(best_state[0])
     new_synapse.solution = best_state
     return new_synapse
-
-async def con_solver_solution(synapse):
-    new_synapse = copy.deepcopy(synapse)
-    route =  await  con_solver.solve_problem(new_synapse.problem)
-    new_synapse.solution = route
-    return new_synapse
-
 
 async def lin_kernighan_solution(synapse):
     new_synapse = copy.deepcopy(synapse)
