@@ -130,6 +130,7 @@ def register(data: dict):
         return JSONResponse(status_code=status.HTTP_400_BAD_REQUEST, content={"error": "Request must contain 'problem'"})
     problem = data['problem']
     dataset_ref = problem.get('dataset_ref')
+    print(f'dataset_ref = {dataset_ref}')
     if dataset_ref is None:
         graph_problem = GraphV1Problem.parse_obj(problem)
         graph_synapse = GraphV1Synapse(problem=graph_problem)
