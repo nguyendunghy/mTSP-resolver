@@ -4,7 +4,7 @@ import tqdm
 from neurons.compare_solutions import compare
 
 if __name__ == '__main__':
-    data = [compare() for i in tqdm.tqdm(range(500))]
+    data = [compare(gen_func='V2', min_node=2000, max_node=5000) for i in tqdm.tqdm(range(10))]
     data = np.array(data)
 
     print("BEAM:", data[:, 0].mean())
