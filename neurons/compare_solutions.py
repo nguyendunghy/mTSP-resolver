@@ -135,7 +135,7 @@ if __name__ == '__main__':
     t1 = time.time_ns()
     edges = recreate_edges(synapse_request.problem)
     synapse_request.problem.edges = edges
-    synapse = asyncio.run(baseline_solution(synapse_request))
+    synapse = asyncio.run(hpn_solver_solution(synapse_request))
     t2 = time.time_ns()
     print(f'time processing: {(t2-t1)/1e6} ms')
     score = scoring_solution(synapse)
