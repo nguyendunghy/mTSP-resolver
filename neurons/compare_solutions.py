@@ -129,7 +129,7 @@ def recreate_edges(problem: GraphV2Problem):
         return "Only Geom, Euclidean2D, and Manhatten2D supported for now."
 
 if __name__ == '__main__':
-    synapse_request = generate_problem_from_dataset(min_node=10, max_node=20)
+    synapse_request = generate_problem_from_dataset(min_node=2000, max_node=5000)
     # synapse_request = generate_problem()
     print(f'Number of node: {synapse_request.problem.n_nodes}')
     t1 = time.time_ns()
