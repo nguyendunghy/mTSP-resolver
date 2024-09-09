@@ -128,7 +128,7 @@ def recreate_edges(problem: GraphV2Problem):
     else:
         return "Only Geom, Euclidean2D, and Manhatten2D supported for now."
 
-if __name__ == '__main__':
+def review_solution_new_meta():
     synapse_request = generate_problem_from_dataset(min_node=200, max_node=500)
     # synapse_request = generate_problem()
     print(f'Number of node: {synapse_request.problem.n_nodes}')
@@ -140,6 +140,32 @@ if __name__ == '__main__':
     print(f'time processing: {(t2-t1)/1e6} ms')
     score = scoring_solution(synapse)
     print(f'score = {score}')
+
+
+if __name__ == '__main__':
+    synapse_request = generate_problem_from_dataset(min_node=20, max_node=50)
+    problem_dict = synapse_request.problem.dict()
+    # json_problem = json.dumps(problem_dict)
+    payload = json.dumps({
+        "problem": problem_dict,
+        "hash": 'abcdef',
+        "config_file_path": 'config.json'
+    })
+    data = json.loads(payload)
+    problem = data['problem']
+    graph_problem = GraphV2Problem.parse_obj(problem)
+    graphsynapse_req = GraphV2Synapse(problem=graph_problem)
+
+    t1 = time.time_ns()
+    edges = recreate_edges(graphsynapse_req.problem)
+    graphsynapse_req.problem.edges = edges
+    synapse = asyncio.run(baseline_solution(graphsynapse_req))
+    t2 = time.time_ns()
+    print(f'time processing: {(t2-t1)/1e6} ms')
+    score = scoring_solution(synapse)
+    print(f'score = {score}')
+
+
 
     # synapse_request = generate_problem()
     # # print(f"synapse_request = {synapse_request}")

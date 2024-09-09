@@ -5,7 +5,7 @@ from argparse import ArgumentParser
 
 from cachetools import TTLCache
 
-from graphite.protocol import GraphV1Problem, GraphV1Synapse
+from graphite.protocol import GraphV1Problem, GraphV1Synapse,GraphV2Problem,GraphV2Synapse
 from neurons.call_api import load_config, call_apis
 from neurons.call_method import (beam_solver_solution, baseline_solution, nns_vali_solver_solution,
                                  hpn_solver_solution, scoring_solution, tsp_annealer_solver, new_solver_solution,
@@ -111,7 +111,10 @@ async def wait_get_cache_redis(hash, synapse_request, config):
 
     # call apis fail, use or-solver
     print(f"call cache redis fail, using lkh_solver_solution")
-    synapse = await lkh_solver_solution(synapse_request)
+    if isinstance(synapse_request.problem, GraphV2Problem):
+        synapse = await baseline_solution(synapse_request)
+    else:
+        synapse = await lkh_solver_solution(synapse_request)
     return synapse.solution
 
 @app.get("/")
@@ -144,11 +147,22 @@ async def server(data: dict):
     if "problem" not in data:
         return JSONResponse(status_code=status.HTTP_400_BAD_REQUEST, content={"error": "Request must contain 'problem'"})
     problem = data['problem']
-    graph_problem = GraphV1Problem.parse_obj(problem)
+    data_ref = problem.get('dataset_ref')
+    if data_ref is None:
+        print(f'GraphV1Problem data')
+        graph_problem = GraphV1Problem.parse_obj(problem)
+    else:
+        print(f'GraphV2Problem data')
+        graph_problem = GraphV2Problem.parse_obj(problem)
+
     hash = data['hash']
     config_file_path = data['config_file_path']
     print(f'run server hash = {hash}, config_file_path = {config_file_path}')
-    synapse_request = GraphV1Synapse(problem=graph_problem)
+    if data_ref is None:
+        synapse_request = GraphV1Synapse(problem=graph_problem)
+    else:
+        synapse_request = GraphV2Synapse(problem=graph_problem)
+
     config = load_config(config_file=config_file_path)
 
     # call memory cache
@@ -176,7 +190,10 @@ async def server(data: dict):
         else:
             # call apis fail, use baseline
             print(f"call cache fail, using lkh_solver_solution setnx = {setnx}")
-            synapse = await lkh_solver_solution(synapse_request)
+            if data_ref is None:
+                synapse = await lkh_solver_solution(synapse_request)
+            else:
+                synapse = await baseline_solution(synapse_request)
             print(f"time loading {int(time.time_ns() - start_time):,} nanosecond")
             return {
                 "message": "Success",
