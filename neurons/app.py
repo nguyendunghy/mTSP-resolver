@@ -10,6 +10,7 @@ from neurons.call_api import load_config, call_apis
 from neurons.call_method import (beam_solver_solution, baseline_solution, nns_vali_solver_solution,
                                  hpn_solver_solution, scoring_solution, tsp_annealer_solver, new_solver_solution,
                                  simulated_annealing_solver, or_solver_solution, lkh_solver_solution)
+from neurons.compare_solutions import recreate_edges
 from neurons.redis_utils import get, set, set_if_not_exist
 
 
@@ -134,6 +135,8 @@ def register(data: dict):
         graph_synapse = GraphV1Synapse(problem=graph_problem)
     else:
         graph_problem = GraphV2Problem.parse_obj(problem)
+        edges = recreate_edges(graph_problem)
+        graph_problem.edges = edges
         graph_synapse = GraphV2Synapse(problem=graph_problem)
 
     synapse = run_resolver(args.method, graph_synapse)

@@ -151,6 +151,8 @@ if __name__ == '__main__':
         "hash": 'abcdef',
         "config_file_path": 'config.json'
     })
+    print(f'payload = {payload}')
+
     data = json.loads(payload)
     problem = data['problem']
     data_ref = problem.get('dataset_ref')
