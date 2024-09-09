@@ -48,18 +48,21 @@ def generate_problem():
 def generate_problem_from_dataset(min_node=2000, max_node=5000):
     n_nodes = random.randint(min_node, max_node)
     # randomly select n_nodes indexes from the selected graph
-    prob_select = random.randint(0, len(list(loaded_datasets.keys())) - 1)
+    prob_select = random.randint(0, len(list(loaded_datasets.keys()))-1)
     dataset_ref = list(loaded_datasets.keys())[prob_select]
     bt.logging.info(f"n_nodes V2 {n_nodes}")
-    bt.logging.info(f"dataset ref {dataset_ref} selected from {list(loaded_datasets.keys())}")
-    bt.logging.info(
-        f"dataset length {len(loaded_datasets[dataset_ref]['data'])} from {loaded_datasets[dataset_ref]['data'].shape} ")
+    bt.logging.info(f"dataset ref {dataset_ref} selected from {list(loaded_datasets.keys())}" )
+    bt.logging.info(f"dataset length {len(loaded_datasets[dataset_ref]['data'])} from {loaded_datasets[dataset_ref]['data'].shape} " )
     selected_node_idxs = random.sample(range(len(loaded_datasets[dataset_ref]['data'])), n_nodes)
-    test_problem_obj = GraphV2Problem(problem_type="Metric TSP", n_nodes=n_nodes, selected_ids=selected_node_idxs,
-                                      cost_function="Geom", dataset_ref=dataset_ref)
-    edges = recreate_edges(test_problem_obj)
-    test_problem_obj.edges = edges
-    graphsynapse_req = GraphV2Synapse(problem=test_problem_obj)
+    test_problem_obj = GraphV2Problem(problem_type="Metric TSP", n_nodes=n_nodes, selected_ids=selected_node_idxs, cost_function="Geom", dataset_ref=dataset_ref)
+
+    try:
+        graphsynapse_req = GraphV2Synapse(problem=test_problem_obj)
+        bt.logging.info(f"GraphV2Synapse Problem, n_nodes: {graphsynapse_req.problem.n_nodes}")
+    except ValidationError as e:
+        bt.logging.debug(f"GraphV2Synapse Validation Error: {e.json()}")
+        bt.logging.debug(e.errors())
+        bt.logging.debug(e)
     return graphsynapse_req
 
 
@@ -130,11 +133,13 @@ if __name__ == '__main__':
     # synapse_request = generate_problem()
     print(f'Number of node: {synapse_request.problem.n_nodes}')
     t1 = time.time_ns()
-    synapse = asyncio.run(lin_kernighan_solution(synapse_request))
+    edges = recreate_edges(synapse_request.problem)
+    from python_tsp.heuristics import solve_tsp_lin_kernighan
+    result = solve_tsp_lin_kernighan(edges)
     t2 = time.time_ns()
     print(f'time processing: {(t2-t1)/1e6} ms')
-    score = scoring_solution(synapse)
-    print(f'score = {score}')
+
+    print(f'score = {result}')
 
     # synapse_request = generate_problem()
     # # print(f"synapse_request = {synapse_request}")
