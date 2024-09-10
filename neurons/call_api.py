@@ -73,7 +73,7 @@ async def call_server(synapse_request, config_file_path='config.json'):
 
 
 async def do_call(payload,config):
-    if payload.get('dataset_ref') is not None:
+    if payload.get('problem').get('dataset_ref') is not None:
         api_urls = config['api_urls_v2']
         print(f"api_urls_v2 = {api_urls}")
     else:
