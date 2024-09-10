@@ -94,8 +94,8 @@ class Miner(BaseMinerNeuron):
             f"Miner received input to solve {synapse.problem.n_nodes}"
         )
 
-        if isinstance(synapse.problem, GraphV2Problem):
-            synapse.problem.edges = self.recreate_edges(synapse.problem)
+        # if isinstance(synapse.problem, GraphV2Problem):
+        #     synapse.problem.edges = self.recreate_edges(synapse.problem)
 
         bt.logging.info(f"synapse dendrite timeout {synapse.timeout}")
 
