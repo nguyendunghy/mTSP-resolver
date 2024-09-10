@@ -9,7 +9,7 @@
     "http://103.252.0.169:4297/resolve"
   ],
   "api_urls_v2": [
-    "http:///103.252.0.169:4296/resolve"
+    "http://103.252.0.169:4296/resolve"
   ],
   "server_api": "http://103.252.0.171:4201/server",
   "server_timeout": 25,
