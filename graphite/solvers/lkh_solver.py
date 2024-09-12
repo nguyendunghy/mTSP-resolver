@@ -48,7 +48,7 @@ class LKHSolver(BaseSolver):
             f.write(f"MAX_TRIALS = 100\n")
             f.write(f"INITIAL_TOUR_ALGORITHM = GREEDY\n")
             f.write(f"MAX_CANDIDATES = 5\n")
-            f.write(f"RUNS = 3\n")
+            f.write(f"RUNS = 1\n")
             f.write("EOF\n")
 
     def run_lkh(self, parameter_file: str):
@@ -95,9 +95,14 @@ class LKHSolver(BaseSolver):
 
         self.write_lkh_parameters(parameter_filename, problem_filename, tour_filename)
 
+        t1 = time.time()
         self.run_lkh(parameter_filename)
+        t2 = time.time()
 
         tour = self.read_lkh_solution(tour_filename)
+        t3 = time.time()
+        with open('time.json', 'w') as f:
+            print("TIMES:", t2 - t1, t3 - t2, t3 - t1, file=f)
 
         os.remove(problem_filename)
         os.remove(parameter_filename)
