@@ -73,17 +73,17 @@ def compare(gen_func=None, min_node = 2000, max_node = 5000):
         synapse_request = generate_problem()
 
     t1 = time.time()
-    beam_synapse = asyncio.run(beam_solver_solution(synapse_request))
+    # beam_synapse = asyncio.run(beam_solver_solution(synapse_request))
     t2 = time.time()
-    baseline_synapse = asyncio.run(baseline_solution(synapse_request))
+    # baseline_synapse = asyncio.run(baseline_solution(synapse_request))
     t3 = time.time()
-    nns_vali_synapse = asyncio.run(nns_vali_solver_solution(synapse_request))
+    # nns_vali_synapse = asyncio.run(nns_vali_solver_solution(synapse_request))
     t4 = time.time()
-    hpn_synapse = asyncio.run(hpn_solver_solution(synapse_request))
+    lkh_synapse = asyncio.run(lkh_solver_solution(synapse_request))
     t5 = time.time()
-    new_synapse = asyncio.run(new_solver_solution(synapse_request))
+    # new_synapse = asyncio.run(new_solver_solution(synapse_request))
     t6 = time.time()
-    simulated_annealing_synapse = asyncio.run(simulated_annealing_solver(synapse_request))
+    # simulated_annealing_synapse = asyncio.run(simulated_annealing_solver(synapse_request))
     t7 = time.time()
 
     time_point = [t1, t2, t3, t4, t5, t6, t7]
@@ -97,19 +97,26 @@ def compare(gen_func=None, min_node = 2000, max_node = 5000):
             exit(0)
 
 
-    list_synapse = [beam_synapse, baseline_synapse,nns_vali_synapse,hpn_synapse]
-    scores = [scoring_solution(synapse) for synapse in list_synapse]
+    # list_synapse = [beam_synapse, baseline_synapse,nns_vali_synapse]
+    # scores = [scoring_solution(synapse) for synapse in list_synapse]
+    scores = [1e+20, 1e+20, 1e+20]
 
     min_score = min(scores)
     scores.append(min_score)
 
-    scores.append(scoring_solution(new_synapse))
+    # scores.append(scoring_solution(new_synapse))
+    scores.append(1e+20)
 
     min_score1 = min(scores)
     scores.append(min_score1)
 
+    scores.append(scoring_solution(lkh_synapse))
 
-    scores.append(scoring_solution(simulated_annealing_synapse))
+    min_score2 = min(scores)
+    scores.append(min_score2)
+
+    # scores.append(scoring_solution(simulated_annealing_synapse))
+    scores.append(1e+20)
 
     min_score3 = min(scores)
     scores.append(min_score3)

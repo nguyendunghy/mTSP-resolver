@@ -16,23 +16,40 @@ class LKHSolver(BaseSolver):
         """Writes a distance matrix to a TSPLIB formatted file."""
         problem_type = "ATSP" if directed else "TSP"
         n = len(distance_matrix)
-        with open(filename, 'w') as f:
-            f.write(f"NAME: {problem_type}\nTYPE: {problem_type}\nDIMENSION: {n}\nEDGE_WEIGHT_TYPE: EXPLICIT\nEDGE_WEIGHT_FORMAT: FULL_MATRIX\nEDGE_WEIGHT_SECTION\n")
-            for row in distance_matrix:
-                f.write(" ".join(map(str, row)) + "\n")
-            f.write("EOF\n")
+        if(directed == False):
+            with open(filename, 'w') as f:
+                f.write(f"NAME: {problem_type}\n")
+                f.write(f"TYPE: {problem_type}\n")
+                f.write(f"DIMENSION: {n}\n")
+                f.write(f"EDGE_WEIGHT_TYPE: EUC_2D\n")
+                f.write("NODE_COORD_SECTION\n")
+                for i, (x, y) in enumerate(distance_matrix, start=1):
+                    f.write(f"{i} {x} {y}\n")
+                f.write("EOF\n")
+        else:
+            with open(filename, 'w') as f:
+                f.write(f"NAME: {problem_type}\n")
+                f.write(f"TYPE: {problem_type}\n")
+                f.write(f"DIMENSION: {n}\n")
+                f.write(f"EDGE_WEIGHT_TYPE: EXPLICIT\n")
+                f.write(f"EDGE_WEIGHT_FORMAT: FULL_MATRIX\n")
+                f.write(f"EDGE_WEIGHT_SECTION\n")
+                for row in distance_matrix:
+                    f.write(" ".join(map(str, row)) + "\n")
+                f.write("EOF\n")
 
     def write_lkh_parameters(self, filename: str, problem_filename: str, tour_filename: str):
         """Writes the parameter file for LKH."""
         with open(filename, 'w') as f:
             f.write(f"PROBLEM_FILE = {problem_filename}\n")
             f.write(f"OUTPUT_TOUR_FILE = {tour_filename}\n")
-            f.write(f"CANDIDATE_SET_TYPE = POPMUSIC\n")
-            f.write(f"POPMUSIC_SAMPLE_SIZE = 5\n")
-            f.write(f"POPMUSIC_SOLUTIONS = 200\n")
-            f.write(f"POPMUSIC_INITIAL_TOUR = YES\n")
-            f.write(f"POPMUSIC_MAX_NEIGHBORS = 50\n")
-            f.write("EOF")
+            f.write(f"CANDIDATE_SET_TYPE = ALPHA\n")
+            f.write(f"INITIAL_PERIOD = 10\n")
+            f.write(f"MAX_TRIALS = 100\n")
+            f.write(f"INITIAL_TOUR_ALGORITHM = GREEDY\n")
+            f.write(f"MAX_CANDIDATES = 5\n")
+            f.write(f"RUNS = 3\n")
+            f.write("EOF\n")
 
     def run_lkh(self, parameter_file: str):
         """Runs the LKH solver using a given parameter file."""
@@ -55,40 +72,40 @@ class LKHSolver(BaseSolver):
         tour.append(0)
         return tour
 
-    async def solve(self, distance_matrix, future_id: int, directed=False) -> List[int]:
-        is_float = isinstance(distance_matrix[0][0], float)
+    async def solve(self, problem, future_id: int) -> List[int]:
+        directed = problem.directed
+        if(directed):
+            distance_matrix = problem.edges
+            is_float = isinstance(distance_matrix[0][0], float)
 
-        # Scale factor for converting float distances to integers if necessary
-        scale_factor = 1000 if is_float else 1
-        
-        scaled_distance_matrix = [
-            [int(round(distance * scale_factor)) for distance in row]
-            for row in distance_matrix
-        ]
+            scale_factor = 1000 if is_float else 1
+            
+            scaled_distance_matrix = [
+                [int(round(distance * scale_factor)) for distance in row]
+                for row in distance_matrix
+            ]
+        else:
+            scaled_distance_matrix = problem.nodes
+
         problem_filename = "problem.tsp"
         parameter_filename = "params.par"
         tour_filename = "solution.tour"
 
-        # Write the TSPLIB problem file
         self.write_tsplib_file(scaled_distance_matrix, problem_filename, directed)
 
-        # Write the LKH parameter file
         self.write_lkh_parameters(parameter_filename, problem_filename, tour_filename)
 
-        # Run LKH
         self.run_lkh(parameter_filename)
 
-        # Read and return the solution
         tour = self.read_lkh_solution(tour_filename)
 
-        # Clean up temporary files (optional)
         os.remove(problem_filename)
         os.remove(parameter_filename)
         os.remove(tour_filename)
         return tour
 
     def problem_transformations(self, problem: Union[GraphV1Problem, GraphV2Problem]):
-        return problem.edges
+        return problem
 
 if __name__ == '__main__':
     n_nodes = 100  # Adjust as needed

@@ -27,6 +27,13 @@ import json
 import base64
 import sys
 import random
+from graphite.data.constants import ASIA_MSB_DETAILS, WORLD_TSP_DETAILS
+from graphite.data.dataset_utils import load_dataset
+
+loaded_datasets = {
+    ASIA_MSB_DETAILS['ref_id']: load_dataset(ASIA_MSB_DETAILS['ref_id']),
+    WORLD_TSP_DETAILS['ref_id']: load_dataset(WORLD_TSP_DETAILS['ref_id'])
+}
 
 is_alive_path = "graphite/is_alive.json"
 with open(is_alive_path, "r") as f:
@@ -144,6 +151,35 @@ class GraphV2Problem(BaseModel):
     repeating: bool = Field(False, description="Allow Repeating Nodes")  # boolean for whether the nodes in the problem can be revisited
     checksum: Union[str, None] = Field(None, description="Checksum")
 
+    @model_validator(mode='after') # checks and generates missing data if not passed in by user
+    def initialize_nodes_and_edges(self):
+        if self.directed == False: # we should generate a set of coordinates and corresponding distances for this Metric TSP
+            if not self.nodes and not self.edges: # we do not want to allow setting of edges for metric TSP... only setting coordinates
+                datas = np.array(loaded_datasets[self.dataset_ref]['data'])
+                self.nodes = [[datas[idx - 1][1], datas[idx - 1][2]] for idx in self.selected_ids]
+                self.edges = self.get_distance_matrix(self.nodes)
+            elif self.edges and not self.nodes: # convert problem into a General TSP and solve instead
+                raise ValueError("Undirected graph should have defined nodes(coordinates) instead of edges")
+            elif not self.edges and self.nodes:
+                self.edges = self.get_distance_matrix(self.nodes)
+        return self
+
+    def get_distance_matrix(self, coordinates:List[List[int]]):
+        '''
+        Receives an array of the coordinate values and returns a square numpy array of euclidean distances
+        '''
+        n = len(coordinates)
+        distance_matrix = np.zeros((n, n))
+
+        for i in range(n):
+            for j in range(n):
+                if i == j:
+                    distance_matrix[i, j] = 0
+                else:
+                    distance_matrix[i, j] += math.hypot((coordinates[i][0] - coordinates[j][0]), (coordinates[i][1] - coordinates[j][1]))
+        distance_list = distance_matrix.tolist()
+        distance_list = [[float(x) for x in row] for row in distance_list]
+        return distance_list
     ### Expensive check only needed for organic requests
     # @model_validator(mode='after')
     # def unique_select_ids(self):
