@@ -3,7 +3,7 @@
   <component name="Black">
     <option name="sdkName" value="Python 3.10 (Graphite-Subnet)" />
   </component>
-  <component name="ProjectRootManager" version="2" languageLevel="JDK_1_8" default="true" project-jdk-name="Python 3.10 (Graphite-Subnet)" project-jdk-type="Python SDK">
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_1_8" default="true" project-jdk-name="Python 3.12 (custom-graphite-subnet)" project-jdk-type="Python SDK">
     <output url="file://$PROJECT_DIR$/out" />
   </component>
 </project>
