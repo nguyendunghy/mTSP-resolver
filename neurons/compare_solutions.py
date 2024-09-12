@@ -71,7 +71,7 @@ def compare(gen_func=None, min_node = 2000, max_node = 5000):
         synapse_request = generate_problem_from_dataset(min_node=min_node,max_node=max_node)
     else:
         synapse_request = generate_problem()
-
+    print(f'Number of node: {synapse_request.problem.n_nodes}')
     t1 = time.time()
     # beam_synapse = asyncio.run(beam_solver_solution(synapse_request))
     t2 = time.time()
