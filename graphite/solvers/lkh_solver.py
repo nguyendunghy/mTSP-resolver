@@ -24,7 +24,7 @@ class LKHSolver(BaseSolver):
                 f.write(f"EDGE_WEIGHT_TYPE: EUC_2D\n")
                 f.write("NODE_COORD_SECTION\n")
                 for i, (x, y) in enumerate(distance_matrix, start=1):
-                    f.write(f"{i} {x} {y}\n")
+                    f.write(f"{i} {x * 100} {y * 100}\n")
                 f.write("EOF\n")
         else:
             with open(filename, 'w') as f:
@@ -45,8 +45,8 @@ class LKHSolver(BaseSolver):
             f.write(f"OUTPUT_TOUR_FILE = {tour_filename}\n")
             f.write(f"CANDIDATE_SET_TYPE = ALPHA\n")
             f.write(f"INITIAL_PERIOD = 10\n")
-            f.write(f"MAX_TRIALS = 100\n")
-            f.write(f"INITIAL_TOUR_ALGORITHM = GREEDY\n")
+            f.write(f"MAX_TRIALS = 10\n")
+            f.write(f"INITIAL_TOUR_ALGORITHM = NE\n")
             f.write(f"MAX_CANDIDATES = 5\n")
             f.write(f"RUNS = 1\n")
             f.write("EOF\n")
@@ -104,9 +104,9 @@ class LKHSolver(BaseSolver):
         with open('time.json', 'w') as f:
             print("TIMES:", t2 - t1, t3 - t2, t3 - t1, file=f)
 
-        os.remove(problem_filename)
-        os.remove(parameter_filename)
-        os.remove(tour_filename)
+        # os.remove(problem_filename)
+        # os.remove(parameter_filename)
+        # os.remove(tour_filename)
         return tour
 
     def problem_transformations(self, problem: Union[GraphV1Problem, GraphV2Problem]):
