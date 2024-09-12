@@ -75,7 +75,7 @@ def compare(gen_func=None, min_node = 2000, max_node = 5000):
     t1 = time.time()
     # beam_synapse = asyncio.run(beam_solver_solution(synapse_request))
     t2 = time.time()
-    # baseline_synapse = asyncio.run(baseline_solution(synapse_request))
+    baseline_synapse = asyncio.run(baseline_solution(synapse_request))
     t3 = time.time()
     # nns_vali_synapse = asyncio.run(nns_vali_solver_solution(synapse_request))
     t4 = time.time()
@@ -86,40 +86,40 @@ def compare(gen_func=None, min_node = 2000, max_node = 5000):
     # simulated_annealing_synapse = asyncio.run(simulated_annealing_solver(synapse_request))
     t7 = time.time()
 
-    time_point = [t1, t2, t3, t4, t5, t6, t7]
-    time_processing_list = []
-    for i in range(1, len(time_point)):
-        time_processing_list.append(time_point[i] - time_point[i - 1])
+    # time_point = [t1, t2, t3, t4, t5, t6, t7]
+    # time_processing_list = []
+    # for i in range(1, len(time_point)):
+    #     time_processing_list.append(time_point[i] - time_point[i - 1])
+    #
+    # for i in range(len(time_processing_list)):
+    #     if time_processing_list[i] > 20:
+    #         print(f'time process of {i} > 20')
+    #         exit(0)
 
-    for i in range(len(time_processing_list)):
-        if time_processing_list[i] > 20:
-            print(f'time process of {i} > 20')
-            exit(0)
-
-
-    # list_synapse = [beam_synapse, baseline_synapse,nns_vali_synapse]
-    # scores = [scoring_solution(synapse) for synapse in list_synapse]
-    scores = [1e+20, 1e+20, 1e+20]
-
-    min_score = min(scores)
-    scores.append(min_score)
-
-    # scores.append(scoring_solution(new_synapse))
-    scores.append(1e+20)
-
-    min_score1 = min(scores)
-    scores.append(min_score1)
-
-    scores.append(scoring_solution(lkh_synapse))
-
-    min_score2 = min(scores)
-    scores.append(min_score2)
-
-    # scores.append(scoring_solution(simulated_annealing_synapse))
-    scores.append(1e+20)
-
-    min_score3 = min(scores)
-    scores.append(min_score3)
+    print(f"time lkh = {t5-t4}, time baseline = {t3-t2}, num node = {synapse_request.problem.n_nodes}")
+    list_synapse = [baseline_synapse,lkh_synapse]
+    scores = [scoring_solution(synapse) for synapse in list_synapse]
+    # scores = [1e+20, 1e+20, 1e+20]
+    #
+    # min_score = min(scores)
+    # scores.append(min_score)
+    #
+    # # scores.append(scoring_solution(new_synapse))
+    # scores.append(1e+20)
+    #
+    # min_score1 = min(scores)
+    # scores.append(min_score1)
+    #
+    # scores.append(scoring_solution(lkh_synapse))
+    #
+    # min_score2 = min(scores)
+    # scores.append(min_score2)
+    #
+    # # scores.append(scoring_solution(simulated_annealing_synapse))
+    # scores.append(1e+20)
+    #
+    # min_score3 = min(scores)
+    # scores.append(min_score3)
 
     return scores
 
