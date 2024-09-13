@@ -16,27 +16,27 @@ class LKHSolver(BaseSolver):
         """Writes a distance matrix to a TSPLIB formatted file."""
         problem_type = "ATSP" if directed else "TSP"
         n = len(distance_matrix)
-        if(directed == False):
-            with open(filename, 'w') as f:
-                f.write(f"NAME: {problem_type}\n")
-                f.write(f"TYPE: {problem_type}\n")
-                f.write(f"DIMENSION: {n}\n")
-                f.write(f"EDGE_WEIGHT_TYPE: EUC_2D\n")
-                f.write("NODE_COORD_SECTION\n")
-                for i, (x, y) in enumerate(distance_matrix, start=1):
-                    f.write(f"{i} {x * 100} {y * 100}\n")
-                f.write("EOF\n")
-        else:
-            with open(filename, 'w') as f:
-                f.write(f"NAME: {problem_type}\n")
-                f.write(f"TYPE: {problem_type}\n")
-                f.write(f"DIMENSION: {n}\n")
-                f.write(f"EDGE_WEIGHT_TYPE: EXPLICIT\n")
-                f.write(f"EDGE_WEIGHT_FORMAT: FULL_MATRIX\n")
-                f.write(f"EDGE_WEIGHT_SECTION\n")
-                for row in distance_matrix:
-                    f.write(" ".join(map(str, row)) + "\n")
-                f.write("EOF\n")
+        # if(directed == False):
+            # with open(filename, 'w') as f:
+            #     f.write(f"NAME: {problem_type}\n")
+            #     f.write(f"TYPE: {problem_type}\n")
+            #     f.write(f"DIMENSION: {n}\n")
+            #     f.write(f"EDGE_WEIGHT_TYPE: EUC_2D\n")
+            #     f.write("NODE_COORD_SECTION\n")
+            #     for i, (x, y) in enumerate(distance_matrix, start=1):
+            #         f.write(f"{i} {x * 100} {y * 100}\n")
+            #     f.write("EOF\n")
+        # else:
+        with open(filename, 'w') as f:
+            f.write(f"NAME: {problem_type}\n")
+            f.write(f"TYPE: {problem_type}\n")
+            f.write(f"DIMENSION: {n}\n")
+            f.write(f"EDGE_WEIGHT_TYPE: EXPLICIT\n")
+            f.write(f"EDGE_WEIGHT_FORMAT: FULL_MATRIX\n")
+            f.write(f"EDGE_WEIGHT_SECTION\n")
+            for row in distance_matrix:
+                f.write(" ".join(map(str, row)) + "\n")
+            f.write("EOF\n")
 
     def write_lkh_parameters(self, filename: str, problem_filename: str, tour_filename: str):
         """Writes the parameter file for LKH."""
@@ -74,18 +74,18 @@ class LKHSolver(BaseSolver):
 
     async def solve(self, problem, future_id: int) -> List[int]:
         directed = problem.directed
-        if(directed):
-            distance_matrix = problem.edges
-            is_float = isinstance(distance_matrix[0][0], float)
+        # if(directed):
+        distance_matrix = problem.edges
+        is_float = isinstance(distance_matrix[0][0], float)
 
-            scale_factor = 1000 if is_float else 1
-            
-            scaled_distance_matrix = [
-                [int(round(distance * scale_factor)) for distance in row]
-                for row in distance_matrix
-            ]
-        else:
-            scaled_distance_matrix = problem.nodes
+        scale_factor = 1 if is_float else 1
+        
+        scaled_distance_matrix = [
+            [int(round(distance * scale_factor)) for distance in row]
+            for row in distance_matrix
+        ]
+        # else:
+        #     scaled_distance_matrix = problem.nodes
 
         problem_filename = "problem.tsp"
         parameter_filename = "params.par"
