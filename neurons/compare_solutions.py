@@ -103,8 +103,8 @@ def compare(gen_func=None, min_node = 2000, max_node = 5000):
     scores = [scoring_solution(synapse) for synapse in list_synapse]
     # scores = [1e+20, 1e+20, 1e+20]
     #
-    # min_score = min(scores)
-    # scores.append(min_score)
+    min_score = min(scores)
+    scores.append(min_score)
     #
     # # scores.append(scoring_solution(new_synapse))
     # scores.append(1e+20)
@@ -122,7 +122,7 @@ def compare(gen_func=None, min_node = 2000, max_node = 5000):
     #
     # min_score3 = min(scores)
     # scores.append(min_score3)
-
+    print(f'score = {score}')
     return scores
 
 def recreate_edges(problem: GraphV2Problem):
