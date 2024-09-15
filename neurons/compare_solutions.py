@@ -122,7 +122,7 @@ def compare(gen_func=None, min_node = 2000, max_node = 5000):
     #
     # min_score3 = min(scores)
     # scores.append(min_score3)
-    print(f'score = {score}')
+    print(f'score = {scores}')
     return scores
 
 def recreate_edges(problem: GraphV2Problem):
