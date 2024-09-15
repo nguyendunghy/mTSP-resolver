@@ -20,7 +20,7 @@
 import math
 from typing import List, Union
 import numpy as np
-from graphite.protocol import GraphV1Problem, GraphV1Synapse, GraphV2Problem, GraphV2Synapse
+from graphite.protocol import GraphV1Problem, GraphV1Synapse, GraphV2Problem, GraphV2Synapse, GraphSynapse
 from functools import wraps, partial
 import bittensor as bt
 import asyncio
@@ -33,7 +33,7 @@ def is_valid_path(path:List[int])->bool:
     # a valid path should have at least 3 return values and return to the source
     return (len(path)>=3) and (path[0]==path[-1])
 
-def get_tour_distance(synapse:Union[GraphV1Synapse, GraphV2Synapse])->float:
+def get_tour_distance(synapse:Union[GraphSynapse,GraphV1Synapse, GraphV2Synapse])->float:
     '''
     Returns the total tour distance for the TSP or graph-traversal problem as a float.
 
