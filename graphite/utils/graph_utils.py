@@ -2,7 +2,7 @@
 # Copyright © 2023 Yuma Rao
 # Graphite-AI
 # Copyright © 2023 Graphite-AI
-
+import copy
 # Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated
 # documentation files (the “Software”), to deal in the Software without restriction, including without limitation
 # the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software,
@@ -29,9 +29,22 @@ from concurrent.futures import ThreadPoolExecutor
 import time
 
 ### Generic functions for neurons
-def is_valid_path(path:List[int])->bool:
+def is_valid_path(path: List[int]) -> bool:
+    #start adding new code
+    print(f'start running is_valid_path')
+    copy_path = copy.deepcopy(path)
+    copy_path.sort()
+    if copy_path[0] != 0:
+        return False
+
+    length = len(copy_path)
+    for i in range(length - 1):
+        if i != copy_path[i]:
+            return False
+    #end adding new code
+
     # a valid path should have at least 3 return values and return to the source
-    return (len(path)>=3) and (path[0]==path[-1])
+    return (len(path) >= 3) and (path[0] == path[-1])
 
 def get_tour_distance(synapse:Union[GraphSynapse,GraphV1Synapse, GraphV2Synapse])->float:
     '''
