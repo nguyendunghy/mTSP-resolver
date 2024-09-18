@@ -39,7 +39,7 @@ def is_valid_path(path: List[int]) -> bool:
 
     length = len(copy_path)
     for i in range(length - 1):
-        if i != copy_path[i]:
+        if i != copy_path[i+1]:
             return False
     #end adding new code
 
