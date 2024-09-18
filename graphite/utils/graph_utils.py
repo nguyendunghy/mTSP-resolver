@@ -30,19 +30,6 @@ import time
 
 ### Generic functions for neurons
 def is_valid_path(path: List[int]) -> bool:
-    #start adding new code
-    print(f'start running is_valid_path')
-    copy_path = copy.deepcopy(path)
-    copy_path.sort()
-    if copy_path[0] != 0:
-        return False
-
-    length = len(copy_path)
-    for i in range(length - 1):
-        if i != copy_path[i+1]:
-            return False
-    #end adding new code
-
     # a valid path should have at least 3 return values and return to the source
     return (len(path) >= 3) and (path[0] == path[-1])
 
