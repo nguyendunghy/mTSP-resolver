@@ -151,32 +151,66 @@ def review_solution_new_meta():
     print(f'score = {score}')
 
 
+def calculate_raw_data(config_file):
+    with open(config_file, 'r') as f:
+        config = json.load(f)
+    dataset_ref = config['dataset_ref']['value']
+    selected_ids = config['selected_ids']['value']
+    cost_function = config['cost_function']['value']
+    objective_function = config['objective_function']['value']
+    problem_type = config['problem_type']['value']
+    n_nodes = config['n_nodes']['value']
+    test_graph_problem = GraphV2Problem(problem_type=problem_type, objective_function=objective_function,
+                                     n_nodes=n_nodes, selected_ids=selected_ids,
+                                     cost_function="Geom", dataset_ref=dataset_ref)
+
+    synapse_request = GraphV2Synapse(problem=test_graph_problem)
+    edges = recreate_edges(synapse_request.problem)
+    synapse_request.problem.edges = edges
+    t1 = time.time()
+    baseline_synapse = asyncio.run(baseline_solution(synapse_request))
+    t2 = time.time()
+    lkh_synapse = asyncio.run(lkh_solver_solution(synapse_request))
+    t3 = time.time()
+    print(f"time baseline  = {t2 - t1}, time lkh = {t3 - t2}, num node = {synapse_request.problem.n_nodes}")
+    list_synapse = [baseline_synapse, lkh_synapse]
+    scores = [scoring_solution(synapse) for synapse in list_synapse]
+
+    min_score = min(scores)
+    scores.append(min_score)
+    print(f'score = {scores}')
+    return scores
+
+
 if __name__ == '__main__':
-    synapse_request = generate_problem_from_dataset(min_node=20, max_node=50)
-    problem_dict = synapse_request.problem.dict()
-    # json_problem = json.dumps(problem_dict)
-    payload = json.dumps({
-        "problem": problem_dict,
-        "hash": 'abcdef',
-        "config_file_path": 'config.json'
-    })
-    print(f'payload = {payload}')
+    config_file = 'raw_data/data.json'
+    calculate_raw_data(config_file)
 
-    data = json.loads(payload)
-    problem = data['problem']
-    dataset_ref = problem.get('dataset_ref')
-    print(f'dataset_ref: {dataset_ref}')
-    graph_problem = GraphV2Problem.parse_obj(problem)
-    graphsynapse_req = GraphV2Synapse(problem=graph_problem)
-
-    t1 = time.time_ns()
-    edges = recreate_edges(graphsynapse_req.problem)
-    graphsynapse_req.problem.edges = edges
-    synapse = asyncio.run(baseline_solution(graphsynapse_req))
-    t2 = time.time_ns()
-    print(f'time processing: {(t2-t1)/1e6} ms')
-    score = scoring_solution(synapse)
-    print(f'score = {score}')
+    # synapse_request = generate_problem_from_dataset(min_node=20, max_node=50)
+    # problem_dict = synapse_request.problem.dict()
+    # # json_problem = json.dumps(problem_dict)
+    # payload = json.dumps({
+    #     "problem": problem_dict,
+    #     "hash": 'abcdef',
+    #     "config_file_path": 'config.json'
+    # })
+    # print(f'payload = {payload}')
+    #
+    # data = json.loads(payload)
+    # problem = data['problem']
+    # dataset_ref = problem.get('dataset_ref')
+    # print(f'dataset_ref: {dataset_ref}')
+    # graph_problem = GraphV2Problem.parse_obj(problem)
+    # graphsynapse_req = GraphV2Synapse(problem=graph_problem)
+    #
+    # t1 = time.time_ns()
+    # edges = recreate_edges(graphsynapse_req.problem)
+    # graphsynapse_req.problem.edges = edges
+    # synapse = asyncio.run(baseline_solution(graphsynapse_req))
+    # t2 = time.time_ns()
+    # print(f'time processing: {(t2-t1)/1e6} ms')
+    # score = scoring_solution(synapse)
+    # print(f'score = {score}')
 
 
 
