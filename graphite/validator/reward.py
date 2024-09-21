@@ -88,6 +88,7 @@ class ScoreResponse:
         synapse_copy = self.synapse
         synapse_copy.solution = response.solution
         path_cost = self.cost_function(synapse_copy)
+        print(f'path_cost = {path_cost}')
         return path_cost
 
     def score_response(self, response: Union[GraphSynapse,GraphV1Synapse, GraphV2Synapse]):

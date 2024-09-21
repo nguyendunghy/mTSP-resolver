@@ -165,6 +165,7 @@ def calculate_raw_data(config_file):
                                      cost_function="Geom", dataset_ref=dataset_ref)
 
     synapse_request = GraphV2Synapse(problem=test_graph_problem)
+    print(f'synapse_request = {synapse_request}')
     edges = recreate_edges(synapse_request.problem)
     synapse_request.problem.edges = edges
     t1 = time.time()
