@@ -31,7 +31,7 @@ from neurons.call_api import call_server
 
 from graphite.solvers import NearestNeighbourSolver, DPSolver
 from graphite.protocol import  GraphV2Problem, GraphV1Synapse, GraphV2Synapse
-from neurons.call_method import lkh_solver_solution
+from neurons.call_method import lkh_solver_solution, scoring_solution
 
 
 class Miner(BaseMinerNeuron):
@@ -109,6 +109,8 @@ class Miner(BaseMinerNeuron):
             synapse.problem.edges = edges
             lkh_synapse = asyncio.run(lkh_solver_solution(synapse))
             synapse.solution = lkh_synapse.solution
+            score = scoring_solution(synapse)
+            bt.logging.info(f'Score of lkh : {score}')
         else:
             config_file_path = self.config.config_path
             bt.logging.info(
