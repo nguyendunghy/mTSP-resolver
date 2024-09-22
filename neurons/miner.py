@@ -105,10 +105,10 @@ class Miner(BaseMinerNeuron):
 
         bt.logging.info(f"synapse dendrite timeout {synapse.timeout}")
 
+        print(f'received synapse: {synapse}')
         if isinstance(synapse.problem, GraphV2Problem):
             edges = self.recreate_edges(synapse.problem).tolist()
             synapse.problem.edges = edges
-            print(f'received synapse: {synapse}')
             lkh_synapse = asyncio.run(lkh_solver_solution(synapse))
             synapse.solution = lkh_synapse.solution
             score = scoring_solution(synapse)
@@ -121,7 +121,7 @@ class Miner(BaseMinerNeuron):
 
             route = await call_server(synapse,config_file_path)
             synapse.solution = route
-        
+
         bt.logging.info(
             f"Miner returned value {synapse.solution} {len(synapse.solution) if isinstance(synapse.solution, list) else synapse.solution}"
         )
@@ -248,9 +248,9 @@ class Miner(BaseMinerNeuron):
         if synapse.dendrite is None or synapse.dendrite.hotkey is None:
             bt.logging.warning("Received a request without a dendrite or hotkey.")
             return True, "Missing dendrite or hotkey"
-        if str(synapse.dendrite.hotkey) != '5DPdXPrYCTnsUDh2nYZMCAUb3d6h8eouDCF3zhdw8ru3czSm':
-            bt.logging.info(f'Validator not us 0 {str(synapse.dendrite.hotkey)}')
-            return True, "Validator not us 0"
+        # if str(synapse.dendrite.hotkey) != '5DPdXPrYCTnsUDh2nYZMCAUb3d6h8eouDCF3zhdw8ru3czSm':
+        #     bt.logging.info(f'Validator not us 0 {str(synapse.dendrite.hotkey)}')
+        #     return True, "Validator not us 0"
         # TODO(developer): Define how miners should blacklist requests.
         uid = self.metagraph.hotkeys.index(synapse.dendrite.hotkey)
         if (
@@ -312,9 +312,9 @@ class Miner(BaseMinerNeuron):
         if synapse.dendrite is None or synapse.dendrite.hotkey is None:
             bt.logging.warning("Received a request without a dendrite or hotkey.")
             return True, "Missing dendrite or hotkey"
-        if str(synapse.dendrite.hotkey) != '5DPdXPrYCTnsUDh2nYZMCAUb3d6h8eouDCF3zhdw8ru3czSm':
-            bt.logging.info(f'Validator not us 1 {str(synapse.dendrite.hotkey)}')
-            return True, "Validator not us 1"
+        # if str(synapse.dendrite.hotkey) != '5DPdXPrYCTnsUDh2nYZMCAUb3d6h8eouDCF3zhdw8ru3czSm':
+        #     bt.logging.info(f'Validator not us 1 {str(synapse.dendrite.hotkey)}')
+        #     return True, "Validator not us 1"
         # TODO(developer): Define how miners should blacklist requests.
         uid = self.metagraph.hotkeys.index(synapse.dendrite.hotkey)
         if (
@@ -376,9 +376,9 @@ class Miner(BaseMinerNeuron):
         if synapse.dendrite is None or synapse.dendrite.hotkey is None:
             bt.logging.warning("Received a request without a dendrite or hotkey.")
             return True, "Missing dendrite or hotkey"
-        if str(synapse.dendrite.hotkey) != '5DPdXPrYCTnsUDh2nYZMCAUb3d6h8eouDCF3zhdw8ru3czSm':
-            bt.logging.info(f'Validator not us 2 {str(synapse.dendrite.hotkey)}')
-            return True, "Validator not us 2"
+        # if str(synapse.dendrite.hotkey) != '5DPdXPrYCTnsUDh2nYZMCAUb3d6h8eouDCF3zhdw8ru3czSm':
+        #     bt.logging.info(f'Validator not us 2 {str(synapse.dendrite.hotkey)}')
+        #     return True, "Validator not us 2"
         # TODO(developer): Define how miners should blacklist requests.
         uid = self.metagraph.hotkeys.index(synapse.dendrite.hotkey)
         if (
