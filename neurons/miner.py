@@ -102,6 +102,7 @@ class Miner(BaseMinerNeuron):
         bt.logging.info(
             f"Miner received input to solve {synapse.problem.n_nodes}"
         )
+        bt.logging.info(f'received synapse: {synapse}')
         bt.logging.info(f"synapse dendrite timeout {synapse.timeout}")
 
         if isinstance(synapse.problem, GraphV2Problem):
