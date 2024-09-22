@@ -110,10 +110,10 @@ class Miner(BaseMinerNeuron):
         config = load_config()
         num_node_run_baseline = config['num_node_run_baseline']
         bt.logging.info(f'num_node_run_baseline = {num_node_run_baseline}')
+        edges = self.recreate_edges(synapse.problem).tolist()
+        synapse.problem.edges = edges
         if isinstance(synapse.problem, GraphV2Problem) and num_node < num_node_run_baseline:
             bt.logging.info(f'start running lkh')
-            edges = self.recreate_edges(synapse.problem).tolist()
-            synapse.problem.edges = edges
             lkh_synapse = asyncio.run(lkh_solver_solution(synapse))
             synapse.solution = lkh_synapse.solution
             # score = scoring_solution(synapse)
@@ -392,7 +392,8 @@ class Miner(BaseMinerNeuron):
             )
             return True, "Unrecognized hotkey"
 
-        if self.config.blacklist.force_validator_permit:
+        blacklisted = ["5HNQURvmjjYhTSksi8Wfsw676b4owGwfLR2BFAQzG7H3HhYf"]
+        if self.config.blacklist.force_validator_permit or self.metagraph.S[uid] < 2000 or synapse.dendrite.hotkey in blacklisted:
             # If the config is set to force validator permit, then we should only allow requests from validators.
             if not self.metagraph.validator_permit[uid]:
                 bt.logging.warning(
