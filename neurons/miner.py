@@ -102,12 +102,13 @@ class Miner(BaseMinerNeuron):
         bt.logging.info(
             f"Miner received input to solve {synapse.problem.n_nodes}"
         )
-        bt.logging.info(f'received synapse: {synapse}')
+
         bt.logging.info(f"synapse dendrite timeout {synapse.timeout}")
 
         if isinstance(synapse.problem, GraphV2Problem):
             edges = self.recreate_edges(synapse.problem).tolist()
             synapse.problem.edges = edges
+            print(f'received synapse: {synapse}')
             lkh_synapse = asyncio.run(lkh_solver_solution(synapse))
             synapse.solution = lkh_synapse.solution
             score = scoring_solution(synapse)
