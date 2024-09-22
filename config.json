@@ -21,5 +21,6 @@
   "set_cache_nx": "http://185.209.179.141:4305/set-cache-nx",
   "set_cache_nx_timeout": 15,
   "time_sleep": 0.5,
-  "num_count": 30
+  "num_count": 30,
+  "num_node_run_baseline": 3500
 }

@@ -27,7 +27,7 @@ import graphite
 # import base miner class which takes care of most of the boilerplate
 from graphite.base.miner import BaseMinerNeuron
 from graphite.protocol import IsAlive, GraphSynapse
-from neurons.call_api import call_server
+from neurons.call_api import call_server, load_config
 
 from graphite.solvers import NearestNeighbourSolver, DPSolver
 from graphite.protocol import  GraphV2Problem, GraphV1Synapse, GraphV2Synapse
@@ -105,21 +105,22 @@ class Miner(BaseMinerNeuron):
 
         bt.logging.info(f"synapse dendrite timeout {synapse.timeout}")
 
-        print(f'received synapse: {synapse}')
-        if isinstance(synapse.problem, GraphV2Problem):
+        bt.logging.info(f'received synapse: {synapse}')
+        num_node = synapse.problem.n_nodes
+        config = load_config()
+        num_node_run_baseline = config['num_node_run_baseline']
+        bt.logging.info(f'num_node_run_baseline = {num_node_run_baseline}')
+        if isinstance(synapse.problem, GraphV2Problem) and num_node < num_node_run_baseline:
+            bt.logging.info(f'start running lkh')
             edges = self.recreate_edges(synapse.problem).tolist()
             synapse.problem.edges = edges
             lkh_synapse = asyncio.run(lkh_solver_solution(synapse))
             synapse.solution = lkh_synapse.solution
-            score = scoring_solution(synapse)
-            bt.logging.info(f'Score of lkh : {score}')
+            # score = scoring_solution(synapse)
+            # bt.logging.info(f'Score of lkh : {score}')
         else:
-            config_file_path = self.config.config_path
-            bt.logging.info(
-                f"config_file_path: {config_file_path}"
-            )
-
-            route = await call_server(synapse,config_file_path)
+            bt.logging.info(f'start running baseline')
+            route = await self.solvers['large'].solve_problem(synapse.problem)
             synapse.solution = route
 
         bt.logging.info(
