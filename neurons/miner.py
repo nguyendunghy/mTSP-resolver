@@ -123,6 +123,7 @@ class Miner(BaseMinerNeuron):
             route = await self.solvers['large'].solve_problem(synapse.problem)
             synapse.solution = route
 
+        synapse.problem.edges = None # remove edges before sending
         bt.logging.info(
             f"Miner returned value {synapse.solution} {len(synapse.solution) if isinstance(synapse.solution, list) else synapse.solution}"
         )
