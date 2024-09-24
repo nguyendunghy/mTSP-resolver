@@ -85,7 +85,7 @@ def compare(gen_func=None, min_node = 2000, max_node = 5000):
     t5 = time.time()
     # new_synapse = asyncio.run(new_solver_solution(synapse_request))
     t6 = time.time()
-    # simulated_annealing_synapse = asyncio.run(simulated_annealing_solver(synapse_request))
+    or_synapse = asyncio.run(or_solver_solution(synapse_request))
     t7 = time.time()
 
     # time_point = [t1, t2, t3, t4, t5, t6, t7]
@@ -98,8 +98,8 @@ def compare(gen_func=None, min_node = 2000, max_node = 5000):
     #         print(f'time process of {i} > 20')
     #         exit(0)
 
-    print(f"time lkh = {t5-t4}, time baseline = {t3-t2}, num node = {synapse_request.problem.n_nodes}")
-    list_synapse = [baseline_synapse,lkh_synapse]
+    print(f"time baseline = {t3-t2}, time lkh = {t5-t4}, time or = {t7 - t6} ,num node = {synapse_request.problem.n_nodes}")
+    list_synapse = [baseline_synapse,lkh_synapse, or_synapse]
     scores = [scoring_solution(synapse) for synapse in list_synapse]
     # scores = [1e+20, 1e+20, 1e+20]
     #
