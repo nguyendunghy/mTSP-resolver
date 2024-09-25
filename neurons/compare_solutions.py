@@ -71,6 +71,7 @@ def compare(gen_func=None, min_node = 2000, max_node = 5000):
         synapse_request = generate_problem_from_dataset(min_node=min_node, max_node=max_node)
         edges = recreate_edges(synapse_request.problem)
         synapse_request.problem.edges = edges
+        print(f'edges = {edges}')
     else:
         synapse_request = generate_problem()
     print(f'Number of node: {synapse_request.problem.n_nodes}')
