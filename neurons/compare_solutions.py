@@ -71,7 +71,7 @@ def compare(gen_func=None, min_node = 2000, max_node = 5000):
         synapse_request = generate_problem_from_dataset(min_node=min_node, max_node=max_node)
         edges = recreate_edges(synapse_request.problem)
         synapse_request.problem.edges = edges
-        with open(f'edges_{time.time()}.txt', 'w') as file:
+        with open(f'test_{time.time()}.txt', 'w') as file:
             # Write the string to the file
             file.write(str(edges.tolist()))
     else:
