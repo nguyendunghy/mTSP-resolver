@@ -9,7 +9,7 @@ if __name__ == '__main__':
 
     print("BASELINE:", data[:, 0].mean())
     print("LKH:", data[:, 1].mean())
-    print("OR :", data[:, 2].mean())
+    print("LKH 3 :", data[:, 2].mean())
     # # print("HPN:", data[:, 3].mean())
     print("MIN:", data[:, 3].mean())
     # print("NEW:", data[:, 4].mean())

@@ -8,9 +8,10 @@ import os
 from typing import Union
 
 class LKHSolver(BaseSolver):
-    def __init__(self, problem_types: List[Union[GraphV1Problem, GraphV2Problem]] = [GraphV1Problem(n_nodes=2), GraphV1Problem(n_nodes=2, directed=True, problem_type='General TSP')]):
+    def __init__(self, problem_types: List[Union[GraphV1Problem, GraphV2Problem]] = [GraphV1Problem(n_nodes=2), GraphV1Problem(n_nodes=2, directed=True, problem_type='General TSP')], num_run = 1):
         super().__init__(problem_types=problem_types)
         self.lkh_path = 'LKH/LKH'  # Update with the actual path to LKH
+        self.num_run = num_run
 
     def write_tsplib_file(self, distance_matrix: List[List[int]], filename: str, directed):
         """Writes a distance matrix to a TSPLIB formatted file."""
@@ -48,7 +49,7 @@ class LKHSolver(BaseSolver):
             f.write(f"MAX_TRIALS = 10\n")
             f.write(f"INITIAL_TOUR_ALGORITHM = NE\n")
             f.write(f"MAX_CANDIDATES = 5\n")
-            f.write(f"RUNS = 1\n")
+            f.write(f"RUNS = {self.num_run}\n")
             f.write("EOF\n")
 
     def run_lkh(self, parameter_file: str):
