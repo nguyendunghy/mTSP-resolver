@@ -193,18 +193,18 @@ def calculate_raw_data(config_file):
 
 
 if __name__ == '__main__':
-    config_file = 'raw_data/data.json'
-    calculate_raw_data(config_file)
+    # config_file = 'raw_data/data.json'
+    # calculate_raw_data(config_file)
 
-    # synapse_request = generate_problem_from_dataset(min_node=20, max_node=50)
-    # problem_dict = synapse_request.problem.dict()
-    # # json_problem = json.dumps(problem_dict)
-    # payload = json.dumps({
-    #     "problem": problem_dict,
-    #     "hash": 'abcdef',
-    #     "config_file_path": 'config.json'
-    # })
-    # print(f'payload = {payload}')
+    synapse_request = generate_problem_from_dataset(min_node=2000, max_node=2500)
+    problem_dict = synapse_request.problem.dict()
+    # json_problem = json.dumps(problem_dict)
+    payload = json.dumps({
+        "problem": problem_dict,
+        "hash": 'abcdef',
+        "config_file_path": 'config.json'
+    })
+    print(f'payload = {payload}')
     #
     # data = json.loads(payload)
     # problem = data['problem']
