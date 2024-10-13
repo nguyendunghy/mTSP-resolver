@@ -108,13 +108,22 @@ class Miner(BaseMinerNeuron):
         bt.logging.info(f'received synapse: {synapse}')
         num_node = synapse.problem.n_nodes
         config = load_config()
+
         num_node_run_baseline = config['num_node_run_baseline']
         bt.logging.info(f'num_node_run_baseline = {num_node_run_baseline}')
+
+        num_node_run_lkh3 = config['num_node_run_lkh3']
+        bt.logging.info(f'num_node_run_lkh3 = {num_node_run_lkh3}')
+
         edges = self.recreate_edges(synapse.problem).tolist()
         synapse.problem.edges = edges
         if isinstance(synapse.problem, GraphV2Problem) and num_node < num_node_run_baseline:
-            bt.logging.info(f'start running lkh')
-            lkh_synapse = asyncio.run(lkh_solver_solution(synapse))
+            bt.logging.info(f'start running lkh num_node = {num_node}')
+            if num_node < num_node_run_lkh3:
+                lkh_synapse = asyncio.run(lkh_solver_solution(synapse,num_run=3))
+            else:
+                lkh_synapse = asyncio.run(lkh_solver_solution(synapse))
+
             synapse.solution = lkh_synapse.solution
             # score = scoring_solution(synapse)
             # bt.logging.info(f'Score of lkh : {score}')
