@@ -19,8 +19,10 @@ hpn_solver = HPNSolver()
 new_solver = NewSearchSolver()
 sa_solver = SimulatedAnnealingSolver()
 or_solver = ORToolsSolver()
+
 lkh_solver = LKHSolver()
-lkh_solver_3 = LKHSolver(num_run=3)
+lkh_solver_3 = LKHSolver(num_run=3,max_trial=30)
+lkh_solver_5000 = LKHSolver(num_run=1, max_trial=2)
 
 async def baseline_solution(synapse):
     new_synapse = copy.deepcopy(synapse)
@@ -89,8 +91,10 @@ async def lkh_solver_solution(synapse, num_run=1):
     new_synapse = copy.deepcopy(synapse)
     if num_run == 1:
         route =  await  lkh_solver.solve_problem(new_synapse.problem)
-    else:
+    elif num_run == 3:
         route = await  lkh_solver_3.solve_problem(new_synapse.problem)
+    else:
+        route = await  lkh_solver_5000.solve_problem(new_synapse.problem)
     new_synapse.solution = route
     return new_synapse
 

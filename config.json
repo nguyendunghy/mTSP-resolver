@@ -22,6 +22,7 @@
   "set_cache_nx_timeout": 15,
   "time_sleep": 0.5,
   "num_count": 30,
-  "num_node_run_baseline": 4200,
-  "num_node_run_lkh3": 3500
+  "num_node_run_baseline": 5001,
+  "num_node_run_lkh3": 3500,
+  "num_node_run_opt5000":4200
 }

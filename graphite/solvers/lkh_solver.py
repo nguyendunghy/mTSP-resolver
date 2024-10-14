@@ -8,10 +8,15 @@ import os
 from typing import Union
 
 class LKHSolver(BaseSolver):
-    def __init__(self, problem_types: List[Union[GraphV1Problem, GraphV2Problem]] = [GraphV1Problem(n_nodes=2), GraphV1Problem(n_nodes=2, directed=True, problem_type='General TSP')], num_run = 1):
+    def __init__(self, problem_types: List[Union[GraphV1Problem, GraphV2Problem]] = [GraphV1Problem(n_nodes=2), GraphV1Problem(n_nodes=2, directed=True, problem_type='General TSP')],
+                 num_run=1,
+                 init_tour_algo='NE',
+                 max_trial=10):
         super().__init__(problem_types=problem_types)
         self.lkh_path = 'LKH/LKH'  # Update with the actual path to LKH
         self.num_run = num_run
+        self.init_tour_algo = init_tour_algo
+        self.max_trial = max_trial
 
     def write_tsplib_file(self, distance_matrix: List[List[int]], filename: str, directed):
         """Writes a distance matrix to a TSPLIB formatted file."""
@@ -46,8 +51,8 @@ class LKHSolver(BaseSolver):
             f.write(f"OUTPUT_TOUR_FILE = {tour_filename}\n")
             f.write(f"CANDIDATE_SET_TYPE = ALPHA\n")
             f.write(f"INITIAL_PERIOD = 10\n")
-            f.write(f"MAX_TRIALS = 10\n")
-            f.write(f"INITIAL_TOUR_ALGORITHM = NE\n")
+            f.write(f"MAX_TRIALS = {self.max_trial}\n")
+            f.write(f"INITIAL_TOUR_ALGORITHM = {self.init_tour_algo}\n")
             f.write(f"MAX_CANDIDATES = 5\n")
             f.write(f"RUNS = {self.num_run}\n")
             f.write("EOF\n")
@@ -96,18 +101,13 @@ class LKHSolver(BaseSolver):
 
         self.write_lkh_parameters(parameter_filename, problem_filename, tour_filename)
 
-        t1 = time.time()
         self.run_lkh(parameter_filename)
-        t2 = time.time()
 
         tour = self.read_lkh_solution(tour_filename)
-        t3 = time.time()
-        with open('time.json', 'w') as f:
-            print("TIMES:", t2 - t1, t3 - t2, t3 - t1, file=f)
 
-        # os.remove(problem_filename)
-        # os.remove(parameter_filename)
-        # os.remove(tour_filename)
+        os.remove(problem_filename)
+        os.remove(parameter_filename)
+        os.remove(tour_filename)
         return tour
 
     def problem_transformations(self, problem: Union[GraphV1Problem, GraphV2Problem]):
