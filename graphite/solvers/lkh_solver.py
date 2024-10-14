@@ -6,6 +6,7 @@ import asyncio
 import time
 import os
 from typing import Union
+import random
 
 class LKHSolver(BaseSolver):
     def __init__(self, problem_types: List[Union[GraphV1Problem, GraphV2Problem]] = [GraphV1Problem(n_nodes=2), GraphV1Problem(n_nodes=2, directed=True, problem_type='General TSP')],
@@ -92,10 +93,10 @@ class LKHSolver(BaseSolver):
         ]
         # else:
         #     scaled_distance_matrix = problem.nodes
-
-        problem_filename = "problem.tsp"
-        parameter_filename = "params.par"
-        tour_filename = "solution.tour"
+        random_number = random.randint(10000, 99999)
+        problem_filename = f"{random_number}_problem.tsp"
+        parameter_filename = f"{random_number}_params.par"
+        tour_filename = f"{random_number}_solution.tour"
 
         self.write_tsplib_file(scaled_distance_matrix, problem_filename, directed)
 
