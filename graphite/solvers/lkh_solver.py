@@ -12,12 +12,14 @@ class LKHSolver(BaseSolver):
     def __init__(self, problem_types: List[Union[GraphV1Problem, GraphV2Problem]] = [GraphV1Problem(n_nodes=2), GraphV1Problem(n_nodes=2, directed=True, problem_type='General TSP')],
                  num_run=1,
                  init_tour_algo='NE',
-                 max_trial=10):
+                 max_trial=10,
+                 input_file=None):
         super().__init__(problem_types=problem_types)
         self.lkh_path = 'LKH/LKH'  # Update with the actual path to LKH
         self.num_run = num_run
         self.init_tour_algo = init_tour_algo
         self.max_trial = max_trial
+        self.input_file=input_file
 
     def write_tsplib_file(self, distance_matrix: List[List[int]], filename: str, directed):
         """Writes a distance matrix to a TSPLIB formatted file."""
@@ -81,7 +83,6 @@ class LKHSolver(BaseSolver):
 
     async def solve(self, problem, future_id: int) -> List[int]:
         directed = problem.directed
-        # if(directed):
         distance_matrix = problem.edges
         is_float = isinstance(distance_matrix[0][0], float)
 
@@ -91,14 +92,13 @@ class LKHSolver(BaseSolver):
             [int(round(distance * scale_factor)) for distance in row]
             for row in distance_matrix
         ]
-        # else:
-        #     scaled_distance_matrix = problem.nodes
-        random_number = random.randint(10000, 99999)
-        problem_filename = f"{random_number}_problem.tsp"
+
+        random_number = random.randint(10000, 999999)
+        problem_filename = f"{random_number}_problem.tsp" if self.input_file is None else self.input_file
         parameter_filename = f"{random_number}_params.par"
         tour_filename = f"{random_number}_solution.tour"
-
-        self.write_tsplib_file(scaled_distance_matrix, problem_filename, directed)
+        if self.input_file is not None:
+            self.write_tsplib_file(scaled_distance_matrix, problem_filename, directed)
 
         self.write_lkh_parameters(parameter_filename, problem_filename, tour_filename)
 
@@ -106,7 +106,9 @@ class LKHSolver(BaseSolver):
 
         tour = self.read_lkh_solution(tour_filename)
 
-        os.remove(problem_filename)
+        if self.input_file is None:
+            os.remove(problem_filename)
+
         os.remove(parameter_filename)
         os.remove(tour_filename)
         return tour
