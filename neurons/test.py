@@ -26,7 +26,7 @@ def check_solutions():
 
 def check_call_api():
     start = time.time()
-    synapse = generate_problem_from_dataset(min_node=3000, max_node=4000)
+    synapse = generate_problem_from_dataset(min_node=2000, max_node=3000)
     config = load_config()
     edges = recreate_edges(synapse.problem).tolist()
     synapse.problem.edges = edges

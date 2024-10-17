@@ -7,7 +7,11 @@
     "http://185.26.8.53:7005/lkh_resolve",
     "http://185.26.8.53:7006/lkh_resolve",
     "http://185.26.8.53:7007/lkh_resolve",
-    "http://185.26.8.53:7008/lkh_resolve"
+    "http://185.26.8.53:7008/lkh_resolve",
+    "http://185.26.8.53:7009/lkh_resolve",
+    "http://185.26.8.53:7010/lkh_resolve",
+    "http://185.26.8.53:7011/lkh_resolve",
+    "http://185.26.8.53:7012/lkh_resolve"
   ],
   "lkh_timeout": 30,
   "lkh_api_timeout": 24,
