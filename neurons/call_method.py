@@ -1,4 +1,5 @@
 import copy
+import time
 
 from graphite.solvers import DPSolver, NearestNeighbourSolver, BeamSearchSolver, HPNSolver
 from graphite.solvers.TSPAnnealer import TSPAnnealer
@@ -59,8 +60,11 @@ async def hpn_solver_solution(synapse):
 
 
 def scoring_solution(synapse_req):
+    start = time.time()
     score_response_obj = ScoreResponse(synapse_req)
     miner_scores = score_response_obj.get_score(synapse_req)
+    end = time.time()
+    print(f'time scoring: {end - start}')
     return miner_scores
 
 

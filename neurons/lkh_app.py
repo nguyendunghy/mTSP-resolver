@@ -70,14 +70,11 @@ def register(data: dict):
     problem = data['problem']
     dataset_ref = problem.get('dataset_ref')
     print(f'dataset_ref = {dataset_ref}')
-    if dataset_ref is None:
-        graph_problem = GraphV1Problem.parse_obj(problem)
-        graph_synapse = GraphV1Synapse(problem=graph_problem)
-    else:
-        graph_problem = GraphV2Problem.parse_obj(problem)
-        edges = recreate_edges(graph_problem)
-        graph_problem.edges = edges
-        graph_synapse = GraphV2Synapse(problem=graph_problem)
+
+    graph_problem = GraphV2Problem.parse_obj(problem)
+    edges = recreate_edges(graph_problem)
+    graph_problem.edges = edges
+    graph_synapse = GraphV2Synapse(problem=graph_problem)
 
     synapse = run_resolver(args.method, graph_synapse)
     print(f"synapse = {synapse}")
