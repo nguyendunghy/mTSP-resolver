@@ -26,7 +26,7 @@ def hello_world():
 
 
 @app.post('/lkh_resolve')
-def register(data: dict):
+async def lkh_resolve(data: dict):
     start_time = time.time_ns()
     input_file = data['input_file_path']
     n_nodes = data['n_nodes']
