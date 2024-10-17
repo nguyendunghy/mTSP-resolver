@@ -31,11 +31,12 @@ def register(data: dict):
     input_file = data['input_file_path']
     n_nodes = data['n_nodes']
     dataset_ref = data['dataset_ref']
+    timeout = data['timeout']
 
     lkh_solver = LKHSolver(num_run=args.num_run, max_trial=args.max_trial, input_file=input_file)
     problem = GraphV2Problem(problem_type="Metric TSP", n_nodes=n_nodes, selected_ids=[0], cost_function="Geom",
                              dataset_ref=dataset_ref, directed=False)
-    solution = lkh_solver.solve(problem)
+    solution = lkh_solver.solve_problem(problem,timeout)
 
     print(f"time loading {int(time.time_ns() - start_time):,} nanosecond")
     return {
