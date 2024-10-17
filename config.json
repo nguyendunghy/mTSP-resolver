@@ -1,14 +1,14 @@
 {
-  "api_urls": [
-    "http://localhost:4301/resolve",
-    "http://localhost:4302/resolve",
-    "http://localhost:4303/resolve",
-    "http://localhost:4304/resolve",
-    "http://localhost:4300/resolve",
-    "http://localhost:4299/resolve",
-    "http://localhost:4298/resolve",
-    "http://localhost:4297/resolve"
+  "lkh_urls": [
+    "http://185.26.8.53:7001/lkh_resolve",
+    "http://185.26.8.53:7002/lkh_resolve",
+    "http://185.26.8.53:7003/lkh_resolve",
+    "http://185.26.8.53:7004/lkh_resolve",
+    "http://185.26.8.53:7005/lkh_resolve"
   ],
+  "lkh_timeout": 25,
+  "lkh_api_timeout": 25,
+  "lkh_input_dir": "/home/ubuntu/custom-graphite-subnet/problem",
   "api_urls_v2": [
     "http://localhost:4296/resolve"
   ],

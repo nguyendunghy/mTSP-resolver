@@ -7,18 +7,12 @@ import aiohttp
 import bittensor as bt
 import requests
 
-from neurons.call_method import baseline_solution
+from neurons.call_method import baseline_solution, build_lkh_input_file, scoring_solution
 from neurons.compare_solutions import generate_problem
 from neurons.redis_utils import gen_hash
 
 
-# List of POST APIs
-# api_urls = [
-#     "http://127.0.0.1:8080/resolve",
-#     "http://127.0.0.1:8081/resolve",
-#     "http://127.0.0.1:8082/resolve",
-#     "http://127.0.0.1:8083/resolve"
-# ]
+
 def load_config(config_file='config.json'):
     with open(config_file, 'r') as f:
         config = json.load(f)
@@ -28,6 +22,16 @@ async def post_api(session, url, data):
     async with session.post(url, json=data) as response:
         result = await response.json()
         return result
+
+async def post_api_timeout(session, url, data, timeout=10):
+    try:
+        async with session.post(url, json=data, timeout=aiohttp.ClientTimeout(total=timeout)) as response:
+            result = await response.json()
+            return result
+    except Exception as e:
+        bt.logging.error(e)
+        return {"result": None}
+
 
 
 async def call_server(synapse_request, config_file_path='config.json'):
@@ -72,21 +76,20 @@ async def call_server(synapse_request, config_file_path='config.json'):
 
 
 
-async def do_call(payload,config):
-    if payload.get('problem').get('dataset_ref') is not None:
-        api_urls = config['api_urls_v2']
-        print(f"api_urls_v2 = {api_urls}")
-    else:
-        api_urls = config['api_urls']
-        print(f"api_urls = {api_urls}")
+async def do_call(synapse_request,payload,config):
+    api_urls = config['lkh_urls']
+    api_timeout = config['lkh_api_timeout']
 
     async with aiohttp.ClientSession() as session:
-        tasks = [post_api(session, url, payload) for url in api_urls]
+        tasks = [post_api_timeout(session, url, payload,timeout=api_timeout) for url in api_urls]
         responses = await asyncio.gather(*tasks)
 
         response_list = []
         for idx, response in enumerate(responses):
             print(f"Response from API {idx + 1}:")
+            synapse_request.solution = response['result']
+            score = scoring_solution(synapse_request)
+            response['score'] = score
             print(response)
             response_list.append(response)
 
@@ -97,14 +100,19 @@ async def do_call(payload,config):
 async def call_apis(synapse_request,config):
     try:
         start_time = time.time_ns()
-        json_data = synapse_request.problem.dict()
+        lkh_input_file = build_lkh_input_file(synapse_request,config['lkh_input_dir'])
+        problem = synapse_request.problem
         payload = {
-            'problem':json_data
+            "input_file_path": lkh_input_file,
+            "n_nodes": problem.n_nodes,
+            "dataset_ref": problem.dataset_ref,
+            "timeout": config['lkh_url']
         }
-        print(f"synapse_request problem = {json_data}")
-        min_result = await do_call(payload,config)
 
-        print(f"min_result = {min_result}")
+        bt.logging.info(f"payload = {payload}")
+        min_result = await do_call(synapse_request,payload,config)
+
+        bt.logging.info(f"min_result = {min_result}")
 
         return min_result
     except Exception as e:

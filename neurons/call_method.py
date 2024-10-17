@@ -89,11 +89,11 @@ async def or_solver_solution(synapse):
     return new_synapse
 
 
-def build_lkh_input_file(synapse):
+def build_lkh_input_file(synapse,dir='/home/ubuntu'):
     lkh_solver = LKHSolver()
     import random
-    random_number = random.randint(10000, 999999)
-    problem_filename = f"{random_number}_prebuild_problem.tsp"
+    random_number = random.randint(1000, 9999999)
+    problem_filename = f"{dir}/{time.time()}_{random_number}_prebuild_problem.tsp"
     # scaled_distance_matrix = lkh_solver.build_scaled_distance_matrix(synapse.problem)
     scaled_distance_matrix = synapse.problem.edges
     lkh_solver.write_tsplib_file(scaled_distance_matrix, problem_filename, synapse.problem.directed)

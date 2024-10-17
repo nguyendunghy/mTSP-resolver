@@ -27,7 +27,7 @@ import graphite
 # import base miner class which takes care of most of the boilerplate
 from graphite.base.miner import BaseMinerNeuron
 from graphite.protocol import IsAlive, GraphSynapse
-from neurons.call_api import call_server, load_config
+from neurons.call_api import call_server, load_config, call_apis
 
 from graphite.solvers import NearestNeighbourSolver, DPSolver
 from graphite.protocol import  GraphV2Problem, GraphV1Synapse, GraphV2Synapse
@@ -106,37 +106,12 @@ class Miner(BaseMinerNeuron):
         bt.logging.info(f"synapse dendrite timeout {synapse.timeout}")
 
         bt.logging.info(f'received synapse: {synapse}')
-        num_node = synapse.problem.n_nodes
+        bt.logging.info(f'number of node: {synapse.problem.n_nodes}')
         config = load_config()
-
-        num_node_run_baseline = config['num_node_run_baseline']
-        bt.logging.info(f'num_node_run_baseline = {num_node_run_baseline}')
-
-        num_node_run_lkh3 = config['num_node_run_lkh3']
-        bt.logging.info(f'num_node_run_lkh3 = {num_node_run_lkh3}')
-
-        num_node_run_opt5000 = config['num_node_run_opt5000']
-        bt.logging.info(f'num_node_run_opt5000 = {num_node_run_opt5000}')
-        bt.logging.info(f'num_node = {num_node}')
-
         edges = self.recreate_edges(synapse.problem).tolist()
         synapse.problem.edges = edges
-        if isinstance(synapse.problem, GraphV2Problem) and num_node < num_node_run_baseline:
-            bt.logging.info(f'start running lkh num_node = {num_node}')
-            if num_node < num_node_run_lkh3:
-                lkh_synapse = asyncio.run(lkh_solver_solution(synapse,num_run=3))
-            elif num_node < num_node_run_opt5000:
-                lkh_synapse = asyncio.run(lkh_solver_solution(synapse, num_run=1))
-            else:
-                lkh_synapse = asyncio.run(lkh_solver_solution(synapse,num_run=-1))
-            synapse.solution = lkh_synapse.solution
-            # score = scoring_solution(synapse)
-            # bt.logging.info(f'Score of lkh : {score}')
-        else:
-            bt.logging.info(f'start running baseline')
-            route = await self.solvers['large'].solve_problem(synapse.problem)
-            synapse.solution = route
-
+        route = await call_apis(synapse,config)
+        synapse.solution = route
         synapse.problem.edges = None # remove edges before sending
         bt.logging.info(
             f"Miner returned value {synapse.solution} {len(synapse.solution) if isinstance(synapse.solution, list) else synapse.solution}"
