@@ -97,7 +97,7 @@ class LKHSolver(BaseSolver):
         problem_filename = f"{random_number}_problem.tsp" if self.input_file is None else self.input_file
         parameter_filename = f"{random_number}_params.par"
         tour_filename = f"{random_number}_solution.tour"
-        if self.input_file is not None:
+        if self.input_file is None:
             self.write_tsplib_file(scaled_distance_matrix, problem_filename, directed)
 
         self.write_lkh_parameters(parameter_filename, problem_filename, tour_filename)
