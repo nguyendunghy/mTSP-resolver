@@ -109,10 +109,10 @@ async def call_apis(synapse_request,config):
             "timeout": config['lkh_timeout']
         }
 
-        bt.logging.info(f"payload = {payload}")
+        print(f"payload = {payload}")
         min_result = await do_call(synapse_request,payload,config)
 
-        bt.logging.info(f"min_result = {min_result}")
+        print(f"min_result = {min_result}")
 
         return min_result
     except Exception as e:
