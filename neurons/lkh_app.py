@@ -1,3 +1,4 @@
+import asyncio
 import time
 from argparse import ArgumentParser
 from pydantic import BaseModel
@@ -45,11 +46,11 @@ def lkh_resolve():
         graph_problem = GraphV2Problem(problem_type="Metric TSP", n_nodes=n_nodes, selected_ids=[0],
                                        cost_function="Geom",
                                        dataset_ref=dataset_ref, directed=False)
-        solution = lkh_solver.solve_problem(graph_problem, timeout)
-        print(type(solution))
+
+        solution = asyncio.run(lkh_solver.solve_problem(graph_problem, timeout))
 
         print(f"time loading {int(time.time_ns() - start_time):,} nanosecond")
-        return jsonify({"message": f"SUCCESS", "result": {'solution':solution}, "score": 0}), 200
+        return jsonify({"message": f"SUCCESS", "result": solution, "score": 0}), 200
     else:
         return jsonify({"error": "Request must be JSON"}), 400
 
