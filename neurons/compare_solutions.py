@@ -83,12 +83,13 @@ def compare(gen_func=None, min_node = 2000, max_node = 5000):
     else:
         synapse_request = generate_problem()
     print(f'Number of node: {synapse_request.problem.n_nodes}')
-    lkh_input_file = build_lkh_input_file(synapse_request)
-    print(f"lkh_input_file = {lkh_input_file}")
 
     t1 = time.time()
+    lkh_input_file = build_lkh_input_file(synapse_request)
+    print(f"lkh_input_file = {lkh_input_file}")
     # beam_synapse = asyncio.run(beam_solver_solution(synapse_request))
     t2 = time.time()
+    print(f'time build input file: {t2-t1}')
     baseline_synapse = asyncio.run(baseline_solution(synapse_request))
     t3 = time.time()
     # nns_vali_synapse = asyncio.run(nns_vali_solver_solution(synapse_request))
@@ -110,7 +111,7 @@ def compare(gen_func=None, min_node = 2000, max_node = 5000):
     #         print(f'time process of {i} > 20')
     #         exit(0)
 
-    print(f"time baseline = {t3-t2}, time lkh = {t5-t4}, time or = {t7 - t6} ,num node = {synapse_request.problem.n_nodes}")
+    print(f"time baseline = {t3-t2}, time lkh = {t5-t4}, time lkh3 = {t7 - t6} ,num node = {synapse_request.problem.n_nodes}")
     list_synapse = [baseline_synapse,lkh_synapse, lkh_synapse_3]
     scores = [scoring_solution(synapse) for synapse in list_synapse]
     # scores = [1e+20, 1e+20, 1e+20]
