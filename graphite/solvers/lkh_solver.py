@@ -95,13 +95,13 @@ class LKHSolver(BaseSolver):
 
     async def solve(self, problem, future_id: int) -> List[int]:
         directed = problem.directed
-        scaled_distance_matrix = self.build_scaled_distance_matrix(problem)
-
         random_number = random.randint(10000, 999999)
         problem_filename = f"{random_number}_problem.tsp" if self.input_file is None else self.input_file
         parameter_filename = f"{random_number}_params.par"
         tour_filename = f"{random_number}_solution.tour"
+
         if self.input_file is None:
+            scaled_distance_matrix = self.build_scaled_distance_matrix(problem)
             self.write_tsplib_file(scaled_distance_matrix, problem_filename, directed)
 
         self.write_lkh_parameters(parameter_filename, problem_filename, tour_filename)
