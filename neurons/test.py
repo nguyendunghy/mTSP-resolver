@@ -37,4 +37,8 @@ def check_call_api():
 
 
 if __name__ == '__main__':
-    check_call_api()
+    count  = 0
+    while count < 2:
+        check_call_api()
+        count = count + 1
+        time.sleep(2)
