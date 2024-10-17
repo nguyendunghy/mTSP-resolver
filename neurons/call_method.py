@@ -101,7 +101,7 @@ async def lkh_solver_solution(synapse, num_run=1, input_file=None):
         lkh_solver = LKHSolver(input_file=input_file)
         route =  await  lkh_solver.solve_problem(new_synapse.problem)
     elif num_run == 3:
-        lkh_solver_3 = LKHSolver(num_run=3,max_trial=30,input_file=input_file)
+        lkh_solver_3 = LKHSolver(num_run=4,max_trial=30,input_file=input_file)
         route = await  lkh_solver_3.solve_problem(new_synapse.problem)
     else:
         lkh_solver_5000 = LKHSolver(num_run=1, max_trial=2,input_file=input_file)
