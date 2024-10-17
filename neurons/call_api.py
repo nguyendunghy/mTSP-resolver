@@ -86,7 +86,7 @@ async def do_call(synapse_request,payload,config):
 
         response_list = []
         for idx, response in enumerate(responses):
-            print(f"Response from API {idx + 1}:")
+            print(f"Response from API {idx + 1}: {api_urls[idx]}")
             synapse_request.solution = response['result']
             score = scoring_solution(synapse_request)
             response['score'] = score
