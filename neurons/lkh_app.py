@@ -1,11 +1,11 @@
 import time
 from argparse import ArgumentParser
 
+from pydantic import BaseModel
 
 from graphite.protocol import GraphV2Problem
 from graphite.solvers.lkh_solver import LKHSolver
 from fastapi import FastAPI
-from typing import Dict
 
 app = FastAPI()
 
@@ -21,19 +21,25 @@ def parse():
 args = parse()
 
 
+class InputProblem(BaseModel):
+    input_file_path: str
+    n_nodes: int
+    dataset_ref: str
+    timeout: int
+
+
 @app.get("/")
 def hello_world():
     return "Hello! I am resolver service"
 
 
 @app.post('/lkh_resolve')
-async def lkh_resolve(data: Dict):
-    problem = data['problem']
+async def lkh_resolve(problem: InputProblem):
     start_time = time.time_ns()
-    input_file = problem['input_file_path']
-    n_nodes = problem['n_nodes']
-    dataset_ref = problem['dataset_ref']
-    timeout = problem['timeout']
+    input_file = problem.input_file_path
+    n_nodes = problem.n_nodes
+    dataset_ref = problem.dataset_ref
+    timeout = problem.timeout
 
     lkh_solver = LKHSolver(num_run=args.num_run, max_trial=args.max_trial, input_file=input_file)
     graph_problem = GraphV2Problem(problem_type="Metric TSP", n_nodes=n_nodes, selected_ids=[0], cost_function="Geom",
