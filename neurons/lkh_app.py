@@ -48,7 +48,7 @@ def lkh_resolve():
         solution = lkh_solver.solve_problem(graph_problem, timeout)
 
         print(f"time loading {int(time.time_ns() - start_time):,} nanosecond")
-        return jsonify({"message": f"SUCCESS", "result": solution, "score": 0}), 200
+        return jsonify({"message": f"SUCCESS", "result": {'solution':solution}, "score": 0}), 200
     else:
         return jsonify({"error": "Request must be JSON"}), 400
 
