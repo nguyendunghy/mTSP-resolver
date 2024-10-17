@@ -90,8 +90,8 @@ def build_lkh_input_file(synapse):
     import random
     random_number = random.randint(10000, 999999)
     problem_filename = f"{random_number}_prebuild_problem.tsp"
-    scaled_distance_matrix = lkh_solver.build_scaled_distance_matrix(synapse.problem)
-    # scaled_distance_matrix = synapse.problem.edges
+    # scaled_distance_matrix = lkh_solver.build_scaled_distance_matrix(synapse.problem)
+    scaled_distance_matrix = synapse.problem.edges
     lkh_solver.write_tsplib_file(scaled_distance_matrix, problem_filename, synapse.problem.directed)
     return problem_filename
 
