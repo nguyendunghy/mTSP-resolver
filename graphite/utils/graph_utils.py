@@ -47,7 +47,6 @@ def get_tour_distance(synapse:Union[GraphSynapse,GraphV1Synapse, GraphV2Synapse]
         return np.inf
     distance=np.nan
     if problem.directed or isinstance(synapse.problem, GraphV2Problem):
-        print(f'Run here because of GraphV2Problem')
         # This is a General TSP problem
         # check if path and edges are of the appropriate size
         edges=problem.edges

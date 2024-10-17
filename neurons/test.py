@@ -1,3 +1,5 @@
+import time
+
 import numpy as np
 import tqdm
 import asyncio
@@ -23,12 +25,15 @@ def check_solutions():
 
 
 def check_call_api():
-    synapse = generate_problem_from_dataset(min_node=2000, max_node=2500)
+    start = time.time()
+    synapse = generate_problem_from_dataset(min_node=4500, max_node=5000)
     config = load_config()
     edges = recreate_edges(synapse.problem).tolist()
     synapse.problem.edges = edges
     route = asyncio.run(call_apis(synapse, config))
     synapse.solution = route
+    end = time.time()
+    print(f'time processing total : {end-start}')
 
 
 if __name__ == '__main__':
