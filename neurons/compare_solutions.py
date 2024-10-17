@@ -13,7 +13,7 @@ from graphite.dataset.dataset_generator import MetricTSPGenerator, GeneralTSPGen
 from graphite.protocol import GraphV1Synapse,GraphV2Synapse, GraphV1Problem, GraphV2Problem
 from neurons.call_method import beam_solver_solution, baseline_solution, nns_vali_solver_solution, hpn_solver_solution, \
     scoring_solution, new_solver_solution, tsp_annealer_solver, simulated_annealing_solver, or_solver_solution, \
-    lkh_solver_solution
+    lkh_solver_solution, build_lkh_input_file
 
 loaded_datasets = {
     ASIA_MSB_DETAILS['ref_id']: load_dataset(ASIA_MSB_DETAILS['ref_id']),
@@ -83,6 +83,9 @@ def compare(gen_func=None, min_node = 2000, max_node = 5000):
     else:
         synapse_request = generate_problem()
     print(f'Number of node: {synapse_request.problem.n_nodes}')
+    lkh_input_file = build_lkh_input_file(synapse_request)
+    print(f"lkh_input_file = {lkh_input_file}")
+
     t1 = time.time()
     # beam_synapse = asyncio.run(beam_solver_solution(synapse_request))
     t2 = time.time()
@@ -90,11 +93,11 @@ def compare(gen_func=None, min_node = 2000, max_node = 5000):
     t3 = time.time()
     # nns_vali_synapse = asyncio.run(nns_vali_solver_solution(synapse_request))
     t4 = time.time()
-    lkh_synapse = asyncio.run(lkh_solver_solution(synapse_request))
+    lkh_synapse = asyncio.run(lkh_solver_solution(synapse_request,input_file=lkh_input_file))
     t5 = time.time()
     # new_synapse = asyncio.run(new_solver_solution(synapse_request))
     t6 = time.time()
-    lkh_synapse_3 = asyncio.run(lkh_solver_solution(synapse_request, num_run=3))
+    lkh_synapse_3 = asyncio.run(lkh_solver_solution(synapse_request, num_run=3,input_file=lkh_input_file))
     t7 = time.time()
 
     # time_point = [t1, t2, t3, t4, t5, t6, t7]

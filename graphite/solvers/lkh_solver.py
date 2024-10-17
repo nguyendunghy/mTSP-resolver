@@ -81,17 +81,21 @@ class LKHSolver(BaseSolver):
         tour.append(0)
         return tour
 
-    async def solve(self, problem, future_id: int) -> List[int]:
-        directed = problem.directed
+    def build_scaled_distance_matrix(self,problem):
         distance_matrix = problem.edges
         is_float = isinstance(distance_matrix[0][0], float)
 
         scale_factor = 1 if is_float else 1
-        
+
         scaled_distance_matrix = [
             [int(round(distance * scale_factor)) for distance in row]
             for row in distance_matrix
         ]
+        return scaled_distance_matrix
+
+    async def solve(self, problem, future_id: int) -> List[int]:
+        directed = problem.directed
+        scaled_distance_matrix = self.build_scaled_distance_matrix(problem)
 
         random_number = random.randint(10000, 999999)
         problem_filename = f"{random_number}_problem.tsp" if self.input_file is None else self.input_file

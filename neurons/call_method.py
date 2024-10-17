@@ -85,16 +85,25 @@ async def or_solver_solution(synapse):
     return new_synapse
 
 
-async def lkh_solver_solution(synapse, num_run=1):
+def build_lkh_input_file(synapse):
+    lkh_solver = LKHSolver()
+    import random
+    random_number = random.randint(10000, 999999)
+    problem_filename = f"{random_number}_prebuild_problem.tsp"
+    scaled_distance_matrix = lkh_solver.build_scaled_distance_matrix(synapse.problem)
+    lkh_solver.write_tsplib_file(scaled_distance_matrix, problem_filename, synapse.problem.directed)
+    return problem_filename
+
+async def lkh_solver_solution(synapse, num_run=1, input_file=None):
     new_synapse = copy.deepcopy(synapse)
     if num_run == 1:
-        lkh_solver = LKHSolver()
+        lkh_solver = LKHSolver(input_file=input_file)
         route =  await  lkh_solver.solve_problem(new_synapse.problem)
     elif num_run == 3:
-        lkh_solver_3 = LKHSolver(num_run=3,max_trial=30)
+        lkh_solver_3 = LKHSolver(num_run=3,max_trial=30,input_file=input_file)
         route = await  lkh_solver_3.solve_problem(new_synapse.problem)
     else:
-        lkh_solver_5000 = LKHSolver(num_run=1, max_trial=2)
+        lkh_solver_5000 = LKHSolver(num_run=1, max_trial=2,input_file=input_file)
         route = await  lkh_solver_5000.solve_problem(new_synapse.problem)
     new_synapse.solution = route
     return new_synapse
