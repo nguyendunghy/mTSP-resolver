@@ -15,7 +15,7 @@
   ],
   "lkh_timeout": 30,
   "lkh_api_timeout": 24,
-  "lkh_input_dir": "/home/ubuntu/custom-graphite-subnet/problem",
+  "lkh_input_dir": "/home/ubuntu/jacktensor/custom-graphite-subnet/problem",
   "api_urls_v2": [
     "http://localhost:4296/resolve"
   ],
