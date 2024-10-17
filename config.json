@@ -6,8 +6,8 @@
     "http://185.26.8.53:7004/lkh_resolve",
     "http://185.26.8.53:7005/lkh_resolve"
   ],
-  "lkh_timeout": 25,
-  "lkh_api_timeout": 25,
+  "lkh_timeout": 30,
+  "lkh_api_timeout": 24,
   "lkh_input_dir": "/home/ubuntu/custom-graphite-subnet/problem",
   "api_urls_v2": [
     "http://localhost:4296/resolve"
