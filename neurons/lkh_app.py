@@ -46,6 +46,7 @@ def lkh_resolve():
                                        cost_function="Geom",
                                        dataset_ref=dataset_ref, directed=False)
         solution = lkh_solver.solve_problem(graph_problem, timeout)
+        print(type(solution))
 
         print(f"time loading {int(time.time_ns() - start_time):,} nanosecond")
         return jsonify({"message": f"SUCCESS", "result": {'solution':solution}, "score": 0}), 200
