@@ -5,7 +5,7 @@ from graphite.solvers.lkh_solver import LKHSolver
 import fastapi
 from fastapi import status
 from fastapi.responses import JSONResponse
-
+from typing import Dict
 app = fastapi.FastAPI()
 
 
@@ -26,7 +26,7 @@ def hello_world():
 
 
 @app.post('/lkh_resolve')
-async def lkh_resolve(data: dict):
+async def lkh_resolve(data: Dict):
     start_time = time.time_ns()
     input_file = data['input_file_path']
     n_nodes = data['n_nodes']
