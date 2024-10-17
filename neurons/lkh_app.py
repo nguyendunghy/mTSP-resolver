@@ -1,13 +1,13 @@
 import time
 from argparse import ArgumentParser
+
+
 from graphite.protocol import GraphV2Problem
 from graphite.solvers.lkh_solver import LKHSolver
-import fastapi
-from fastapi import status
-from fastapi.responses import JSONResponse
+from fastapi import FastAPI
 from typing import Dict
 
-app = fastapi.FastAPI()
+app = FastAPI()
 
 
 def parse():
