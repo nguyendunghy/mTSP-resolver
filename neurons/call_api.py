@@ -94,6 +94,7 @@ async def do_call(synapse_request,payload,config):
             response_list.append(response)
 
         min_score_dict = min(response_list, key=lambda x: x['score'])
+        print(f'return route which has score = {min_score_dict['score']}')
         min_result = min_score_dict['result']
         return min_result
 
