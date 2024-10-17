@@ -6,6 +6,7 @@ import fastapi
 from fastapi import status
 from fastapi.responses import JSONResponse
 from typing import Dict
+
 app = fastapi.FastAPI()
 
 
@@ -27,16 +28,17 @@ def hello_world():
 
 @app.post('/lkh_resolve')
 async def lkh_resolve(data: Dict):
+    problem = data['problem']
     start_time = time.time_ns()
-    input_file = data['input_file_path']
-    n_nodes = data['n_nodes']
-    dataset_ref = data['dataset_ref']
-    timeout = data['timeout']
+    input_file = problem['input_file_path']
+    n_nodes = problem['n_nodes']
+    dataset_ref = problem['dataset_ref']
+    timeout = problem['timeout']
 
     lkh_solver = LKHSolver(num_run=args.num_run, max_trial=args.max_trial, input_file=input_file)
-    problem = GraphV2Problem(problem_type="Metric TSP", n_nodes=n_nodes, selected_ids=[0], cost_function="Geom",
-                             dataset_ref=dataset_ref, directed=False)
-    solution = lkh_solver.solve_problem(problem,timeout)
+    graph_problem = GraphV2Problem(problem_type="Metric TSP", n_nodes=n_nodes, selected_ids=[0], cost_function="Geom",
+                                   dataset_ref=dataset_ref, directed=False)
+    solution = lkh_solver.solve_problem(graph_problem, timeout)
 
     print(f"time loading {int(time.time_ns() - start_time):,} nanosecond")
     return {
@@ -48,4 +50,5 @@ async def lkh_resolve(data: Dict):
 
 if __name__ == '__main__':
     import uvicorn
+
     uvicorn.run(app, host="0.0.0.0", port=args.port)
