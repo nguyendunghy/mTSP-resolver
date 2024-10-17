@@ -86,6 +86,8 @@ def geom_edges(lat_lon_array):
     np.fill_diagonal(distances, 0)
 
     return distances
+    # distances =  distances.astype(int)
+    # return distances
 
 
 def man_2d_edges(lat_lon_array: np.ndarray) -> np.ndarray:

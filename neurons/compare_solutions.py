@@ -69,7 +69,10 @@ def generate_problem_from_dataset(min_node=2000, max_node=5000):
 def compare(gen_func=None, min_node = 2000, max_node = 5000):
     if gen_func == 'V2':
         synapse_request = generate_problem_from_dataset(min_node=min_node, max_node=max_node)
-        edges = recreate_edges(synapse_request.problem).tolist()
+        start = time.time()
+        edges = recreate_edges(synapse_request.problem)
+        end = time.time()
+        print(f'time calculating edges: {end-start}')
         synapse_request.problem.edges = edges
         # body_dict = {
         #     'route':edges
