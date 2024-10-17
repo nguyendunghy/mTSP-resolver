@@ -93,7 +93,7 @@ async def do_call(synapse_request,payload,config):
             synapse_request.solution = response['result']
             score = scoring_solution(synapse_request)
             response['score'] = score
-            print(response)
+            # print(response)
             response_list.append(response)
 
         min_score_dict = min(response_list, key=lambda x: x['score'])
