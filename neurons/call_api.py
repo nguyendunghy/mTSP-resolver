@@ -106,7 +106,7 @@ async def call_apis(synapse_request,config):
             "input_file_path": lkh_input_file,
             "n_nodes": problem.n_nodes,
             "dataset_ref": problem.dataset_ref,
-            "timeout": config['lkh_url']
+            "timeout": config['lkh_timeout']
         }
 
         bt.logging.info(f"payload = {payload}")
