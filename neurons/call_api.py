@@ -25,8 +25,11 @@ async def post_api(session, url, data):
 
 async def post_api_timeout(session, url, data, timeout=10):
     try:
+        start_time = time.time()
         async with session.post(url, json=data, timeout=aiohttp.ClientTimeout(total=timeout)) as response:
             result = await response.json()
+            end_time = time.time()
+            print(f'time call api {url}: {end_time-start_time}')
             return result
     except Exception as e:
         bt.logging.error(e)
