@@ -14,7 +14,7 @@ def parse():
     parser.add_argument('--port', type=int, default=8080, help='Port to run the server on.')
     parser.add_argument('--num_run', type=str, default='', help='Number of running')
     parser.add_argument('--max_trial', type=str, default='', help='Maximum of trial')
-    parser.add_argument('--max_node', type=str, default=5000, help='Maximum of trial')
+    parser.add_argument('--max_node', type=int, default=5000, help='Maximum of trial')
     return parser.parse_args()
 
 
