@@ -13,8 +13,7 @@
     "http://localhost:7011/lkh_resolve",
     "http://localhost:7012/lkh_resolve",
     "http://localhost:7013/lkh_resolve",
-    "http://localhost:7014/lkh_resolve",
-    "http://localhost:7015/lkh_resolve"
+    "http://localhost:7014/lkh_resolve"
   ],
   "lkh_timeout": 30,
   "lkh_api_timeout": 24,
