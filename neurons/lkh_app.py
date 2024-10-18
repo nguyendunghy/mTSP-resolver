@@ -43,6 +43,7 @@ def lkh_resolve():
         dataset_ref = problem['dataset_ref']
         timeout = problem['timeout']
         if n_nodes > args.max_node:
+            print(f'problem too large. Num node = {n_nodes}')
             return jsonify({"message": f"PROBLEM TOO LARGE", "result": None, "score": 0}), 200
 
         lkh_solver = LKHSolver(num_run=args.num_run, max_trial=args.max_trial, input_file=input_file)
