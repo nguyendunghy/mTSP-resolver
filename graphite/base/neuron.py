@@ -141,11 +141,11 @@ class BaseNeuron(ABC):
         # Always save state.
         self.save_state()
 
-    def recreate_edges(self, problem: GraphV2Problem):
+    def recreate_edges(self, problem: GraphV2Problem, factor=1):
         node_coords_np = self.loaded_datasets[problem.dataset_ref]["data"]
         node_coords = np.array([node_coords_np[i][1:] for i in problem.selected_ids])
         if problem.cost_function == "Geom":
-            return geom_edges(node_coords)
+            return geom_edges(node_coords,factor=factor)
         elif problem.cost_function == "Euclidean2D":
             return euc_2d_edges(node_coords)
         elif problem.cost_function == "Manhatten2D":

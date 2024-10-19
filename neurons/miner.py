@@ -106,9 +106,16 @@ class Miner(BaseMinerNeuron):
         bt.logging.info(f"synapse dendrite timeout {synapse.timeout}")
 
         bt.logging.info(f'received synapse: {synapse}')
-        bt.logging.info(f'number of node: {synapse.problem.n_nodes}')
+        bt.logging.info(f'number of node: {synapse.problem.n_nodes}', data_ref = {synapse.problem.dataset_ref})
         config = load_config()
-        edges = self.recreate_edges(synapse.problem).tolist()
+        factor = 1
+        if synapse.problem.dataset_ref == 'Asia_MSB':
+            factor = config['asia_factor']
+        elif synapse.problem.dataset_ref == 'World_TSP':
+            factor = config['world_factor']
+        bt.logging.info(f'factor: {factor}')
+
+        edges = self.recreate_edges(synapse.problem,factor=factor).tolist()
         synapse.problem.edges = edges
         route = await call_apis(synapse,config)
         synapse.solution = route

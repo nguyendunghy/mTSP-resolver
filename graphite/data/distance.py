@@ -59,7 +59,7 @@ def man_3d(head:Iterable[Union[int,float]], tail:Iterable[Union[int,float]]):
     except IndexError as e:
         bt.logging.error("Input node structure not suitable for Manhattan 3D: {e}")
 
-def geom_edges(lat_lon_array):
+def geom_edges(lat_lon_array, factor=1):
     '''
     Vectorized geom distance calculation using numpy.
     Requires lat_lon_array to be an Nx2 array where N is the number of nodes, 
@@ -80,7 +80,7 @@ def geom_edges(lat_lon_array):
     q3 = np.cos(lat1 + lat2)
 
     # Compute distances in a vectorized way
-    distances = REF_EARTH_RADIUS * np.arccos(0.5 * ((1.0 + q1) * q2 - (1.0 - q1) * q3)) + 1.0
+    distances = factor * REF_EARTH_RADIUS * np.arccos(0.5 * ((1.0 + q1) * q2 - (1.0 - q1) * q3)) + 1.0
 
     # Ensure the diagonal (distance between the same nodes) is 0
     np.fill_diagonal(distances, 0)
