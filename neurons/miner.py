@@ -106,7 +106,7 @@ class Miner(BaseMinerNeuron):
         bt.logging.info(f"synapse dendrite timeout {synapse.timeout}")
 
         bt.logging.info(f'received synapse: {synapse}')
-        bt.logging.info(f'number of node: {synapse.problem.n_nodes}', data_ref = {synapse.problem.dataset_ref})
+        bt.logging.info(f'number of node: {synapse.problem.n_nodes}, data_ref = {synapse.problem.dataset_ref}')
         config = load_config()
         factor = 1
         if synapse.problem.dataset_ref == 'Asia_MSB':
