@@ -44,8 +44,13 @@ def lkh_resolve():
         n_nodes = problem['n_nodes']
         dataset_ref = problem['dataset_ref']
         timeout = problem['timeout']
-        if n_nodes > args.max_node:
-            print(f'problem too large. Num node = {n_nodes}')
+
+        if dataset_ref == 'Asia_MSB' and n_nodes > args.max_node_asia:
+            print(f'problem too large in Asia_MSB. Num node = {n_nodes}')
+            return jsonify({"message": f"PROBLEM TOO LARGE", "result": None, "score": 0}), 200
+
+        if dataset_ref == 'World_TSP' and n_nodes > args.max_node_world:
+            print(f'problem too large in World_TSP. Num node = {n_nodes}')
             return jsonify({"message": f"PROBLEM TOO LARGE", "result": None, "score": 0}), 200
 
         lkh_solver = LKHSolver(num_run=args.num_run, max_trial=args.max_trial, input_file=input_file)
