@@ -1,0 +1,39 @@
+{
+  "lkh_urls": [
+    "http://localhost:10001/lkh_resolve",
+    "http://localhost:10002/lkh_resolve",
+    "http://localhost:10003/lkh_resolve",
+    "http://localhost:10004/lkh_resolve",
+    "http://localhost:10005/lkh_resolve",
+    "http://localhost:10006/lkh_resolve",
+    "http://localhost:10007/lkh_resolve",
+    "http://localhost:10008/lkh_resolve",
+    "http://localhost:10009/lkh_resolve",
+    "http://localhost:10010/lkh_resolve",
+    "http://localhost:10011/lkh_resolve",
+    "http://localhost:10012/lkh_resolve",
+    "http://localhost:10013/lkh_resolve",
+    "http://localhost:10014/lkh_resolve"
+  ],
+  "lkh_timeout": 30,
+  "lkh_api_timeout": 24,
+  "asia_factor": 100,
+  "world_factor": 10,
+  "lkh_input_dir": "/home/ubuntu/jacktensor/custom-graphite-subnet/problem",
+  "api_urls_v2": [
+    "http://localhost:4296/resolve"
+  ],
+  "server_api": "http://185.209.179.141:4201/server",
+  "server_timeout": 25,
+  "set_cache_url": "http://185.209.179.141:4305/set-cache",
+  "set_cache_timeout": 15,
+  "get_cache_url": "http://185.209.179.141:4305/get-cache",
+  "get_cache_timeout": 15,
+  "set_cache_nx": "http://185.209.179.141:4305/set-cache-nx",
+  "set_cache_nx_timeout": 15,
+  "time_sleep": 0.5,
+  "num_count": 30,
+  "num_node_run_baseline": 5001,
+  "num_node_run_lkh3": 3500,
+  "num_node_run_opt5000":4200
+}
