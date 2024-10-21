@@ -196,6 +196,7 @@ class GraphV2ProblemMulti(GraphV2Problem):
     single_depot: bool = Field(True, description="Whether problem is a single or multi depot formulation")
     depots: List[int] = Field([0,0], description="List of selected 'city' indices for which the respective salesmen paths begin")
     dataset_ref: Literal['Asia_MSB', 'World_TSP'] = Field('Asia_MSB', description="Dataset reference file")
+    edges: Union[List[List[Union[conint(ge=0), confloat(ge=0)]]], Iterable, None] = Field(default_factory=list, description="Edge Weights")  # If not none, this represents a square matrix of edges where edges[source;row][destination;col] is the cost of a given edge
 
     ### Expensive check only needed for organic requests
     # @model_validator(mode='after')
