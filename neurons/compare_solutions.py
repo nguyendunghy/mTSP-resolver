@@ -75,6 +75,7 @@ def generate_problem_for_mTSP(min_node=500, max_node=2000):
     bt.logging.info(f"dataset ref {dataset_ref} selected from {list(loaded_datasets.keys())}" )
     selected_node_idxs = random.sample(range(len(loaded_datasets[dataset_ref]['data'])), n_nodes)
     m = random.randint(2, 10)
+    m=4
     test_problem_obj = GraphV2ProblemMulti(problem_type="Metric mTSP", n_nodes=n_nodes, selected_ids=selected_node_idxs, cost_function="Geom", dataset_ref=dataset_ref, n_salesmen=m, depots=[0]*m)
     try:
 
