@@ -67,7 +67,7 @@ class MTSP_ORToolsSolver(BaseSolver):
         return []
 
     def problem_transformations(self, problem: Union[GraphV2ProblemMulti]):
-        return problem.edges
+        return problem
 
 
     def create_data_model(self,distance_matrix, num_vehicles, depot=0):
