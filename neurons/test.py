@@ -36,7 +36,7 @@ def check_call_api():
     print(f'time processing total : {end-start}')
 
 def check_mtsp():
-    mTSP_solve(min_node=500, max_node=2000)
+    mTSP_solve(min_node=50, max_node=100)
 
 
 if __name__ == '__main__':

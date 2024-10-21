@@ -88,7 +88,7 @@ def generate_problem_for_mTSP(min_node=500, max_node=2000):
     return graphsynapse_req
 
 def mTSP_solve(min_node, max_node):
-    synapse = generate_problem_for_mTSP(min_node=500, max_node=2000)
+    synapse = generate_problem_for_mTSP(min_node=min_node, max_node=max_node)
     print(f'synapse = {synapse}')
 
     edges = recreate_edges(synapse.problem,factor=1).tolist()
