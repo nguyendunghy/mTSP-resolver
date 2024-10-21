@@ -27,6 +27,7 @@ import graphite
 # import base miner class which takes care of most of the boilerplate
 from graphite.base.miner import BaseMinerNeuron
 from graphite.protocol import IsAlive
+from neurons.call_api import load_config, call_apis
 
 
 from graphite.solvers import NearestNeighbourSolver, DPSolver, NearestNeighbourMultiSolver
@@ -101,42 +102,35 @@ class Miner(BaseMinerNeuron):
         bt.logging.info(
             f"Miner received input to solve {synapse.problem.n_nodes}"
         )
-        
+
         if isinstance(synapse.problem, GraphV2Problem):
             # recreate problem edges for both the GraphV2Problem and GraphV2ProblemMulti which inherits from GraphV2Problem
             synapse.problem.edges = self.recreate_edges(synapse.problem)
-        
+
 
         bt.logging.info(f"synapse dendrite timeout {synapse.timeout}")
+        bt.logging.info(f'received synapse: {synapse}')
 
         # Conditional assignment of problems to each solver
         if not isinstance(synapse.problem, GraphV2ProblemMulti):
-            if synapse.problem.n_nodes < 15:
-                # Solves the problem to optimality but is very computationally intensive
-                route = await self.solvers['small'].solve_problem(synapse.problem)
-            else:
-                # Simple heuristic that does not guarantee optimality.
-                route = await self.solvers['large'].solve_problem(synapse.problem)
+            bt.logging.info(f'number of node: {synapse.problem.n_nodes}, data_ref = {synapse.problem.dataset_ref}')
+            config = load_config()
+            factor = 1
+            if synapse.problem.dataset_ref == 'Asia_MSB':
+                factor = config['asia_factor']
+            elif synapse.problem.dataset_ref == 'World_TSP':
+                factor = config['world_factor']
+            bt.logging.info(f'factor: {factor}')
+
+            edges = self.recreate_edges(synapse.problem,factor=factor).tolist()
+            synapse.problem.edges = edges
+            route = await call_apis(synapse,config)
             synapse.solution = route
+            synapse.problem.edges = None # remove edges before sending
         else:
             routes = await self.solvers['multi_large'].solve_problem(synapse.problem)
             synapse.solution = routes
-        
-        bt.logging.info(f'received synapse: {synapse}')
-        bt.logging.info(f'number of node: {synapse.problem.n_nodes}, data_ref = {synapse.problem.dataset_ref}')
-        config = load_config()
-        factor = 1
-        if synapse.problem.dataset_ref == 'Asia_MSB':
-            factor = config['asia_factor']
-        elif synapse.problem.dataset_ref == 'World_TSP':
-            factor = config['world_factor']
-        bt.logging.info(f'factor: {factor}')
 
-        edges = self.recreate_edges(synapse.problem,factor=factor).tolist()
-        synapse.problem.edges = edges
-        route = await call_apis(synapse,config)
-        synapse.solution = route
-        synapse.problem.edges = None # remove edges before sending
         bt.logging.info(
             f"Miner returned value {synapse.solution} {len(synapse.solution) if isinstance(synapse.solution, list) else synapse.solution}"
         )
