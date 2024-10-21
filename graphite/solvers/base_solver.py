@@ -20,7 +20,7 @@
 from abc import ABC, abstractmethod
 from typing import List
 from graphite.utils.graph_utils import valid_problem, timeout
-from graphite.protocol import GraphV1Problem, GraphV2Problem
+from graphite.protocol import GraphV1Problem, GraphV2Problem, GraphV2ProblemMulti
 import bittensor as bt
 import asyncio
 import concurrent.futures
@@ -31,7 +31,7 @@ import numpy as np
 DEFAULT_SOLVER_TIMEOUT = 35
 
 class BaseSolver(ABC):
-    def __init__(self, problem_types:List[Union[GraphV1Problem, GraphV2Problem]]):
+    def __init__(self, problem_types:List[Union[GraphV1Problem, GraphV2Problem, GraphV2ProblemMulti]]):
         self.problem_types = [problem.problem_type for problem in problem_types] # defining what problems the solver is equipped to solve
         self.future_tracker = {}
     
@@ -48,7 +48,7 @@ class BaseSolver(ABC):
         ...
     
     @abstractmethod
-    def problem_transformations(self, problem: Union[GraphV1Problem, GraphV2Problem]):
+    def problem_transformations(self, problem: Union[GraphV1Problem, GraphV2Problem, GraphV2ProblemMulti]):
         '''
         This abstract class applies any necessary transformation to the problem to convert it to the form required for the solve method
         '''
@@ -61,7 +61,7 @@ class BaseSolver(ABC):
         '''
         return valid_problem(problem) and problem.problem_type in self.problem_types
 
-    async def solve_problem(self, problem: Union[GraphV1Problem, GraphV2Problem], timeout:int=DEFAULT_SOLVER_TIMEOUT):
+    async def solve_problem(self, problem: Union[GraphV1Problem, GraphV2Problem, GraphV2ProblemMulti], timeout:int=DEFAULT_SOLVER_TIMEOUT):
         '''
         This method implements the security checks
         Then it makes the necessary transformations to the problem
