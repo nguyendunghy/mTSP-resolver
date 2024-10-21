@@ -37,6 +37,7 @@ from graphite.mock import MockDendrite
 from graphite.utils.config import add_validator_args
 
 from graphite.protocol import IsAlive
+from graphite.utils.uids import check_uid_availability
 
 import requests
 
@@ -79,6 +80,8 @@ class BaseValidatorNeuron(BaseNeuron):
             self.metagraph.n, dtype=np.float32
         )
 
+        self.uid_query_sets = []
+
         self.sync()
 
         # Serve axon to enable external connections.
@@ -90,6 +93,9 @@ class BaseValidatorNeuron(BaseNeuron):
         # Create asyncio event loop to manage async tasks.
         self.loop = asyncio.get_event_loop()
 
+        # Harded coded for now until new API release
+        self.bearer_token_is_valid = False
+
         # Instantiate runners
         self.should_exit: bool = False
         self.is_running: bool = False
@@ -98,27 +104,84 @@ class BaseValidatorNeuron(BaseNeuron):
         
 
     async def get_available_uids(self):
+        available_uids = {}
+
+        for uid in range(self.metagraph.n.item()):
+            uid_is_available = check_uid_availability(
+                self.metagraph, uid, self.config.neuron.vpermit_tao_limit
+            )
+
+            if uid_is_available:
+                available_uids[uid] = uid
+
+        return available_uids
+    
+    async def get_available_uids_alive(self):
         # get all axons in subnet
         all_axons = self.metagraph.axons
 
         # checks IsAlive() for each uid
         tasks = [self.check_alive(axon, all_axons.index(axon)) for axon in all_axons]
         results = await asyncio.gather(*tasks)
-
+       
         # dictionary that maps UID -> AxonInfo for all alive UIDs
         available_uids = {uid: axon for uid, axon in enumerate(results) if axon is not None}
 
         return available_uids
     
     async def get_k_uids(self, k:int=30):
-        available_uids = await self.get_available_uids()
-        random_uids = random.sample(list(available_uids.keys()), min(k, len(available_uids)))
-        return {uid: available_uids[uid] for uid in random_uids}
-    
+        if len(self.uid_query_sets) > 0:
+            available_uids = await self.get_available_uids()
+            to_query = {}
+            for uid in self.uid_query_sets[0]:
+                if uid in available_uids:
+                    to_query[uid] = available_uids[uid]
+            self.uid_query_sets.pop(0)
+            return to_query
+        else:
+            available_uids = await self.get_available_uids()
+            random_uids = random.sample(list(available_uids.keys()), min(k, len(available_uids)))
+            incentives = self.metagraph.I
+            incentive_indexed = {key + index/10000000 + random.random()/1000000: index for index, key in enumerate(incentives)}
+            incentives_ranked = [incentive_indexed[key] for key in sorted(incentive_indexed.keys())]
+            incentives_ranked_final = [i for i in incentives_ranked if i in available_uids.keys()]
+            group_size = len(incentives_ranked_final) // k
+            excess = len(incentives_ranked_final) - k * group_size
+            groups = [incentives_ranked_final[i * group_size:(i + 1) * group_size] for i in range(k - excess)] 
+            incentives_ranked_final_rem = incentives_ranked_final[(k - excess)*group_size:]
+            groups2 = [incentives_ranked_final_rem[i * (group_size+1):(i + 1) * (group_size+1)] for i in range(excess)]
+            groups += groups2
+            num_groups = math.ceil(len(incentives_ranked_final) / k)
+                
+            query_sets = []
+            for _ in range(num_groups):  
+                current_selection = []
+                for group in groups:
+                    if len(group) > 1:
+                        selected = random.choice(group)
+                        group.remove(selected)  
+                        current_selection.append(selected)
+                    else:
+                        current_selection.append(group[0])
+                query_sets.append(current_selection)
+            self.uid_query_sets = query_sets
+
+            if len(self.uid_query_sets) > 0:
+                to_query = {}
+                for uid in self.uid_query_sets[0]:
+                    if uid in available_uids:
+                        to_query[uid] = available_uids[uid]
+                self.uid_query_sets.pop(0)
+                return to_query
+            else:
+                available_uids = await self.get_available_uids()
+                random_uids = random.sample(list(available_uids.keys()), min(k, len(available_uids)))
+                return {uid: available_uids[uid] for uid in random_uids}
+
     async def get_top_k_uids(self, k:int=30, alpha:float=0.7):
         assert (alpha<=1) and (alpha>0.5), ValueError("For the get_top_k_uids method, alpha needs to be between 0.5 and 1")
         # get available_uids
-        available_uids = await self.get_available_uids()
+        available_uids = await self.get_available_uids_alive()
         incentives = self.metagraph.I
         available_uids_and_incentives = [(uid, incentives[uid]) for uid in available_uids.keys()]
         sorted_axon_list = sorted(available_uids_and_incentives, key=lambda x: x[1], reverse=True)
@@ -144,6 +207,11 @@ class BaseValidatorNeuron(BaseNeuron):
             if response.is_success:
                 # bt.logging.info(f"UID {uid} is alive")
                 # bt.logging.info("Response: ", response)
+                hotkey = axon.hotkey
+                dend_hotkey = self.wallet.hotkey.ss58_address
+                log_line = f"{hotkey[:5]}_{dend_hotkey[:5]}_{time.time()}\n"
+                with open("is_alive_logs.txt", "a") as f:
+                    f.write(log_line)
                 return axon
             
             # bt.logging.info(f"UID {uid} is not alive")
@@ -198,8 +266,8 @@ class BaseValidatorNeuron(BaseNeuron):
 
     def instantiate_wandb(self):
         load_dotenv()
-        # organic_endpoint = os.getenv('MONGODB_ENDPOINT')
-        # db_bearer_token = os.getenv('MONGODB_BEARER_TOKEN')
+        # self.organic_endpoint = os.getenv('MONGODB_ENDPOINT')
+        # self.db_bearer_token = os.getenv('MONGODB_BEARER_TOKEN')
         wandb_api_key = os.getenv('WANDB_API_KEY')
         
         if not wandb_api_key:
@@ -346,7 +414,11 @@ class BaseValidatorNeuron(BaseNeuron):
 
         # Calculate the average reward for each uid across non-zero values.
         # Replace any NaN values with 0.
-        raw_weights = self.scores / np.linalg.norm(self.scores, ord=1, axis=0, keepdims=True)
+        try:
+            raw_weights = self.scores / np.linalg.norm(self.scores, ord=1, axis=0, keepdims=True)
+        except RuntimeWarning:
+            bt.logging.info("Sum of scores = 0, skip setting weights for now")
+            return None
 
         bt.logging.debug("raw_weights", raw_weights)
         bt.logging.debug("raw_weight_uids", str(self.metagraph.uids.tolist()))
