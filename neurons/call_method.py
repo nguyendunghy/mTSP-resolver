@@ -4,6 +4,7 @@ import time
 from graphite.solvers import DPSolver, NearestNeighbourSolver, BeamSearchSolver, HPNSolver
 from graphite.solvers.TSPAnnealer import TSPAnnealer
 from graphite.solvers.greedy_solver_vali import NearestNeighbourSolverVali
+from graphite.solvers.mtsp_or_solver import MTSP_ORToolsSolver
 from graphite.solvers.new_solver import NewSearchSolver
 from graphite.solvers.or_solver import ORToolsSolver
 from graphite.solvers.simulated_annealing_solver import SimulatedAnnealingSolver
@@ -20,7 +21,7 @@ hpn_solver = HPNSolver()
 new_solver = NewSearchSolver()
 sa_solver = SimulatedAnnealingSolver()
 or_solver = ORToolsSolver()
-
+mTSP_or_solver = MTSP_ORToolsSolver()
 
 
 async def baseline_solution(synapse):
@@ -85,6 +86,12 @@ async def simulated_annealing_solver(synapse):
 async def or_solver_solution(synapse):
     new_synapse = copy.deepcopy(synapse)
     route = await  or_solver.solve_problem(new_synapse.problem)
+    new_synapse.solution = route
+    return new_synapse
+
+async def mTSP_or_solver_solution(synapse):
+    new_synapse = copy.deepcopy(synapse)
+    route = await  mTSP_or_solver.solve_problem(new_synapse.problem)
     new_synapse.solution = route
     return new_synapse
 

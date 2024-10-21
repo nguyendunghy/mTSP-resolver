@@ -4,7 +4,7 @@ import numpy as np
 import tqdm
 import asyncio
 from neurons.call_api import call_apis, load_config
-from neurons.compare_solutions import compare, recreate_edges, generate_problem_from_dataset
+from neurons.compare_solutions import compare, recreate_edges, generate_problem_from_dataset, mTSP_solve
 
 
 def check_solutions():
@@ -34,6 +34,9 @@ def check_call_api():
     synapse.solution = route
     end = time.time()
     print(f'time processing total : {end-start}')
+
+def check_mtsp():
+    mTSP_solve(min_node=500, max_node=2000)
 
 
 if __name__ == '__main__':

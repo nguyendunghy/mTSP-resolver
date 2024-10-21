@@ -2,6 +2,7 @@ import asyncio
 import json
 import random
 import time
+from typing import Union
 
 import bittensor as bt
 import numpy as np
@@ -13,7 +14,7 @@ from graphite.data.dataset_utils import load_dataset
 from graphite.data.distance import geom_edges, euc_2d_edges, man_2d_edges
 from graphite.protocol import GraphV1Synapse, GraphV2Synapse, GraphV2Problem, GraphV2ProblemMulti
 from neurons.call_method import baseline_solution, hpn_solver_solution, \
-    scoring_solution, lkh_solver_solution, build_lkh_input_file
+    scoring_solution, lkh_solver_solution, build_lkh_input_file, mTSP_or_solver_solution
 
 loaded_datasets = {
     ASIA_MSB_DETAILS['ref_id']: load_dataset(ASIA_MSB_DETAILS['ref_id']),
@@ -85,6 +86,12 @@ def generate_problem_for_mTSP(min_node=500, max_node=2000):
         bt.logging.debug(e)
 
     return graphsynapse_req
+
+def mTSP_solve(min_node, max_node):
+    synapse = generate_problem_for_mTSP(min_node=500, max_node=2000)
+    edges = recreate_edges(synapse_request.problem,factor=1).tolist()
+    synapse.problem.edges = edges
+    or_synapse = asyncio.run(mTSP_or_solver_solution(synapse_request))
 
 
 
@@ -163,11 +170,11 @@ def compare(gen_func=None, min_node = 2000, max_node = 5000):
     print(f'score = {scores}')
     return scores
 
-def recreate_edges(problem: GraphV2Problem):
+def recreate_edges(problem: Union[GraphV2Problem, GraphV2ProblemMulti],factor=1):
     node_coords_np = loaded_datasets[problem.dataset_ref]["data"]
     node_coords = np.array([node_coords_np[i][1:] for i in problem.selected_ids])
     if problem.cost_function == "Geom":
-        return geom_edges(node_coords)
+        return geom_edges(node_coords,factor=factor)
     elif problem.cost_function == "Euclidean2D":
         return euc_2d_edges(node_coords)
     elif problem.cost_function == "Manhatten2D":
