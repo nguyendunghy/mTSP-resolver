@@ -93,6 +93,7 @@ def mTSP_solve(min_node, max_node):
 
     edges = recreate_edges(synapse.problem,factor=1).tolist()
     synapse.problem.edges = edges
+    print(f'start running or-solver')
     or_synapse = asyncio.run(mTSP_or_solver_solution(synapse))
 
 

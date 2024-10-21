@@ -12,6 +12,7 @@ class MTSP_ORToolsSolver(BaseSolver):
         super().__init__(problem_types=problem_types)
 
     async def solve(self, problem, future_id: int) -> List[int]:
+        print(f'start solve. problem in mtsp_or_solver')
         data = self.create_data_model(distance_matrix=problem.edges,num_vehicles=problem.n_salesmen,depot=0)
         manager = pywrapcp.RoutingIndexManager(
             len(data["distance_matrix"]), data["num_vehicles"], data["depot"]
