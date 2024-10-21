@@ -16,10 +16,13 @@ class MTSP_ORToolsSolver(BaseSolver):
         try:
 
             print(f'start solve. problem in mtsp_or_solver problem = {problem}')
-            data = self.create_data_model(distance_matrix=problem.edges,num_vehicles=problem.n_salesmen,depot=0)
+            data = self.create_data_model(distance_matrix=problem.edges, num_vehicles=problem.n_salesmen, depot=0)
+            # Create the routing index manager.
             manager = pywrapcp.RoutingIndexManager(
                 len(data["distance_matrix"]), data["num_vehicles"], data["depot"]
             )
+
+            # Create Routing Model.
             routing = pywrapcp.RoutingModel(manager)
 
             # Create and register a transit callback.
@@ -44,14 +47,15 @@ class MTSP_ORToolsSolver(BaseSolver):
                 True,  # start cumul to zero
                 dimension_name,
             )
-
             distance_dimension = routing.GetDimensionOrDie(dimension_name)
             distance_dimension.SetGlobalSpanCostCoefficient(100)
+
             # Setting first solution heuristic.
             search_parameters = pywrapcp.DefaultRoutingSearchParameters()
             search_parameters.first_solution_strategy = (
                 routing_enums_pb2.FirstSolutionStrategy.PATH_CHEAPEST_ARC
             )
+
             # Solve the problem.
             solution = routing.SolveWithParameters(search_parameters)
 
@@ -69,8 +73,7 @@ class MTSP_ORToolsSolver(BaseSolver):
     def problem_transformations(self, problem: Union[GraphV2ProblemMulti]):
         return problem
 
-
-    def create_data_model(self,distance_matrix, num_vehicles, depot=0):
+    def create_data_model(self, distance_matrix, num_vehicles, depot=0):
         data = {}
         data["distance_matrix"] = distance_matrix
         data["num_vehicles"] = num_vehicles
