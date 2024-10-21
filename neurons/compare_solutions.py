@@ -66,7 +66,7 @@ def generate_problem_from_dataset(min_node=2000, max_node=5000):
     return graphsynapse_req
 
 
-def generate_problem_for_mTSP(min_node=2000, max_node=5000):
+def generate_problem_for_mTSP(min_node=500, max_node=2000):
     n_nodes = random.randint(min_node, max_node)
     prob_select = random.randint(0, len(list(loaded_datasets.keys()))-1)
     dataset_ref = list(loaded_datasets.keys())[prob_select]
@@ -225,7 +225,7 @@ if __name__ == '__main__':
     # config_file = 'raw_data/data.json'
     # calculate_raw_data(config_file)
 
-    synapse_request = generate_problem_for_mTSP(min_node=2000, max_node=2500)
+    synapse_request = generate_problem_for_mTSP(min_node=500, max_node=2000)
     problem_dict = synapse_request.problem.dict()
     # json_problem = json.dumps(problem_dict)
     payload = json.dumps({
