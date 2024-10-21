@@ -5,9 +5,9 @@ import time
 
 import bittensor as bt
 import numpy as np
-from graphite.dataset.dataset_generator import MetricTSPGenerator, GeneralTSPGenerator
 from pydantic import ValidationError
 
+from graphite.data import MetricTSPGenerator, GeneralTSPGenerator
 from graphite.data.constants import ASIA_MSB_DETAILS, WORLD_TSP_DETAILS
 from graphite.data.dataset_utils import load_dataset
 from graphite.data.distance import geom_edges, euc_2d_edges, man_2d_edges
