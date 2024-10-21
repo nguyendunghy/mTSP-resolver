@@ -2,18 +2,18 @@ import asyncio
 import json
 import random
 import time
-import numpy as np
+
 import bittensor as bt
+import numpy as np
+from graphite.dataset.dataset_generator import MetricTSPGenerator, GeneralTSPGenerator
 from pydantic import ValidationError
 
 from graphite.data.constants import ASIA_MSB_DETAILS, WORLD_TSP_DETAILS
 from graphite.data.dataset_utils import load_dataset
 from graphite.data.distance import geom_edges, euc_2d_edges, man_2d_edges
-from graphite.dataset.dataset_generator import MetricTSPGenerator, GeneralTSPGenerator
-from graphite.protocol import GraphV1Synapse,GraphV2Synapse, GraphV1Problem, GraphV2Problem
-from neurons.call_method import beam_solver_solution, baseline_solution, nns_vali_solver_solution, hpn_solver_solution, \
-    scoring_solution, new_solver_solution, tsp_annealer_solver, simulated_annealing_solver, or_solver_solution, \
-    lkh_solver_solution, build_lkh_input_file
+from graphite.protocol import GraphV1Synapse, GraphV2Synapse, GraphV2Problem, GraphV2ProblemMulti
+from neurons.call_method import baseline_solution, hpn_solver_solution, \
+    scoring_solution, lkh_solver_solution, build_lkh_input_file
 
 loaded_datasets = {
     ASIA_MSB_DETAILS['ref_id']: load_dataset(ASIA_MSB_DETAILS['ref_id']),
@@ -64,6 +64,28 @@ def generate_problem_from_dataset(min_node=2000, max_node=5000):
         bt.logging.debug(e.errors())
         bt.logging.debug(e)
     return graphsynapse_req
+
+
+def generate_problem_for_mTSP(min_node=2000, max_node=5000):
+    n_nodes = random.randint(min_node, max_node)
+    prob_select = random.randint(0, len(list(loaded_datasets.keys()))-1)
+    dataset_ref = list(loaded_datasets.keys())[prob_select]
+    bt.logging.info(f"n_nodes V2 {n_nodes}")
+    bt.logging.info(f"dataset ref {dataset_ref} selected from {list(loaded_datasets.keys())}" )
+    selected_node_idxs = random.sample(range(len(loaded_datasets[dataset_ref]['data'])), n_nodes)
+    m = random.randint(2, 10)
+    test_problem_obj = GraphV2ProblemMulti(problem_type="Metric mTSP", n_nodes=n_nodes, selected_ids=selected_node_idxs, cost_function="Geom", dataset_ref=dataset_ref, n_salesmen=m, depots=[0]*m)
+    try:
+
+        graphsynapse_req = GraphV2Synapse(problem=test_problem_obj)
+        bt.logging.info(f"GraphV2Synapse {graphsynapse_req.problem.problem_type}, n_nodes: {graphsynapse_req.problem.n_nodes}")
+    except ValidationError as e:
+        bt.logging.debug(f"GraphV2Synapse Validation Error: {e.json()}")
+        bt.logging.debug(e.errors())
+        bt.logging.debug(e)
+
+    return graphsynapse_req
+
 
 
 def compare(gen_func=None, min_node = 2000, max_node = 5000):
@@ -203,7 +225,7 @@ if __name__ == '__main__':
     # config_file = 'raw_data/data.json'
     # calculate_raw_data(config_file)
 
-    synapse_request = generate_problem_from_dataset(min_node=2000, max_node=2500)
+    synapse_request = generate_problem_for_mTSP(min_node=2000, max_node=2500)
     problem_dict = synapse_request.problem.dict()
     # json_problem = json.dumps(problem_dict)
     payload = json.dumps({
