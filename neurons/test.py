@@ -40,8 +40,9 @@ def check_mtsp():
 
 
 if __name__ == '__main__':
-    count  = 0
-    while count < 20:
-        check_call_api()
-        count = count + 1
-        time.sleep(2)
+    check_mtsp()
+    # count  = 0
+    # while count < 20:
+    #     check_call_api()
+    #     count = count + 1
+    #     time.sleep(2)
