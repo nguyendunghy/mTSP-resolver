@@ -1,6 +1,7 @@
 import os
 import random
 import subprocess
+import traceback
 from typing import List
 from typing import Union
 
@@ -69,6 +70,8 @@ class LKH3_MTSP_Solver(BaseSolver):
         result = subprocess.run([self.lkh_path, parameter_file], capture_output=True, text=True)
         if result.returncode != 0:
             raise RuntimeError(f"LKH failed: {result.stderr}")
+        print(f'result = {result}')
+        print(f'result.stdout = {result.stdout}')
         return result.stdout
 
     def read_lkh_solution(self, tour_filename: str):
@@ -98,28 +101,32 @@ class LKH3_MTSP_Solver(BaseSolver):
         return scaled_distance_matrix
 
     async def solve(self, problem, future_id: int) -> List[int]:
-        directed = problem.directed
-        random_number = random.randint(10000, 999999)
-        problem_filename = f"{random_number}_problem.tsp" if self.input_file is None else self.input_file
-        parameter_filename = f"{random_number}_params.par"
-        tour_filename = f"{random_number}_solution.tour"
+        try:
+            directed = problem.directed
+            random_number = random.randint(10000, 999999)
+            problem_filename = f"{random_number}_problem.tsp" if self.input_file is None else self.input_file
+            parameter_filename = f"{random_number}_params.par"
+            tour_filename = f"{random_number}_solution.tour"
 
-        if self.input_file is None:
-            scaled_distance_matrix = self.build_scaled_distance_matrix(problem)
-            self.write_tsplib_file(scaled_distance_matrix, problem_filename, directed)
+            if self.input_file is None:
+                scaled_distance_matrix = self.build_scaled_distance_matrix(problem)
+                self.write_tsplib_file(scaled_distance_matrix, problem_filename, directed)
 
-        self.write_lkh_parameters(parameter_filename, problem_filename, tour_filename)
+            self.write_lkh_parameters(parameter_filename, problem_filename, tour_filename)
 
-        self.run_lkh(parameter_filename)
+            self.run_lkh(parameter_filename)
 
-        tour = self.read_lkh_solution(tour_filename)
+            tour = self.read_lkh_solution(tour_filename)
 
-        if self.input_file is None:
-            os.remove(problem_filename)
+            if self.input_file is None:
+                os.remove(problem_filename)
 
-        os.remove(parameter_filename)
-        os.remove(tour_filename)
-        return tour
+            os.remove(parameter_filename)
+            os.remove(tour_filename)
+            return tour
+        except Exception as e:
+            print(f'error = {e}')
+            traceback.print_stack()
 
     def problem_transformations(self, problem: Union[GraphV1Problem, GraphV2Problem]):
         return problem
