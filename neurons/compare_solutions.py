@@ -14,7 +14,8 @@ from graphite.data.dataset_utils import load_dataset
 from graphite.data.distance import geom_edges, euc_2d_edges, man_2d_edges
 from graphite.protocol import GraphV1Synapse, GraphV2Synapse, GraphV2Problem, GraphV2ProblemMulti
 from neurons.call_method import baseline_solution, hpn_solver_solution, \
-    scoring_solution, lkh_solver_solution, build_lkh_input_file, mTSP_or_solver_solution, nn_multi_solver_solution
+    scoring_solution, lkh_solver_solution, build_lkh_input_file, mTSP_or_solver_solution, nn_multi_solver_solution, \
+    lkh3_mtsp_solver_solution
 
 loaded_datasets = {
     ASIA_MSB_DETAILS['ref_id']: load_dataset(ASIA_MSB_DETAILS['ref_id']),
@@ -105,10 +106,13 @@ def mTSP_solve(min_node, max_node, min_salesman=2, max_salesman=3):
     t0 = time.time()
     nn_multi_synapse = asyncio.run(nn_multi_solver_solution(synapse))
     t1 = time.time()
+    lkh3_mtsp_synapse = asyncio.run(lkh3_mtsp_solver_solution(synapse))
+    t2 = time.time()
     print(f'nn_multi_synapse.solution = {nn_multi_synapse.solution}')
-    print(f"time baseline  = {t1 - t0}, num node = {synapse.problem.n_nodes}")
+    print(f'lkh3_mtsp_synapse = {lkh3_mtsp_synapse.solution}')
+    print(f"time baseline  = {t1 - t0}, time kh3_mtsp = {t2-t1}, num node = {synapse.problem.n_nodes}")
 
-    list_synapse = [nn_multi_synapse]
+    list_synapse = [nn_multi_synapse,lkh3_mtsp_synapse]
     scores = [scoring_solution(synapse) for synapse in list_synapse]
     min_score = min(scores)
     scores.append(min_score)
