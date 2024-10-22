@@ -105,13 +105,16 @@ def mTSP_solve(min_node, max_node, min_salesman=2, max_salesman=3,dataset_ref = 
         edges = recreate_edges(synapse.problem, factor=10).tolist()
     else:
         edges = recreate_edges(synapse.problem, factor=100).tolist()
+    originl_edges = recreate_edges(synapse.problem, factor=1).tolist()
     synapse.problem.edges = edges
     lkh_input_file = build_lkh_input_file(synapse,dir='/home/ubuntu/test_lkh/problem')
     print(f"lkh_input_file = {lkh_input_file}")
     t0 = time.time()
     nn_multi_synapse = asyncio.run(nn_multi_solver_solution(synapse))
+    nn_multi_synapse.problem.edges = originl_edges
     t1 = time.time()
     lkh3_mtsp_synapse = asyncio.run(lkh3_mtsp_solver_solution(synapse,num_run=1,input_file=lkh_input_file))
+    lkh3_mtsp_synapse.problem.edges = originl_edges
     t2 = time.time()
     print(f'nn_multi_synapse.solution = {nn_multi_synapse.solution}')
     print(f'lkh3_mtsp_synapse = {lkh3_mtsp_synapse.solution}')
