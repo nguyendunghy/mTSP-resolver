@@ -54,7 +54,7 @@ class LKH3_MTSP_Solver(BaseSolver):
             f.write(f"OUTPUT_TOUR_FILE = {tour_filename}\n")
             f.write(f"MTSP_MIN_SIZE = 1\n")
             f.write(f"SALESMEN = 3\n")
-            f.write(f"DEPOT = 0\n")
+            f.write(f"DEPOT = 1\n")
             # f.write(f"CANDIDATE_SET_TYPE = POPMUSIC\n")
             # f.write(f"INITIAL_PERIOD = 10\n")
             # f.write(f"MAX_TRIALS = {self.max_trial}\n")
