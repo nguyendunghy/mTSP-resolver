@@ -67,15 +67,14 @@ def generate_problem_from_dataset(min_node=2000, max_node=5000):
     return graphsynapse_req
 
 
-def generate_problem_for_mTSP(min_node=500, max_node=2000):
+def generate_problem_for_mTSP(min_node=500, max_node=2000,min_salesman=2, max_salesman=10):
     n_nodes = random.randint(min_node, max_node)
     prob_select = random.randint(0, len(list(loaded_datasets.keys()))-1)
     dataset_ref = list(loaded_datasets.keys())[prob_select]
     bt.logging.info(f"n_nodes V2 {n_nodes}")
     bt.logging.info(f"dataset ref {dataset_ref} selected from {list(loaded_datasets.keys())}" )
     selected_node_idxs = random.sample(range(len(loaded_datasets[dataset_ref]['data'])), n_nodes)
-    m = random.randint(2, 10)
-    m=4
+    m = random.randint(min_salesman, max_salesman)
     test_problem_obj = GraphV2ProblemMulti(problem_type="Metric mTSP", n_nodes=n_nodes, selected_ids=selected_node_idxs, cost_function="Geom", dataset_ref=dataset_ref, n_salesmen=m, depots=[0]*m)
     try:
 
@@ -88,8 +87,8 @@ def generate_problem_for_mTSP(min_node=500, max_node=2000):
 
     return graphsynapse_req
 
-def mTSP_solve(min_node, max_node):
-    synapse = generate_problem_for_mTSP(min_node=min_node, max_node=max_node)
+def mTSP_solve(min_node, max_node,min_salesman=2,max_salesman=3):
+    synapse = generate_problem_for_mTSP(min_node=min_node, max_node=max_node, min_salesman=min_salesman, max_salesman=max_salesman)
     print(f'synapse = {synapse}')
 
     edges = recreate_edges(synapse.problem,factor=1).tolist()
