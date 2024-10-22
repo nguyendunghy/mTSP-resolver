@@ -1,7 +1,7 @@
 import copy
 import time
 
-from graphite.solvers import DPSolver, NearestNeighbourSolver, BeamSearchSolver, HPNSolver
+from graphite.solvers import DPSolver, NearestNeighbourSolver, BeamSearchSolver, HPNSolver, NearestNeighbourMultiSolver
 from graphite.solvers.TSPAnnealer import TSPAnnealer
 from graphite.solvers.greedy_solver_vali import NearestNeighbourSolverVali
 from graphite.solvers.mtsp_or_solver import MTSP_ORToolsSolver
@@ -22,7 +22,7 @@ new_solver = NewSearchSolver()
 sa_solver = SimulatedAnnealingSolver()
 or_solver = ORToolsSolver()
 mTSP_or_solver = MTSP_ORToolsSolver()
-
+nn_multi_solver = NearestNeighbourMultiSolver()
 
 async def baseline_solution(synapse):
     new_synapse = copy.deepcopy(synapse)
@@ -95,6 +95,11 @@ async def mTSP_or_solver_solution(synapse):
     new_synapse.solution = route
     return new_synapse
 
+async def nn_multi_solver_solution(synapse):
+    new_synapse = copy.deepcopy(synapse)
+    route = await  nn_multi_solver.solve_problem(new_synapse.problem)
+    new_synapse.solution = route
+    return new_synapse
 
 def build_lkh_input_file(synapse,dir='/home/ubuntu'):
     lkh_solver = LKHSolver()

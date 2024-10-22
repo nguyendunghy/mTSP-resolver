@@ -14,7 +14,7 @@ from graphite.data.dataset_utils import load_dataset
 from graphite.data.distance import geom_edges, euc_2d_edges, man_2d_edges
 from graphite.protocol import GraphV1Synapse, GraphV2Synapse, GraphV2Problem, GraphV2ProblemMulti
 from neurons.call_method import baseline_solution, hpn_solver_solution, \
-    scoring_solution, lkh_solver_solution, build_lkh_input_file, mTSP_or_solver_solution
+    scoring_solution, lkh_solver_solution, build_lkh_input_file, mTSP_or_solver_solution, nn_multi_solver_solution
 
 loaded_datasets = {
     ASIA_MSB_DETAILS['ref_id']: load_dataset(ASIA_MSB_DETAILS['ref_id']),
@@ -94,8 +94,10 @@ def mTSP_solve(min_node, max_node):
 
     edges = recreate_edges(synapse.problem,factor=1).tolist()
     synapse.problem.edges = edges
+
     print(f'start running or-solver')
-    or_synapse = asyncio.run(mTSP_or_solver_solution(synapse))
+    nn_multi_synapse = asyncio.run(nn_multi_solver_solution(synapse))
+    print(f'nn_multi_synapse = {nn_multi_synapse}')
 
 
 
