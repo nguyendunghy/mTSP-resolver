@@ -56,7 +56,7 @@ class LKH3_MTSP_Solver(BaseSolver):
             # f.write(f"SINTEF_SOLUTION_FILE = {tour_filename}\n")
             f.write(f"MTSP_SOLUTION_FILE = {tour_filename}\n")
             f.write(f"MTSP_MIN_SIZE = 1\n")
-            f.write(f"SALESMEN = 3\n")
+            f.write(f"SALESMEN = {self.n_salesmen}\n")
             # f.write(f"VEHICLES = 3\n")
             f.write(f"DEPOT = 1\n")
             f.write(f"MTSP_OBJECTIVE = MINMAX\n")
@@ -105,6 +105,8 @@ class LKH3_MTSP_Solver(BaseSolver):
     async def solve(self, problem, future_id: int) -> List[int]:
         try:
             directed = problem.directed
+            self.n_salesmen = problem.n_salesmen
+
             random_number = random.randint(10000, 999999)
             problem_filename = f"{random_number}_problem.tsp" if self.input_file is None else self.input_file
             parameter_filename = f"{random_number}_params.par"

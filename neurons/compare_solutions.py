@@ -98,15 +98,18 @@ def mTSP_solve(min_node, max_node, min_salesman=2, max_salesman=3):
     synapse = generate_problem_for_mTSP(min_node=min_node, max_node=max_node, min_salesman=min_salesman,
                                         max_salesman=max_salesman)
     print(f'synapse = {synapse}')
-
-    edges = recreate_edges(synapse.problem, factor=1).tolist()
+    if synapse.problem.dataset_ref == 'World_TSP':
+        edges = recreate_edges(synapse.problem, factor=10).tolist()
+    else:
+        edges = recreate_edges(synapse.problem, factor=100).tolist()
     synapse.problem.edges = edges
-
+    lkh_input_file = build_lkh_input_file(synapse,dir='/home/ubuntu/test_lkh/custom-graphite-subnet/problem')
+    print(f"lkh_input_file = {lkh_input_file}")
     print(f'start running or-solver')
     t0 = time.time()
     nn_multi_synapse = asyncio.run(nn_multi_solver_solution(synapse))
     t1 = time.time()
-    lkh3_mtsp_synapse = asyncio.run(lkh3_mtsp_solver_solution(synapse))
+    lkh3_mtsp_synapse = asyncio.run(lkh3_mtsp_solver_solution(synapse,num_run=1,input_file=lkh_input_file))
     t2 = time.time()
     print(f'nn_multi_synapse.solution = {nn_multi_synapse.solution}')
     print(f'lkh3_mtsp_synapse = {lkh3_mtsp_synapse.solution}')

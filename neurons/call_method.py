@@ -24,7 +24,6 @@ sa_solver = SimulatedAnnealingSolver()
 or_solver = ORToolsSolver()
 mTSP_or_solver = MTSP_ORToolsSolver()
 nn_multi_solver = NearestNeighbourMultiSolver()
-lkh3_mtsp_solver = LKH3_MTSP_Solver()
 
 async def baseline_solution(synapse):
     new_synapse = copy.deepcopy(synapse)
@@ -103,13 +102,6 @@ async def nn_multi_solver_solution(synapse):
     new_synapse.solution = route
     return new_synapse
 
-async def lkh3_mtsp_solver_solution(synapse):
-    new_synapse = copy.deepcopy(synapse)
-    route = await  lkh3_mtsp_solver.solve_problem(new_synapse.problem)
-    new_synapse.solution = route
-    return new_synapse
-
-
 def build_lkh_input_file(synapse,dir='/home/ubuntu'):
     lkh_solver = LKHSolver()
     import random
@@ -119,6 +111,14 @@ def build_lkh_input_file(synapse,dir='/home/ubuntu'):
     scaled_distance_matrix = synapse.problem.edges
     lkh_solver.write_tsplib_file(scaled_distance_matrix, problem_filename, synapse.problem.directed)
     return problem_filename
+
+
+async def lkh3_mtsp_solver_solution(synapse,num_run=1, input_file=None):
+    new_synapse = copy.deepcopy(synapse)
+    lkh3_mtsp_solver = LKH3_MTSP_Solver(num_run=num_run,input_file=input_file)
+    route = await  lkh3_mtsp_solver.solve_problem(new_synapse.problem)
+    new_synapse.solution = route
+    return new_synapse
 
 async def lkh_solver_solution(synapse, num_run=1, input_file=None):
     new_synapse = copy.deepcopy(synapse)
