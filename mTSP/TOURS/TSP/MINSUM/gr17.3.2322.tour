@@ -1,0 +1,27 @@
+NAME : gr17.2322.tour
+COMMENT : Cost = 0_2322
+COMMENT : Found by LKH [Keld Helsgaun] Thu Nov 16 16:26:18 2017
+TYPE : TOUR
+DIMENSION : 19
+TOUR_SECTION
+1
+7
+8
+6
+17
+14
+15
+3
+11
+10
+2
+5
+9
+12
+16
+18
+4
+19
+13
+-1
+EOF

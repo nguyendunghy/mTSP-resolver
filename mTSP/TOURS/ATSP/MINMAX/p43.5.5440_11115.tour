@@ -1,0 +1,55 @@
+NAME : p43.11115.tour
+COMMENT : Cost = 5440_11115
+COMMENT : Found by LKH [Keld Helsgaun] Tue Nov  7 23:30:55 2017
+TYPE : TOUR
+DIMENSION : 47
+TOUR_SECTION
+1
+4
+42
+41
+43
+3
+44
+36
+38
+26
+22
+24
+23
+25
+27
+18
+17
+16
+19
+20
+21
+15
+13
+14
+34
+35
+32
+33
+11
+10
+9
+12
+6
+8
+7
+31
+30
+28
+29
+2
+37
+46
+5
+39
+40
+47
+45
+-1
+EOF

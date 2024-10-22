@@ -1,0 +1,33 @@
+NAME : ulysses16.12308.tour
+COMMENT : Cost = 0_12308
+COMMENT : Found by LKH [Keld Helsgaun] Thu Nov 16 16:25:17 2017
+TYPE : TOUR
+DIMENSION : 25
+TOUR_SECTION
+1
+8
+25
+7
+6
+5
+11
+9
+10
+24
+15
+23
+2
+22
+3
+21
+14
+20
+12
+19
+13
+18
+4
+17
+16
+-1
+EOF

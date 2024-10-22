@@ -1,0 +1,38 @@
+NAME : gr21.7314.tour
+COMMENT : Cost = 1294_7314
+COMMENT : Found by LKH [Keld Helsgaun] Thu Nov 16 17:33:42 2017
+TYPE : TOUR
+DIMENSION : 30
+TOUR_SECTION
+1
+3
+28
+17
+18
+13
+30
+5
+9
+16
+29
+2
+21
+20
+27
+19
+26
+6
+25
+11
+24
+8
+23
+7
+22
+4
+15
+14
+10
+12
+-1
+EOF

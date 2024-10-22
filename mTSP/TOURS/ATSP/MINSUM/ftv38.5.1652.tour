@@ -1,0 +1,51 @@
+NAME : ftv38.1652.tour
+COMMENT : Cost = 0_1652
+COMMENT : Found by LKH [Keld Helsgaun] Fri Jan 13 17:16:52 2017
+TYPE : TOUR
+DIMENSION : 43
+TOUR_SECTION
+1
+17
+42
+20
+40
+30
+29
+28
+23
+37
+22
+21
+14
+11
+13
+38
+10
+9
+12
+15
+16
+6
+8
+7
+5
+36
+34
+31
+27
+24
+25
+26
+32
+33
+35
+39
+3
+41
+18
+19
+43
+2
+4
+-1
+EOF

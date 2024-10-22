@@ -1,0 +1,22 @@
+NAME : 12b.2295.tour
+COMMENT : Cost = 0_2295
+COMMENT : Found by LKH [Keld Helsgaun] Thu Nov 16 20:48:32 2017
+TYPE : TOUR
+DIMENSION : 14
+TOUR_SECTION
+1
+3
+5
+13
+2
+11
+7
+9
+4
+12
+8
+6
+14
+10
+-1
+EOF

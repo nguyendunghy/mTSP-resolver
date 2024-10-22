@@ -1,0 +1,22 @@
+NAME : 12b.2904.tour
+COMMENT : Cost = 983_2904
+COMMENT : Found by LKH [Keld Helsgaun] Thu Nov 16 20:48:27 2017
+TYPE : TOUR
+DIMENSION : 14
+TOUR_SECTION
+1
+2
+9
+7
+11
+10
+14
+12
+8
+6
+13
+3
+4
+5
+-1
+EOF

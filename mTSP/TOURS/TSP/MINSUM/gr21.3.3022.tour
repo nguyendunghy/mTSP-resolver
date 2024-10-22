@@ -1,0 +1,31 @@
+NAME : gr21.3022.tour
+COMMENT : Cost = 0_3022
+COMMENT : Found by LKH [Keld Helsgaun] Thu Nov 16 16:26:18 2017
+TYPE : TOUR
+DIMENSION : 23
+TOUR_SECTION
+1
+4
+22
+11
+20
+19
+17
+10
+18
+13
+14
+15
+21
+2
+3
+9
+5
+16
+6
+8
+7
+23
+12
+-1
+EOF

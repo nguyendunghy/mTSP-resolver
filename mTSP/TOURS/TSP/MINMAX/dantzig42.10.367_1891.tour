@@ -1,0 +1,59 @@
+NAME : dantzig42.1891.tour
+COMMENT : Cost = 367_1891
+COMMENT : Found by LKH [Keld Helsgaun] Thu Nov 16 17:33:40 2017
+TYPE : TOUR
+DIMENSION : 51
+TOUR_SECTION
+1
+41
+51
+10
+13
+15
+16
+23
+24
+25
+8
+3
+47
+4
+28
+21
+20
+19
+27
+26
+7
+50
+5
+6
+31
+30
+29
+33
+32
+34
+35
+36
+37
+38
+49
+22
+17
+18
+11
+48
+9
+12
+14
+46
+39
+45
+40
+44
+2
+43
+42
+-1
+EOF

@@ -1,0 +1,33 @@
+NAME : gr21.5921.tour
+COMMENT : Cost = 1294_5921
+COMMENT : Found by LKH [Keld Helsgaun] Thu Nov 16 17:27:03 2017
+TYPE : TOUR
+DIMENSION : 25
+TOUR_SECTION
+1
+2
+21
+20
+11
+25
+16
+9
+5
+6
+8
+7
+23
+13
+18
+17
+19
+24
+3
+22
+4
+15
+14
+10
+12
+-1
+EOF

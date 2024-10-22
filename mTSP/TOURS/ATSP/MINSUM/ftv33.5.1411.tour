@@ -1,0 +1,46 @@
+NAME : ftv33.1411.tour
+COMMENT : Cost = 0_1411
+COMMENT : Found by LKH [Keld Helsgaun] Fri Jan 13 17:16:52 2017
+TYPE : TOUR
+DIMENSION : 38
+TOUR_SECTION
+1
+26
+25
+24
+27
+28
+29
+30
+23
+21
+22
+32
+19
+20
+18
+12
+9
+11
+10
+33
+8
+5
+7
+6
+31
+34
+3
+38
+16
+15
+13
+37
+14
+36
+2
+4
+35
+17
+-1
+EOF

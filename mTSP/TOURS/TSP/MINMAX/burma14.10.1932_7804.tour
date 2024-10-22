@@ -1,0 +1,31 @@
+NAME : burma14.7804.tour
+COMMENT : Cost = 1932_7804
+COMMENT : Found by LKH [Keld Helsgaun] Thu Nov 16 17:30:49 2017
+TYPE : TOUR
+DIMENSION : 23
+TOUR_SECTION
+1
+2
+15
+11
+16
+9
+17
+13
+18
+10
+19
+14
+20
+7
+21
+6
+12
+4
+3
+22
+5
+23
+8
+-1
+EOF

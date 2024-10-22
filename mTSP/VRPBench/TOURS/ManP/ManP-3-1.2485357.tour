@@ -1,0 +1,16 @@
+NAME : ManP-3-1.2485357.tour
+COMMENT : Length = 2485357
+COMMENT : Found by LKH [Keld Helsgaun] Thu Nov 29 13:06:55 2018
+TYPE : TOUR
+DIMENSION : 8
+TOUR_SECTION
+1
+4
+3
+2
+8
+6
+5
+7
+-1
+EOF

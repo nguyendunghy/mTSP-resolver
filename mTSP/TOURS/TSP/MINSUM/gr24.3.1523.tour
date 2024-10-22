@@ -1,0 +1,34 @@
+NAME : gr24.1523.tour
+COMMENT : Cost = 0_1523
+COMMENT : Found by LKH [Keld Helsgaun] Thu Nov 16 16:26:18 2017
+TYPE : TOUR
+DIMENSION : 26
+TOUR_SECTION
+1
+12
+25
+4
+23
+9
+13
+14
+20
+2
+15
+19
+22
+18
+3
+11
+7
+8
+21
+17
+10
+5
+24
+6
+26
+16
+-1
+EOF

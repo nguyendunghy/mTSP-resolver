@@ -1,0 +1,46 @@
+NAME : bays29.3230.tour
+COMMENT : Cost = 0_3230
+COMMENT : Found by LKH [Keld Helsgaun] Thu Nov 16 16:22:20 2017
+TYPE : TOUR
+DIMENSION : 38
+TOUR_SECTION
+1
+21
+30
+24
+31
+8
+32
+6
+33
+20
+10
+4
+15
+18
+17
+14
+22
+11
+19
+25
+7
+23
+27
+35
+13
+36
+12
+34
+2
+3
+29
+26
+9
+5
+37
+16
+38
+28
+-1
+EOF

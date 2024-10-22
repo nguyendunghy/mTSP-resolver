@@ -1,0 +1,21 @@
+NAME : 11b.135.tour
+COMMENT : Cost = 0_135
+COMMENT : Found by LKH [Keld Helsgaun] Thu Nov 16 20:48:32 2017
+TYPE : TOUR
+DIMENSION : 13
+TOUR_SECTION
+1
+8
+13
+5
+11
+12
+2
+7
+4
+6
+3
+10
+9
+-1
+EOF

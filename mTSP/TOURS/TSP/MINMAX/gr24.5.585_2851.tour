@@ -1,0 +1,36 @@
+NAME : gr24.2851.tour
+COMMENT : Cost = 585_2851
+COMMENT : Found by LKH [Keld Helsgaun] Thu Nov 16 17:27:03 2017
+TYPE : TOUR
+DIMENSION : 28
+TOUR_SECTION
+1
+15
+24
+6
+26
+14
+20
+5
+7
+28
+10
+19
+2
+27
+4
+9
+13
+23
+12
+25
+8
+21
+17
+22
+18
+3
+11
+16
+-1
+EOF

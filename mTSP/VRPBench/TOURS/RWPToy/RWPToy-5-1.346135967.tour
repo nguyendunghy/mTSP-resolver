@@ -1,0 +1,18 @@
+NAME : RWP-Toy_5-1.346135967.tour
+COMMENT : Length = 346135967
+COMMENT : Found by LKH [Keld Helsgaun] Sat Nov 24 00:57:23 2018
+TYPE : TOUR
+DIMENSION : 10
+TOUR_SECTION
+1
+3
+2
+5
+4
+6
+10
+7
+9
+8
+-1
+EOF

@@ -1,0 +1,46 @@
+NAME : bayg29.2518.tour
+COMMENT : Cost = 0_2518
+COMMENT : Found by LKH [Keld Helsgaun] Thu Nov 16 16:22:20 2017
+TYPE : TOUR
+DIMENSION : 38
+TOUR_SECTION
+1
+24
+30
+21
+31
+6
+32
+8
+33
+13
+34
+27
+23
+7
+25
+19
+11
+22
+17
+14
+18
+15
+4
+10
+20
+2
+29
+3
+26
+9
+37
+12
+36
+5
+35
+16
+38
+28
+-1
+EOF

@@ -1,0 +1,54 @@
+NAME : swiss42.1417.tour
+COMMENT : Cost = 0_1417
+COMMENT : Found by LKH [Keld Helsgaun] Thu Nov 16 16:27:05 2017
+TYPE : TOUR
+DIMENSION : 46
+TOUR_SECTION
+1
+2
+46
+33
+35
+34
+21
+36
+37
+32
+18
+38
+16
+17
+15
+20
+14
+6
+27
+19
+13
+12
+26
+11
+9
+10
+42
+24
+41
+25
+22
+40
+23
+39
+31
+30
+29
+3
+28
+44
+7
+5
+45
+8
+43
+4
+-1
+EOF

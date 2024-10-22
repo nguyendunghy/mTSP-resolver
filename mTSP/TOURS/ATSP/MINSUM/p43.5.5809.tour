@@ -1,0 +1,55 @@
+NAME : p43.5809.tour
+COMMENT : Cost = 0_5809
+COMMENT : Found by LKH [Keld Helsgaun] Fri Jan 13 17:16:54 2017
+TYPE : TOUR
+DIMENSION : 47
+TOUR_SECTION
+1
+5
+46
+2
+3
+37
+45
+4
+47
+29
+28
+31
+30
+16
+17
+19
+20
+21
+18
+14
+15
+13
+35
+34
+32
+33
+9
+12
+11
+10
+7
+6
+8
+38
+39
+40
+42
+41
+43
+27
+25
+26
+22
+24
+23
+44
+36
+-1
+EOF

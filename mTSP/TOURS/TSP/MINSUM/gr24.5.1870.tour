@@ -1,0 +1,36 @@
+NAME : gr24.1870.tour
+COMMENT : Cost = 0_1870
+COMMENT : Found by LKH [Keld Helsgaun] Thu Nov 16 16:26:26 2017
+TYPE : TOUR
+DIMENSION : 28
+TOUR_SECTION
+1
+12
+25
+6
+26
+4
+27
+24
+5
+10
+17
+21
+8
+7
+11
+3
+18
+22
+19
+15
+2
+20
+14
+13
+9
+23
+28
+16
+-1
+EOF
