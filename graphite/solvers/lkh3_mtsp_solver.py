@@ -79,6 +79,7 @@ class LKH3_MTSP_Solver(BaseSolver):
 
     def read_lkh_solution(self, tour_filename: str):
         """Reads the solution produced by LKH."""
+        print(f'start read read_lkh_solution')
         paths = []
         with open(tour_filename, 'r') as f:
             lines = f.readlines()
@@ -115,9 +116,9 @@ class LKH3_MTSP_Solver(BaseSolver):
             if self.input_file is None:
                 scaled_distance_matrix = self.build_scaled_distance_matrix(problem)
                 self.write_tsplib_file(scaled_distance_matrix, problem_filename, directed)
-
+            print(f'start run write params')
             self.write_lkh_parameters(parameter_filename, problem_filename, tour_filename)
-
+            print(f'start run lkh')
             self.run_lkh(parameter_filename)
 
             tour = self.read_lkh_solution(tour_filename)
