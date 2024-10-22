@@ -15,7 +15,8 @@ class LKH3_MTSP_Solver(BaseSolver):
                  max_trial=10,
                  input_file=None):
         super().__init__(problem_types=problem_types)
-        self.lkh_path = 'LKH-3.0.11/LKH'  # Update with the actual path to LKH
+        # self.lkh_path = 'LKH-3.0.11/LKH'
+        self.lkh_path= 'mTSP/run_MTSP'# Update with the actual path to LKH
         self.num_run = num_run
         self.init_tour_algo = init_tour_algo
         self.max_trial = max_trial
