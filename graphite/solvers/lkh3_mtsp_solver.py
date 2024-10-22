@@ -61,10 +61,10 @@ class LKH3_MTSP_Solver(BaseSolver):
             f.write(f"DEPOT = 1\n")
             f.write(f"MTSP_OBJECTIVE = MINMAX\n")
             f.write(f"CANDIDATE_SET_TYPE = POPMUSIC\n")
-            f.write(f"INITIAL_PERIOD = 10\n")
+            f.write(f"INITIAL_PERIOD = 5\n")
             f.write(f"MAX_TRIALS = {self.max_trial}\n")
             f.write(f"INITIAL_TOUR_ALGORITHM = {self.init_tour_algo}\n")
-            f.write(f"MAX_CANDIDATES = 5\n")
+            f.write(f"MAX_CANDIDATES = 3\n")
             f.write(f"RUNS = {self.num_run}\n")
             f.write("EOF\n")
 
