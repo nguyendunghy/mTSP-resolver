@@ -100,7 +100,7 @@ def mTSP_solve(min_node, max_node, min_salesman=2, max_salesman=3,dataset_ref = 
                                         max_salesman=max_salesman)
         if synapse.problem.dataset_ref == dataset_ref:
             break
-    print(f'synapse = {synapse}')
+    # print(f'synapse = {synapse}')
     if synapse.problem.dataset_ref == 'World_TSP':
         edges = recreate_edges(synapse.problem, factor=10).tolist()
     else:
