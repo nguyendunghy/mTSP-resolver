@@ -79,17 +79,16 @@ class LKH3_MTSP_Solver(BaseSolver):
 
     def read_lkh_solution(self, tour_filename: str):
         """Reads the solution produced by LKH."""
-        tour = [0]
+        paths = []
         with open(tour_filename, 'r') as f:
             lines = f.readlines()
-            for line in lines[7:]:
+            for line in lines:
                 line = line.strip()
-                if line == '-1':
-                    break
-                tour.append(int(line) - 1)  # Convert 1-based index to 0-based
-
-        tour.append(0)
-        return tour
+                path = line.split(' ')
+                path = path[:len(path) - 4]
+                path = [(int(ele) - 1) for ele in path]
+                paths.append(path)
+        return paths
 
     def build_scaled_distance_matrix(self, problem):
         distance_matrix = problem.edges
