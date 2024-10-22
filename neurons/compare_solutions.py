@@ -94,9 +94,12 @@ def generate_problem_for_mTSP(min_node=500, max_node=2000, min_salesman=2, max_s
     return graphsynapse_req
 
 
-def mTSP_solve(min_node, max_node, min_salesman=2, max_salesman=3):
-    synapse = generate_problem_for_mTSP(min_node=min_node, max_node=max_node, min_salesman=min_salesman,
+def mTSP_solve(min_node, max_node, min_salesman=2, max_salesman=3,dataset_ref = 'World_TSP'):
+    while True:
+        synapse = generate_problem_for_mTSP(min_node=min_node, max_node=max_node, min_salesman=min_salesman,
                                         max_salesman=max_salesman)
+        if synapse.problem.dataset_ref == dataset_ref:
+            break
     print(f'synapse = {synapse}')
     if synapse.problem.dataset_ref == 'World_TSP':
         edges = recreate_edges(synapse.problem, factor=10).tolist()
