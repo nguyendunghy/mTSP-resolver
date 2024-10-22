@@ -73,8 +73,8 @@ class LKH3_MTSP_Solver(BaseSolver):
         result = subprocess.run([self.lkh_path, parameter_file], capture_output=True, text=True)
         if result.returncode != 0:
             raise RuntimeError(f"LKH failed: {result.stderr}")
-        print(f'result = {result}')
-        print(f'result.stdout = {result.stdout}')
+        # print(f'result = {result}')
+        # print(f'result.stdout = {result.stdout}')
         return result.stdout
 
     def read_lkh_solution(self, tour_filename: str):
