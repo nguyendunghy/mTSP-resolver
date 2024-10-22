@@ -168,6 +168,7 @@ def get_multi_minmax_tour_distance(synapse: GraphV2Synapse)->float:
 
     Takes a synapse as its only argument
     '''
+    print(f'start get distance from muli mimax')
     problem = synapse.problem
     if 'mTSP' not in problem.problem_type:
         raise ValueError(f"get_multi_tour_distance is an invalid function for processing {problem.problem_type}")

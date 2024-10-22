@@ -105,7 +105,7 @@ def mTSP_solve(min_node, max_node, min_salesman=2, max_salesman=3):
     t0 = time.time()
     nn_multi_synapse = asyncio.run(nn_multi_solver_solution(synapse))
     t1 = time.time()
-    print(f'nn_multi_synapse = {nn_multi_synapse}')
+    print(f'nn_multi_synapse.solution = {nn_multi_synapse.solution}')
     print(f"time baseline  = {t1 - t0}, num node = {synapse.problem.n_nodes}")
 
     list_synapse = [nn_multi_synapse]
