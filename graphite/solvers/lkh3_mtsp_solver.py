@@ -83,7 +83,7 @@ class LKH3_MTSP_Solver(BaseSolver):
         paths = []
         with open(tour_filename, 'r') as f:
             lines = f.readlines()
-            for line in lines:
+            for line in lines[2:]:
                 line = line.strip()
                 path = line.split(' ')
                 path = path[:len(path) - 4]
