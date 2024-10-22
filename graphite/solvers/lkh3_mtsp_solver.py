@@ -118,11 +118,11 @@ class LKH3_MTSP_Solver(BaseSolver):
 
             tour = self.read_lkh_solution(tour_filename)
 
-            if self.input_file is None:
-                os.remove(problem_filename)
+            # if self.input_file is None:
+                # os.remove(problem_filename)
 
-            os.remove(parameter_filename)
-            os.remove(tour_filename)
+            # os.remove(parameter_filename)
+            # os.remove(tour_filename)
             return tour
         except Exception as e:
             print(f'error = {e}')
