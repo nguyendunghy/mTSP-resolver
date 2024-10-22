@@ -116,7 +116,7 @@ def mTSP_solve(min_node, max_node, min_salesman=2, max_salesman=3,dataset_ref = 
     lkh3_mtsp_synapse = asyncio.run(lkh3_mtsp_solver_solution(synapse,num_run=1,input_file=lkh_input_file))
     lkh3_mtsp_synapse.problem.edges = originl_edges
     t2 = time.time()
-    print(f'nn_multi_synapse.solution = {nn_multi_synapse.solution}')
+    print(f'nn_multi_synapse.solution = {nn_multi_synapse.solution}\n\n')
     print(f'lkh3_mtsp_synapse = {lkh3_mtsp_synapse.solution}')
     print(f"time baseline  = {t1 - t0}, time kh3_mtsp = {t2-t1}, num node = {synapse.problem.n_nodes}")
 
