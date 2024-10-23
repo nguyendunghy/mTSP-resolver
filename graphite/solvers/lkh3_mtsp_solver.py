@@ -59,7 +59,7 @@ class LKH3_MTSP_Solver(BaseSolver):
             f.write(f"SALESMEN = {self.n_salesmen}\n")
             f.write(f"VEHICLES = {self.n_salesmen}\n")
             f.write(f"DEPOT = 1\n")
-            f.write(f"MTSP_OBJECTIVE = MINMAX\n")
+            f.write(f"MTSP_OBJECTIVE = MINCOST\n")#MINMAX
             f.write(f"CANDIDATE_SET_TYPE = ALPHA\n")
             f.write(f"INITIAL_PERIOD = 5\n")
             f.write(f"MAX_TRIALS = {self.max_trial}\n")
