@@ -94,10 +94,10 @@ def generate_problem_for_mTSP(min_node=500, max_node=2000, min_salesman=2, max_s
     return graphsynapse_req
 
 
-def mTSP_solve(min_node, max_node, min_salesman=2, max_salesman=3,dataset_ref = 'World_TSP'):
+def mTSP_solve(min_node, max_node, min_salesman=2, max_salesman=3, dataset_ref='World_TSP'):
     while True:
         synapse = generate_problem_for_mTSP(min_node=min_node, max_node=max_node, min_salesman=min_salesman,
-                                        max_salesman=max_salesman)
+                                            max_salesman=max_salesman)
         if synapse.problem.dataset_ref == dataset_ref:
             break
     # print(f'synapse = {synapse}')
@@ -107,20 +107,20 @@ def mTSP_solve(min_node, max_node, min_salesman=2, max_salesman=3,dataset_ref = 
         edges = recreate_edges(synapse.problem, factor=100).tolist()
     originl_edges = recreate_edges(synapse.problem, factor=1).tolist()
     synapse.problem.edges = edges
-    lkh_input_file = build_lkh_input_file(synapse,dir='/root/test_lkh/problem')
+    lkh_input_file = build_lkh_input_file(synapse, dir='/root/test_lkh/problem')
     print(f"lkh_input_file = {lkh_input_file}")
     t0 = time.time()
     nn_multi_synapse = asyncio.run(nn_multi_solver_solution(synapse))
     nn_multi_synapse.problem.edges = originl_edges
     t1 = time.time()
-    lkh3_mtsp_synapse = asyncio.run(lkh3_mtsp_solver_solution(synapse,num_run=1,input_file=lkh_input_file))
+    lkh3_mtsp_synapse = asyncio.run(lkh3_mtsp_solver_solution(synapse, num_run=1, input_file=lkh_input_file))
     lkh3_mtsp_synapse.problem.edges = originl_edges
     t2 = time.time()
     print(f'nn_multi_synapse.solution = {nn_multi_synapse.solution}\n\n')
     print(f'lkh3_mtsp_synapse = {lkh3_mtsp_synapse.solution}')
-    print(f"time baseline  = {t1 - t0}, time kh3_mtsp = {t2-t1}, num node = {synapse.problem.n_nodes}")
+    print(f"time baseline  = {t1 - t0}, time kh3_mtsp = {t2 - t1}, num node = {synapse.problem.n_nodes}")
 
-    list_synapse = [nn_multi_synapse,lkh3_mtsp_synapse]
+    list_synapse = [nn_multi_synapse, lkh3_mtsp_synapse]
     scores = [scoring_solution(synapse) for synapse in list_synapse]
     min_score = min(scores)
     scores.append(min_score)
