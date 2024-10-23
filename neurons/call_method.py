@@ -116,7 +116,7 @@ def build_lkh_input_file(synapse,dir='/home/ubuntu'):
 async def lkh3_mtsp_solver_solution(synapse,num_run=1, input_file=None):
     new_synapse = copy.deepcopy(synapse)
     lkh3_mtsp_solver = LKH3_MTSP_Solver(num_run=num_run,input_file=input_file)
-    route = await  lkh3_mtsp_solver.solve_problem(new_synapse.problem)
+    route = await  lkh3_mtsp_solver.solve_problem(new_synapse.problem,timeout=200)
     new_synapse.solution = route
     return new_synapse
 
