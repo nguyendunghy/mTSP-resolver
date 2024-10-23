@@ -56,7 +56,7 @@ class LKH3_MTSP_Solver(BaseSolver):
             # f.write(f"SINTEF_SOLUTION_FILE = {tour_filename}\n")
             f.write(f"MTSP_SOLUTION_FILE = {tour_filename}\n")
             f.write(f"MTSP_MIN_SIZE = 30\n")
-            # f.write(f"SALESMEN = {self.n_salesmen}\n")
+            f.write(f"SALESMEN = {self.n_salesmen}\n")
             f.write(f"VEHICLES = {self.n_salesmen}\n")
             f.write(f"DEPOT = 1\n")
             f.write(f"MTSP_OBJECTIVE = MINMAX\n")
