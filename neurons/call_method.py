@@ -98,7 +98,7 @@ async def mTSP_or_solver_solution(synapse):
 
 async def nn_multi_solver_solution(synapse):
     new_synapse = copy.deepcopy(synapse)
-    route = await  nn_multi_solver.solve_problem(new_synapse.problem)
+    route = await  nn_multi_solver.solve_problem(new_synapse.problem,timeout=200)
     new_synapse.solution = route
     return new_synapse
 
