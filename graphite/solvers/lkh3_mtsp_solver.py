@@ -13,7 +13,7 @@ class LKH3_MTSP_Solver(BaseSolver):
     def __init__(self, problem_types: List[GraphV2Problem] = [GraphV2ProblemMulti()],
                  num_run=1,
                  init_tour_algo='NE',
-                 max_trial=5,
+                 max_trial=10,
                  input_file=None):
         super().__init__(problem_types=problem_types)
         self.lkh_path = 'LKH-3.0.11/LKH'
