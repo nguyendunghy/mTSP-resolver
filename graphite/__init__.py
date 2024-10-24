@@ -28,9 +28,8 @@ __spec_version__ = (
     + (1 * int(version_split[2]))
 )
 
+from . import base
+from . import models
 # Import all submodules.
 from . import protocol
-from . import base
 from . import validator
-from .subnet_links import SUBNET_LINKS
-from . import models
