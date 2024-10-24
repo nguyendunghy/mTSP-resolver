@@ -5,7 +5,7 @@ from neurons.compare_solutions import solve_mTSP
 
 
 def check_mTSP():
-    data = [solve_mTSP(min_node=500, max_node=2000, min_salesman=2, max_salesman=10) for i in tqdm.tqdm(range(20))]
+    data = [solve_mTSP(min_node=20, max_node=30, min_salesman=2, max_salesman=10) for i in tqdm.tqdm(range(20))]
     data = np.array(data)
 
     print("BASELINE:", data[:, 0].mean())
