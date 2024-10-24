@@ -8,9 +8,7 @@ import bittensor as bt
 import requests
 
 from neurons.call_method import baseline_solution, build_lkh_input_file, scoring_solution
-from neurons.compare_solutions import generate_problem
 from neurons.redis_utils import gen_hash
-
 
 
 def load_config(config_file='config.json'):
@@ -266,7 +264,3 @@ async def handle_request(synapse_request, config_file_path='config.json'):
         synapse = asyncio.run(baseline_solution(synapse_request))
         return synapse.solution
 
-if __name__ == '__main__':
-    synapse_request = generate_problem()
-    # call_apis(synapse_request)
-    print(handle_request(synapse_request))
