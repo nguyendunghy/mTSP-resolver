@@ -45,10 +45,5 @@ def check_mtsp():
 
 
 if __name__ == '__main__':
-    for i in tqdm.tqdm(range(20)):
-        check_mtsp()
-    # count  = 0
-    # while count < 20:
-    #     check_call_api()
-    #     count = count + 1
-    #     time.sleep(2)
+    check_mtsp()
+
