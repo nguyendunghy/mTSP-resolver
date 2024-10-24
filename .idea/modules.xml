@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/Graphite-Subnet.iml" filepath="$PROJECT_DIR$/.idea/Graphite-Subnet.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/mTSP-resolver.iml" filepath="$PROJECT_DIR$/.idea/mTSP-resolver.iml" />
     </modules>
   </component>
 </project>
