@@ -64,6 +64,8 @@ def solve_mTSP(min_node, max_node, min_salesman=2, max_salesman=10):
 
     original_edges = recreate_edges(synapse.problem, factor=1).tolist()
     synapse.problem.edges = edges
+    print(f'n_node = {synapse.problem.n_nodes}, n_salesmen = {synapse.problem.n_salesmen}')
+
     lkh_input_file = build_lkh_input_file(synapse, dir=f'{os.getcwd()}/problem')
     print(f"lkh_input_file = {lkh_input_file}")
 
