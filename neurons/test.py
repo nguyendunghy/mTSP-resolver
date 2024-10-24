@@ -36,7 +36,12 @@ def check_call_api():
     print(f'time processing total : {end-start}')
 
 def check_mtsp():
-    mTSP_solve(min_node=100, max_node=100, min_salesman=3, max_salesman=3, dataset_ref='World_TSP')
+    data = [mTSP_solve(min_node=100, max_node=100, min_salesman=3, max_salesman=3, dataset_ref='World_TSP') for i in tqdm.tqdm(range(20))]
+    data = np.array(data)
+
+    print("BASELINE:", data[:, 0].mean())
+    print("LKH:", data[:, 1].mean())
+    print("MIN:", data[:, 2].mean())
 
 
 if __name__ == '__main__':
